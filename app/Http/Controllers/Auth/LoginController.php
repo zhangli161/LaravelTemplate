@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
+//AuthenticatesUsers
+
 class LoginController extends Controller
 {
     /*
@@ -22,6 +24,7 @@ class LoginController extends Controller
 
     /**
      * Where to redirect users after login.
+     *登录后用户跳转的路径
      *
      * @var string
      */
@@ -36,4 +39,13 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
+    
+    /*
+     * 这里更改验证的字段名
+     *
+     */
+//    public function username()
+//    {
+//    	return 'username';
+//    }
 }

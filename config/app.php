@@ -10,7 +10,8 @@ return [
     | This value is the name of your application. This value is used when the
     | framework needs to place the application's name in a notification or
     | any other location as required by the application or its packages.
-    |
+    |此值是应用程序的名称。当框架需要将应用程序的名称放置在通知中或应用
+    |程序或其包所需的任何其他位置时，将使用此值
     */
 
     'name' => env('APP_NAME', 'Laravel'),
@@ -52,7 +53,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'http://localhost/demo/public'),
 
     /*
     |--------------------------------------------------------------------------
@@ -65,7 +66,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Asia/Shanghai',
 
     /*
     |--------------------------------------------------------------------------
@@ -78,7 +79,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'cn',
 
     /*
     |--------------------------------------------------------------------------
@@ -116,7 +117,8 @@ return [
     | The service providers listed here will be automatically loaded on the
     | request to your application. Feel free to add your own services to
     | this array to grant expanded functionality to your applications.
-    |
+    |这里列出的服务提供商将自动加载到您的应用程序的请求上。随意添加您
+    |自己的服务到这个数组，以授予扩展功能到您的应用程序。
     */
 
     'providers' => [
@@ -170,7 +172,8 @@ return [
     | This array of class aliases will be registered when this application
     | is started. However, feel free to register as many as you wish as
     | the aliases are "lazy" loaded so they don't hinder performance.
-    |
+    |此类名数组将在应用程序启动时注册。但是，类名是懒加载的，
+    |可以随意注册多个，这样它们就不会妨碍性能。
     */
 
     'aliases' => [

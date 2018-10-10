@@ -14,6 +14,7 @@ use App\Components\TemplateManager;
 class DemoController extends Controller
 {
 	public function test(){
+	return time();
 	
 	}
 	

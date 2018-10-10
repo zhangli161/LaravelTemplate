@@ -22,6 +22,7 @@ class ResetPasswordController extends Controller
 
     /**
      * Where to redirect users after resetting their password.
+     *重置密码后跳转的路径
      *
      * @var string
      */
