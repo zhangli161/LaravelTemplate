@@ -14,5 +14,6 @@ Route::group([
 	$router->resource('users', UserController::class);
 	$router->resource('regions', NativePlaceRegionController::class);
 	$router->resource('user_address', UserAddressController::class);
+	$router->resource('banner', BannerController::class);
 
 });
