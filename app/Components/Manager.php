@@ -10,13 +10,20 @@
 
 namespace App\Components;
 
-class Manager
+abstract class Manager
 {
-	protected $module;
+	protected static $Modle;
 	
-	protected $keys=['id'];
+	protected static $keys = ['id'];
 	
-	protected $primary_key='id';
+	protected static $primary_key = 'id';
+	
+	//返回Modle::all()
+	public static function getModle()
+	{
+		return static::$Modle::query();
+	}
+	
 	/*
 	 * 创建新的对象
 	 *
@@ -24,13 +31,10 @@ class Manager
 	 *
 	 * 2018/07/05
 	 */
-	public function createObject(){
-		$template=new $this->module();
-		//这里可以对新建记录进行一定的默认设置
-		
-		return $template;
+	public static function createObject()
+	{
+		return new static::$Modle();
 	}
-	
 	
 	/*
 	 * 获取template的list
@@ -39,9 +43,9 @@ class Manager
 	 *
 	 * 2018-04-02
 	 */
-	public function getList()
+	public static function getList()
 	{
-		$templates = $this->module::orderby('id', 'desc')->get();
+		$templates = self::getModle()->orderby(static::$primary_key, 'desc')->get();
 		return $templates;
 	}
 	
@@ -52,9 +56,9 @@ class Manager
 	 *
 	 * 2018-04-02
 	 */
-	public function getById($id)
+	public static function getById($id)
 	{
-		$template = $this->module::where($this->primary_key, '=', $id)->first();
+		$template = self::getModle()->where(static::$primary_key, '=', $id)->first();
 		return $template;
 	}
 	
@@ -65,10 +69,10 @@ class Manager
 	 *
 	 * 2018-07-18
 	 */
-	public function getByCon(array $ConArr, $paginate = false, $orderby = ['id', 'asc'])
+	public static function getByCon(array $ConArr, $paginate = false, $orderby = ['id', 'asc'])
 	{
 		
-		$templates = $this->module::orderby($orderby['0'], $orderby['1']);
+		$templates = self::getModle()->orderby($orderby['0'], $orderby['1']);
 		if (!$paginate)
 			$templates = $templates->get();
 		foreach ($ConArr as $key => $value) {
@@ -88,12 +92,12 @@ class Manager
 	 *
 	 * 2018-04-02
 	 */
-	public function set($template, $data)
+	public static function set($template, $data)
 	{
-		foreach ($this->keys as $key)
-		if (array_key_exists($key, $data)) {
-			$template[$key] = array_get($data, $key);
-		}
+		foreach (static::$keys as $key)
+			if (array_key_exists($key, $data)) {
+				$template[$key] = array_get($data, $key);
+			}
 		return $template;
 	}
 }

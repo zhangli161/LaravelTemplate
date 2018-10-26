@@ -16,3 +16,6 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('region/getByParentid', 'Api\RegionController@getByParentid');//测试
+Route::get('regions', 'Api\RegionController@regions');//测试

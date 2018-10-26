@@ -19,4 +19,5 @@ class Template extends Model
 //    public $timestamps = false;       //不使用时间戳
 //	protected $primaryKey = 'id';       //主键
     protected $dates = ['deleted_at'];  //软删除
+//	protected $hidden = ['password'];//隐藏的字段
 }
