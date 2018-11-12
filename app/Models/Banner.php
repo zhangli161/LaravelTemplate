@@ -19,7 +19,7 @@ class Banner extends Model
 //	protected $primaryKey = 'id';       //主键
     protected $dates = ['deleted_at'];  //软删除
 //	protected $hidden = ['password'];//隐藏的字段
-	protected $casts = [
-		'attr' => 'json',
-	];//内嵌字段
+	protected $casts = ['attr' => 'json',];//内嵌字段
+	
+	
 }

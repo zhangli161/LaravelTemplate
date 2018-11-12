@@ -12,23 +12,27 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+//管理后台api接口
+Route::group(['prefix' => 'admin'], function(){
+	Route::get('category', 'Api\CategoryController@category');//类别
+	
+	Route::get('region/getByParentid', 'Api\RegionController@getByParentid');//根据父地区id获得地区
+	Route::get('regions', 'Api\RegionController@regions');//地区模糊搜索
+});
 
-//Route::middleware('auth:api')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
+
+
+//小程序api
+Route::group(['namespace' => 'api'], function () {
+	Route::post('/login', 'UserController@login');//登录
+});
+Route::group(['middleware' => 'auth:api', 'namespace' => 'api'], function() {
+	Route::get('/test/passport', 'UserController@passport');
+	Route::get('/banner', 'BannerController@getList');
+});
 
 //Route::group(['prefix' => 'v1', 'middleware' => 'auth:api'], function(){
 //	Route::get('/user', function( Request $request ){
 //		return $request->user();
 //	});
 //});
-
-Route::get('region/getByParentid', 'Api\RegionController@getByParentid');//测试
-Route::get('regions', 'Api\RegionController@regions');//测试
-
-Route::group(['namespace' => 'api'], function () {
-	Route::post('/login', 'UserController@login');
-});
-Route::group(['middleware' => 'auth:api', 'namespace' => 'api'], function() {
-	Route::get('/test/passport', 'UserController@passport');
-});

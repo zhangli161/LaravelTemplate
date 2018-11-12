@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\Message;
 use App\Models\User_Address;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -29,8 +30,13 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 	
-	public function Address()
+	public function addresses()
 	{
 		return $this->hasMany(User_Address::class);
+	}
+	
+	public function messages()
+	{
+		return $this->hasMany(Message::class,'to_userid');
 	}
 }

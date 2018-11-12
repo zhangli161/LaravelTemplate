@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Components\XCXLoginManager;
+use App\Http\Helpers\ApiResponse;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Foundation\Auth\User;
@@ -21,11 +22,9 @@ class UserController extends Controller
 	
 	public function login(Request $request)
 	{
+		$ret=array();
+		$result=false;
 		
-		// dd(request('name'));
-//		if (Auth::attempt(['name' => request('name'), 'password' => request('password')])) {
-//		Auth::provider();
-//		$user=new UserProvider()retrieveByCredentials(['name' => request('name'), 'password' => request('password')]);
 		$json = XCXLoginManager::getOpenid($request);
 		$openid = array_get($json, 'openid');
 		
@@ -35,7 +34,6 @@ class UserController extends Controller
 				->firstOrNew(['openid' => $openid], ['openid' => $openid]);
 //				->firstOrCreate(['name'=>'new'],['openid' => $openid]);
 		if ($user) {
-			
 			$user->save();
 			Auth::login($user);
 		} else
@@ -43,19 +41,19 @@ class UserController extends Controller
 		
 		if (Auth::check()) {
 			$user = Auth::user();
-			$this->content['token'] = $user->createToken('Pi App')->accessToken;
-			$status = 200;
+			$ret['token'] = $user->createToken('Pi App')->accessToken;
+			$result=true;
+			$status = ApiResponse::SUCCESS_CODE;
 		} else {
-			
-			$this->content['error'] = "登录失败" . json_encode($json);
-			$status = 401;
+			$ret['error'] = "登录失败" . json_encode($json);
+			$status = ApiResponse::NO_USER;
 		}
-		return response()->json($this->content, $status);
+		return ApiResponse::makeResponse(true,$ret,$status);
 	}
 	
 	public function passport()
 	{
-		return response()->json(['user' => Auth::user()]);
+		return response()->json(['user' => Auth::user(),'message'=>Auth::user()->messages()]);
 	}
 	
 }

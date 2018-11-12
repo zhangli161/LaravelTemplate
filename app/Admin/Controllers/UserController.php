@@ -104,7 +104,7 @@ class UserController extends Controller
 		$grid->released('上映?')->display(function ($released) {
 			return $released ? '是' : '否';
 		});*/
-		$grid->avatar("头像")->image("/storage", 100, 100);
+		$grid->avatar("头像")->lightbox();;
 		
 		$grid->created_at('注册时间');
 		$grid->updated_at('上次修改时间');
@@ -157,9 +157,9 @@ class UserController extends Controller
 		
 		$show->id('用户id');
 		$show->name('姓名');
-		$show->password('密码');
-		$show->avatar('头像')->image();;
-		$show->remember_token('Remember token');
+//		$show->password('密码');
+		$show->avatar('头像')->image();
+//		$show->remember_token('Remember token');
 		$show->created_at('注册时间');
 		$show->updated_at('最后修改时间');
 		
