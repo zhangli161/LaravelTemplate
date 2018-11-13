@@ -83,7 +83,7 @@ class UserAddressController extends Controller
 	{
 		$grid = new Grid(new User_Address);
 		
-		$grid->id('用户id');
+		$grid->id();
 //        $grid->user_id('User id');
 		$grid->user('用户名')->display(function ($user) {
 //	        $count = count($comments);
@@ -144,9 +144,8 @@ class UserAddressController extends Controller
 				});;
 //	        $show->id('用户id');
 			$user->name('姓名');
-			$user->password('密码');
-			$user->avatar('头像')->image()->lightbox();;;
-			$user->remember_token('Remember token');
+			$user->avatar('头像')->image()->lightbox();
+			$user->latest_login_time('最后登录时间');
 			$user->created_at('注册时间');
 			$user->updated_at('最后修改时间');
 		});

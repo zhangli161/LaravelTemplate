@@ -104,8 +104,14 @@ class UserController extends Controller
 		$grid->released('上映?')->display(function ($released) {
 			return $released ? '是' : '否';
 		});*/
-		$grid->avatar("头像")->lightbox();;
-		
+		$grid->avatar("头像")->lightbox();
+		// 设置text、color、和存储值
+		$states = [
+			'on' => ['value' => 1, 'text' => '生效', 'color' => 'success'],
+			'off' => ['value' => 2, 'text' => '封禁', 'color' => 'default'],
+		];
+		$grid->status('状态')->switch($states);
+		$grid->latest_login_time('最后登录时间');
 		$grid->created_at('注册时间');
 		$grid->updated_at('上次修改时间');
 		
@@ -116,7 +122,7 @@ class UserController extends Controller
 			$filter->between('created_at', '注册时间')->datetime();
 		});
 		$grid->actions(function ($actions) {
-//			$actions->disableDelete();
+			$actions->disableDelete();
 //			$actions->disableEdit();
 //			$actions->disableView();
 			$user_id=array_get($actions->row,'id');
@@ -140,7 +146,7 @@ class UserController extends Controller
 //	    $grid->perPages([10, 20, 30, 40, 50]);
 		
 		//导出
-		$grid->exporter(new ExcelExpoter());
+//		$grid->exporter(new ExcelExpoter());
 		
 		return $grid;
 	}
