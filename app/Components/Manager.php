@@ -73,11 +73,12 @@ abstract class Manager
 	{
 		
 		$templates = self::getModle()->orderby($orderby['0'], $orderby['1']);
-		if (!$paginate)
-			$templates = $templates->get();
+		
 		foreach ($ConArr as $key => $value) {
 			$templates = $templates->whereIn($key, $value);
 		}
+		if (!$paginate)
+			$templates = $templates->get();
 		if ($paginate) {
 			$templates = $templates->paginate(5);
 		}

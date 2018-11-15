@@ -326,6 +326,16 @@ return [
 			//https://github.com/laravel-admin-extensions/china-distpicker
 			// 如果要关掉这个扩展，设置为false
 			'enable' => true,
+		],
+		'ueditor' => [
+			//https://github.com/laravel-admin-extensions/UEditor
+			// 如果要关掉这个扩展，设置为false
+			'enable' => true,
+			
+			// 编辑器的前端配置 参考：http://fex.baidu.com/ueditor/#start-config
+			'config' => [
+				'initialFrameHeight' => 400, // 例如初始化高度
+			]
 		]
 	],
 ];

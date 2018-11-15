@@ -16,6 +16,7 @@ Route::group([
 	$router->resource('user_address', UserAddressController::class);
 	$router->resource('banner', BannerController::class);
 	$router->resource('category', CategoryController::class);
-	$router->resource('message', MessageController::class);
-
+	$router->resource('message', MessageContentController::class);
+	$router->resource('message_source', MessageSourceController::class);
+	
 });

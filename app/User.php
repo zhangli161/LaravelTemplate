@@ -37,6 +37,6 @@ class User extends Authenticatable
 	
 	public function messages()
 	{
-		return $this->hasMany(Message::class,'to_userid');
+		return $this->hasMany(Message::class,'to_user_id','id');
 	}
 }

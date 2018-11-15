@@ -1,0 +1,32 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Components\MessageManager;
+use App\Http\Helpers\ApiResponse;
+use App\Models\Message;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+
+class MessageController extends Controller
+{
+	public function __construct(\App\Models\Message $datas)
+	{
+		$this->datas = $datas;
+		$this->content = array();
+	}
+	
+	public function getList(Request $request)
+	{
+		$user=$request->user();
+		$messages=Message::query()->where('to_user_id',$user->id)
+			->orderBy('status','asc')
+			->orderBy('created_at','desc')
+			->get();
+		foreach ($messages as $message){
+			$message->content=$message->content()->first();
+			$message->sender=MessageManager::getSender($message);
+		}
+		return ApiResponse::makeResponse(true, $messages,ApiResponse::SUCCESS_CODE);
+	}
+}

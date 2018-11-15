@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Components\MessageManager;
+use App\Components\VertifyManager;
 use App\Components\XCXLoginManager;
 use App\Http\Helpers\ApiResponse;
 use App\Models\User_WX;
@@ -79,7 +81,23 @@ class UserController extends Controller
 	
 	public function passport()
 	{
-		return response()->json(['user' => Auth::user(), 'message' => Auth::user()->messages()]);
+		MessageManager::getGroupMessages(Auth::user());
+		return response()->json(['user' => Auth::user(), 'message' => Auth::user()->messages]);
+	}
+	
+	public static function sendVertifyCode(Request $request)
+	{
+		$data = $request->all();
+		//检验参数
+		if ($request->filled('phonenum')) {
+			$send_ret = VertifyManager::doVertify($data['phonenum']);
+			if ($send_ret)
+				return ApiResponse::makeResponse(true, "发送成功", ApiResponse::SUCCESS_CODE);
+			else
+				return ApiResponse::makeResponse(false, "发送失败", ApiResponse::UNKNOW_ERROR);
+		} else {
+			return ApiResponse::makeResponse(false, "缺少参数", ApiResponse::MISSING_PARAM);
+		}
 	}
 	
 	

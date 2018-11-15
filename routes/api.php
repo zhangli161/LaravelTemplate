@@ -31,7 +31,12 @@ Route::group(['middleware' => 'auth:api', 'namespace' => 'api'], function() {
 	Route::get('/putUserInfo', 'UserController@putUserInfo');//同步微信信息
 	
 	Route::get('/test/passport', 'UserController@passport');//获得用户信息
-	Route::get('/banner', 'BannerController@getList');
+	Route::get('/banner', 'BannerController@getList');//轮播图
+	
+	Route::post('/sendVertifyCode', 'UserController@sendVertifyCode');//发送验证码
+	
+	Route::get('/message', 'MessageController@getList');//消息
+	Route::post('/message', 'MessageController@getList');//消息
 });
 
 //Route::group(['prefix' => 'v1', 'middleware' => 'auth:api'], function(){

@@ -19,12 +19,18 @@ class Message extends Model
 	protected $table = 'message';  //表名
 	protected $dates = ['deleted_at'];  //软删除
 	protected $casts = ['attr' => 'json',];//内嵌字段
+	protected $fillable = [
+		'content_id', 'attr','status','form_user_id','to_user_id'
+	];
 	public function form_user()
 	{
-		return $this->belongsTo(User::class,'form_userid');
+		return $this->belongsTo(User::class,'form_user_id');
 	}
 	public function to_user()
 	{
-		return $this->belongsTo(User::class,'to_userid');
+		return $this->belongsTo(User::class,'to_user_id');
+	}
+	public function content(){
+		return $this->belongsTo(MessageContent::class,'content_id','id');
 	}
 }
