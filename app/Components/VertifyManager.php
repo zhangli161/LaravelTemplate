@@ -18,13 +18,13 @@ class VertifyManager
 	   *
 	   * By TerryQi
 	   */
-	public static function doVertify($phonenum)
+	public static function doVertify($mobile)
 	{
 		$vertify_code = rand(0, 9) . rand(0, 9) . rand(0, 9) . rand(0, 9);  //生成4位验证码
 		$vertify = new Vertify();
 		$vertify->addtime = time();
 		$vertify->status = 0;//待发送状态
-		$vertify->phonenum = $phonenum;
+		$vertify->mobile = $mobile;
 		$vertify->code = $vertify_code;
 		$vertify->save();
 		/*
@@ -40,7 +40,7 @@ class VertifyManager
 	
 	public static function sendVerification($vertify)
 	{
-		$phone = $vertify->phonenum;
+		$phone = $vertify->mobile;
 		$content = $vertify->code;
 		
 		$result='******这里发送短信并返回result******';
@@ -57,9 +57,9 @@ class VertifyManager
 	 *
 	 * 2017-11-28
 	 */
-	public static function judgeVertifyCode($phonenum, $vertify_code)
+	public static function judgeVertifyCode($mobile, $vertify_code)
 	{
-		$vertify = Vertify::where('phonenum', $phonenum)
+		$vertify = Vertify::where('mobile', $mobile)
 			->where('code', $vertify_code)->where('status', '3')->first();
 		if ($vertify) {
 			//验证码置为失效
