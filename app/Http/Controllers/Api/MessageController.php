@@ -7,6 +7,7 @@ use App\Http\Helpers\ApiResponse;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class MessageController extends Controller
 {
@@ -18,6 +19,8 @@ class MessageController extends Controller
 	
 	public function getList(Request $request)
 	{
+		MessageManager::getGroupMessages(Auth::user());
+		
 		$user=$request->user();
 		$messages=Message::query()->where('to_user_id',$user->id)
 			->orderBy('status','asc')

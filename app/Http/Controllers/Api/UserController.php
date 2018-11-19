@@ -37,8 +37,8 @@ class UserController extends Controller
 		$ret['session_key'] = $sessionkey;
 		$user = null;
 		if ($openid) {
-			$user_wx = User_WX::query()->firstOrNew(['openid' => $openid],
-				['openid' => $openid]);
+			$user_wx = User_WX::query()->firstOrNew(['openId' => $openid],
+				['openId' => $openid]);
 			$user = XCXLoginManager::getUserByOpenId($openid);
 //			return json_encode($user);
 			$user->latest_login_time = Carbon::now();

@@ -12,7 +12,7 @@ namespace App\Components;
 use App\Http\Helpers\WXBizDataCrypt;
 use App\Models\User_WX;
 use Carbon\Carbon;
-use Illuminate\Foundation\Auth\User;
+use App\User;
 use Illuminate\Http\Request;
 
 class XCXLoginManager
@@ -49,7 +49,7 @@ class XCXLoginManager
 	{
 		$user_wx = User_WX::query()->where('openId', $openid)->first();
 		if (!$user_wx) {
-			$user = User::create(['latest_login_time' => Carbon::now()]);
+			$user = User::query()->create(['latest_login_time' => Carbon::now()]);
 		} else {
 			$user = User::query()->where('id', '=',$user_wx->user_id)->first();
 		}

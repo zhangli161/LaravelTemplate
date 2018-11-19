@@ -16,7 +16,7 @@ class User_Address extends Model
 {
     use SoftDeletes;    //使用软删除
 //    protected $connection = 'sxwdb';   //数据库名
-    protected $table = 'user_address';  //表名
+    protected $table = 'users_address';  //表名
 //    public $timestamps = false;       //不使用时间戳
 //	protected $primaryKey = 'id';       //主键
     protected $dates = ['deleted_at'];  //软删除
