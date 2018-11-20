@@ -9,7 +9,7 @@
 namespace App\Components;
 
 
-use App\Models\Native_Place_Region;
+use App\Models\NativePlaceRegion;
 
 class NativePalceReagionManager extends Manager
 {
@@ -18,7 +18,7 @@ class NativePalceReagionManager extends Manager
 	
 	protected static $primary_key = 'region_id';
 	
-	protected static $Modle = Native_Place_Region::class;
+	protected static $Modle = NativePlaceRegion::class;
 	
 	public static function getFullAddress($region_id,string $separator='')
 	{

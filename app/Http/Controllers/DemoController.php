@@ -11,7 +11,7 @@ namespace App\Http\Controllers;
 
 use App\Components\NativePalceReagionManager;
 use App\Components\TemplateManager;
-use App\Models\Native_Place_Region;
+use App\Models\NativePlaceRegion;
 use Encore\Admin\Facades\Admin;
 use Illuminate\Http\Request;
 
@@ -5047,7 +5047,7 @@ class DemoController extends Controller
 			$Region_Types = ['民族乡','乡', '镇',  '自治县', '县', '自治区',  '特别行政区', '区','直辖市', '市', '自治州', '省'];
 			foreach ($parents as $region_id => $item) {
 				if(gettype($item)=='string'){
-					$obj = new Native_Place_Region();
+					$obj = new NativePlaceRegion();
 					$obj->region_id = $region_id;
 					$obj->parentid = $parentid;
 					$obj->region_name = $item;
@@ -5065,7 +5065,7 @@ class DemoController extends Controller
 					
 					array_push($results, $obj);
 				}elseif (gettype($item) == 'object') {
-					$obj = new Native_Place_Region();
+					$obj = new NativePlaceRegion();
 					$obj->region_id = $region_id;
 					$obj->parentid = $parentid;
 					$obj->region_name = $item->name;

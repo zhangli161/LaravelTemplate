@@ -2,7 +2,7 @@
 
 namespace App\Admin\Controllers;
 
-use App\Models\Native_Place_Region;
+use App\Models\NativePlaceRegion;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\HasResourceActions;
 use Encore\Admin\Facades\Admin;
@@ -31,7 +31,7 @@ class NativePlaceRegionController extends Controller
 		return $content
 			->header('地区管理')
 			->description('全国地区一览')
-			->body(Native_Place_Region::tree(function ($tree) {
+			->body(NativePlaceRegion::tree(function ($tree) {
 				
 				$tree->query(function ($model) {
 					return $model->orderby('region_id', 'asc');
@@ -47,7 +47,7 @@ class NativePlaceRegionController extends Controller
 			}));
 //		return Admin::content(function (Content $content) {
 //			$content->header('树状模型');
-//			$content->body(Native_Place_Region::tree());
+//			$content->body(NativePlaceRegion::tree());
 //		});
 	}
 	
@@ -102,7 +102,7 @@ class NativePlaceRegionController extends Controller
 	 */
 	protected function grid()
 	{
-		$grid = new Grid(new Native_Place_Region);
+		$grid = new Grid(new NativePlaceRegion);
 	    $grid->model()->where('parentid', '=', 0);
 		$grid->paginate(40);
 		
@@ -128,7 +128,7 @@ class NativePlaceRegionController extends Controller
 	 */
 	protected function detail($id)
 	{
-		$show = new Show(Native_Place_Region::findOrFail($id));
+		$show = new Show(NativePlaceRegion::findOrFail($id));
 		
 		$show->region_id('地区id');
 		$show->parentid('上级地区id');
@@ -145,7 +145,7 @@ class NativePlaceRegionController extends Controller
 	 */
 	protected function form()
 	{
-		$form = new Form(new Native_Place_Region);
+		$form = new Form(new NativePlaceRegion);
 		
 		$form->number('region_id', '地区id');
 		$form->number('parentid', '上级地区id');

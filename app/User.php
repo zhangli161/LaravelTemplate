@@ -3,7 +3,7 @@
 namespace App;
 
 use App\Models\Message;
-use App\Models\User_Address;
+use App\Models\UserAddress;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
@@ -32,7 +32,7 @@ class User extends Authenticatable
 	
 	public function addresses()
 	{
-		return $this->hasMany(User_Address::class);
+		return $this->hasMany(UserAddress::class);
 	}
 	
 	public function messages()
