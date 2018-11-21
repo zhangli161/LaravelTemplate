@@ -12,22 +12,21 @@ use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class User_Address extends Model
+class UserWX extends Model
 {
     use SoftDeletes;    //使用软删除
 //    protected $connection = 'sxwdb';   //数据库名
-    protected $table = 'users_address';  //表名
+    protected $table = 'users_wx';  //表名
 //    public $timestamps = false;       //不使用时间戳
-//	protected $primaryKey = 'id';       //主键
+	protected $primaryKey = 'user_id';       //主键
     protected $dates = ['deleted_at'];  //软删除
 //	protected $hidden = ['password'];//隐藏的字段
+	protected $fillable = [
+		'user_id', 'openId', 'unionId','nickName','gender','city','province','country','avatarUrl'
+	];
 	
 	public function user()
 	{
 		return $this->belongsTo(User::class,'user_id','id');
-	}
-	public function region()
-	{
-		return $this->belongsTo(Native_Place_Region::class,'region_id','region_id');
 	}
 }

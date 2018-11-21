@@ -14,7 +14,7 @@ use Encore\Admin\Traits\ModelTree;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Native_Place_Region extends Model
+class NativePlaceRegion extends Model
 {
 	use ModelTree,AdminBuilder;
 //	use SoftDeletes;    //使用软删除
@@ -36,6 +36,6 @@ class Native_Place_Region extends Model
 	
 	public function user_address()
 	{
-		return $this->hasMany(User_Address::class);
+		return $this->hasMany(UserAddress::class);
 	}
 }

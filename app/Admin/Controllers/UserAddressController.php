@@ -4,7 +4,7 @@ namespace App\Admin\Controllers;
 
 use App\Components\NativePalceReagionManager;
 use App\Http\Controllers\Api\RegionController;
-use App\Models\User_Address;
+use App\Models\UserAddress;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\HasResourceActions;
 use Encore\Admin\Form;
@@ -81,7 +81,7 @@ class UserAddressController extends Controller
 	 */
 	protected function grid()
 	{
-		$grid = new Grid(new User_Address);
+		$grid = new Grid(new UserAddress);
 		
 		$grid->id();
 //        $grid->user_id('User id');
@@ -124,7 +124,7 @@ class UserAddressController extends Controller
 	 */
 	protected function detail($id)
 	{
-		$show = new Show(User_Address::findOrFail($id));
+		$show = new Show(UserAddress::findOrFail($id));
 		$show->panel()
 			->tools(function ($tools) {
 				$tools->disableEdit();
@@ -168,7 +168,7 @@ class UserAddressController extends Controller
 	 */
 	protected function form()
 	{
-		$form = new Form(new User_Address);
+		$form = new Form(new UserAddress);
 		
 		$form->number('user_id', '用户id')->rules('required|min:1');
 		$form->text('name', '收货人姓名')->rules('required|max:20');

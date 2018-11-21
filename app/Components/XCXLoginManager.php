@@ -10,7 +10,7 @@ namespace App\Components;
 
 
 use App\Http\Helpers\WXBizDataCrypt;
-use App\Models\User_WX;
+use App\Models\UserWX;
 use Carbon\Carbon;
 use App\User;
 use Illuminate\Http\Request;
@@ -47,7 +47,7 @@ class XCXLoginManager
 	
 	public static function getUserByOpenId($openid)
 	{
-		$user_wx = User_WX::query()->where('openId', $openid)->first();
+		$user_wx = UserWX::query()->where('openId', $openid)->first();
 		if (!$user_wx) {
 			$user = User::query()->create(['latest_login_time' => Carbon::now()]);
 		} else {

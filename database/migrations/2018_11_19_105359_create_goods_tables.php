@@ -52,7 +52,7 @@ class CreateGoodsTables extends Migration
 	    Schema::create('goods_spec', function (Blueprint $table) {
 		    $table->increments('id');
 		    $table->integer('spec_no',false,true);//规格编号
-		    $table->string('spec_name',50);//规格名称
+		    $table->string('spec_name',50)->charset('utf8mb4')->collation('utf8mb4_unicode_ci');//规格名称
 		    
 		    $table->timestamps();
 		    $table->timestamp('deleted_at')->nullable();
@@ -61,7 +61,7 @@ class CreateGoodsTables extends Migration
 	    Schema::create('goods_spec_value', function (Blueprint $table) {
 		    $table->increments('id');
 		    $table->integer('spec_id',false,true);//规格id
-		    $table->string('value',50);//规格名称
+		    $table->string('value',50)->charset('utf8mb4')->collation('utf8mb4_unicode_ci');//规格值
 		
 		    $table->timestamps();
 		    $table->timestamp('deleted_at')->nullable();

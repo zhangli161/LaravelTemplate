@@ -6,7 +6,7 @@ use App\Components\MessageManager;
 use App\Components\VertifyManager;
 use App\Components\XCXLoginManager;
 use App\Http\Helpers\ApiResponse;
-use App\Models\User_WX;
+use App\Models\UserWX;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\UserProvider;
@@ -37,7 +37,7 @@ class UserController extends Controller
 		$ret['session_key'] = $sessionkey;
 		$user = null;
 		if ($openid) {
-			$user_wx = User_WX::query()->firstOrNew(['openId' => $openid],
+			$user_wx = UserWX::query()->firstOrNew(['openId' => $openid],
 				['openId' => $openid]);
 			$user = XCXLoginManager::getUserByOpenId($openid);
 //			return json_encode($user);
@@ -57,7 +57,7 @@ class UserController extends Controller
 				if (array_get($wx_userinfo, 'ret')) {
 					$userinfo = json_decode($wx_userinfo['ret'], true);
 					$userinfo['user_id'] = $user->id;
-					$user_wx = User_WX::query()->firstOrNew(['user_id' => $user->id]);
+					$user_wx = UserWX::query()->firstOrNew(['user_id' => $user->id]);
 					$user_wx->fill($userinfo)->save();
 					$user->avatar = $user_wx->avatarUrl;
 					$user->save();
