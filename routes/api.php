@@ -18,6 +18,10 @@ Route::group(['prefix' => 'admin'], function(){
 	
 	Route::get('region/getByParentid', 'Api\RegionController@getByParentid');//根据父地区id获得地区
 	Route::get('regions', 'Api\RegionController@regions');//地区模糊搜索
+	
+	Route::get('spec/getValueBySpec_id', 'Api\Admin\GoodsSpecController@spec');//根据父地区id获得地区
+	
+	
 });
 
 

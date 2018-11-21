@@ -21,9 +21,8 @@ class CreateGoodsTables extends Migration
 	        $table->text('desc')->charset('utf8mb4')->collation('utf8mb4_unicode_ci');//描述
 	        $table->tinyInteger('status');//商品状态  0下架 1上架
 	        $table->string('thumb',255);//封面图片
-	        $table->integer('view',false,true);//浏览量
-	        $table->integer('sell',false,true);//销量
-	        $table->tinyInteger('postage');//包邮  0否 1是
+	        $table->integer('view',false,true)->default(0);//浏览量
+	        $table->integer('sell',false,true)->default(0);//销量
 	        $table->integer('cate_id',false,true);//分类id
 	        
 	        $table->timestamps();
@@ -34,14 +33,15 @@ class CreateGoodsTables extends Migration
 	    //商品SKU表
 	    Schema::create('goods_sku', function (Blueprint $table) {
 		    $table->increments('id');
-		    $table->integer('sku_no',false,true);//商品sku编号
-		    $table->string('sku_name',100)->charset('utf8mb4')->collation('utf8mb4_unicode_ci');//商品名称
-		    $table->decimal('price');//价格
-		    $table->integer('stock',false,true);//库存
-		    $table->integer('shop_id',false,true);//预留，店铺id。  0为自营
+		    $table->integer('sku_no',false,true)->nullable();;//商品sku编号
+		    $table->string('sku_name',100)->charset('utf8mb4')->collation('utf8mb4_unicode_ci')->default('默认商品');//商品名称
+		    $table->decimal('price')->default(0);//价格
+		    $table->integer('stock',false,true)->default(0);;//库存
+		    $table->integer('shop_id',false,true)->default(0);;//预留，店铺id。  0为自营
 		    $table->integer('spu_id',false,true);//spuid
-		    $table->unsignedTinyInteger('stock_type',false);//减库存时间 0付款减库存1下单减库存
-		    $table->unsignedTinyInteger('order',false);//排序，越大越靠前
+		    $table->unsignedTinyInteger('stock_type',false)->default(0);//减库存时间 0付款减库存1下单减库存
+		    $table->tinyInteger('postage')->default(0);//包邮  0否 1是
+		    $table->unsignedTinyInteger('order',false)->default(0);//排序，越大越靠前
 		    
 		    $table->timestamps();
 		    $table->timestamp('deleted_at')->nullable();

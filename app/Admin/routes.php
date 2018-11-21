@@ -18,5 +18,9 @@ Route::group([
 	$router->resource('category', CategoryController::class);
 	$router->resource('message', MessageContentController::class);
 	$router->resource('message_source', MessageSourceController::class);
+	$router->resource('goods', GoodsController::class);
+	$router->resource('goods_sku', GoodsSKUController::class);
+	$router->resource('postage', PostageController::class);
+	$router->resource('spec', GoodsSpecController::class);
 	
 });

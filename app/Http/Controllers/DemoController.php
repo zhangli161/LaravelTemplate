@@ -11,6 +11,7 @@ namespace App\Http\Controllers;
 
 use App\Components\NativePalceReagionManager;
 use App\Components\TemplateManager;
+use App\Models\GoodsSPU;
 use App\Models\Native_Place_Region;
 use Encore\Admin\Facades\Admin;
 use Illuminate\Http\Request;
@@ -18,8 +19,22 @@ use Illuminate\Http\Request;
 class DemoController extends Controller
 {
 	public function test(){
-		$item= NativePalceReagionManager::getFullAddress(211302);
-		return $item;
+		$spu= GoodsSPU::find(1);
+		$skus=$spu->skus;
+		$specs=$spu->specs;
+		$item=[];
+		foreach ($skus as $sku){
+			$spec_values=$sku->spec_values;
+			$sku->postages;
+//			$sku->sku_postages;
+			foreach ($spec_values as $spec_value){
+				$spec_value->spec;
+			}
+		}
+		foreach ($specs as $spec){
+			$spec->values;
+		}
+		dd( $spu->toArray());
 	}
 	public function test0(Request $request)
 	{

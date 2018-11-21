@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers;
 
+use App\Models\Postage;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\HasResourceActions;
 use Encore\Admin\Form;
@@ -9,7 +10,7 @@ use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Show;
 
-class ExampleController extends Controller
+class PostageController extends Controller
 {
     use HasResourceActions;
 
@@ -30,7 +31,7 @@ class ExampleController extends Controller
     /**
      * Show interface.
      *
-     * @param mixed   $id
+     * @param mixed $id
      * @param Content $content
      * @return Content
      */
@@ -45,7 +46,7 @@ class ExampleController extends Controller
     /**
      * Edit interface.
      *
-     * @param mixed   $id
+     * @param mixed $id
      * @param Content $content
      * @return Content
      */
@@ -78,11 +79,14 @@ class ExampleController extends Controller
      */
     protected function grid()
     {
-        $grid = new Grid(new YourModel);
+        $grid = new Grid(new Postage);
 
-        $grid->id('ID')->sortable();
+        $grid->id('Id');
+        $grid->name('Name');
+        $grid->cost('Cost');
         $grid->created_at('创建时间');
         $grid->updated_at('更新时间');
+//        $grid->deleted_at('Deleted at');
 
         return $grid;
     }
@@ -90,16 +94,19 @@ class ExampleController extends Controller
     /**
      * Make a show builder.
      *
-     * @param mixed   $id
+     * @param mixed $id
      * @return Show
      */
     protected function detail($id)
     {
-        $show = new Show(YourModel::findOrFail($id));
+        $show = new Show(Postage::findOrFail($id));
 
-        $show->id('ID');
+        $show->id('Id');
+        $show->name('Name');
+        $show->cost('Cost');
         $show->created_at('创建时间');
         $show->updated_at('更新时间');
+//        $show->deleted_at('Deleted at');
 
         return $show;
     }
@@ -111,11 +118,10 @@ class ExampleController extends Controller
      */
     protected function form()
     {
-        $form = new Form(new YourModel);
+        $form = new Form(new Postage);
 
-        $form->display('id', 'ID');
-        $form->display('created_at', 'Created At');
-        $form->display('updated_at', 'Updated At');
+        $form->text('name', 'Name');
+        $form->decimal('cost', 'Cost');
 
         return $form;
     }

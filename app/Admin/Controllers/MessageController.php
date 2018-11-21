@@ -87,9 +87,9 @@ class MessageController extends Controller
         $grid->form_userid('Form userid');
         $grid->to_userid('To userid');
         $grid->content('Content');
-        $grid->created_at('Created at');
-        $grid->updated_at('Updated at');
-        $grid->deleted_at('Deleted at');
+        $grid->created_at('创建时间');
+        $grid->updated_at('更新时间');
+//        $grid->deleted_at('Deleted at');
 
         return $grid;
     }
@@ -110,9 +110,9 @@ class MessageController extends Controller
         $show->form_userid('Form userid');
         $show->to_userid('To userid');
         $show->content('Content');
-        $show->created_at('Created at');
-        $show->updated_at('Updated at');
-        $show->deleted_at('Deleted at');
+        $show->created_at('创建时间');
+        $show->updated_at('更新时间');
+//        $show->deleted_at('Deleted at');
 
         return $show;
     }

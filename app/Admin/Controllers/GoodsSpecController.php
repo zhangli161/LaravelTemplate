@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers;
 
+use App\Models\GoodsSpec;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\HasResourceActions;
 use Encore\Admin\Form;
@@ -9,7 +10,7 @@ use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Show;
 
-class ExampleController extends Controller
+class GoodsSpecController extends Controller
 {
     use HasResourceActions;
 
@@ -30,7 +31,7 @@ class ExampleController extends Controller
     /**
      * Show interface.
      *
-     * @param mixed   $id
+     * @param mixed $id
      * @param Content $content
      * @return Content
      */
@@ -45,7 +46,7 @@ class ExampleController extends Controller
     /**
      * Edit interface.
      *
-     * @param mixed   $id
+     * @param mixed $id
      * @param Content $content
      * @return Content
      */
@@ -78,11 +79,14 @@ class ExampleController extends Controller
      */
     protected function grid()
     {
-        $grid = new Grid(new YourModel);
+        $grid = new Grid(new GoodsSpec);
 
-        $grid->id('ID')->sortable();
+        $grid->id('Id');
+        $grid->spec_no('规格编号');
+        $grid->spec_name('规格名称');
         $grid->created_at('创建时间');
         $grid->updated_at('更新时间');
+//        $grid->deleted_at('Deleted at');
 
         return $grid;
     }
@@ -90,17 +94,39 @@ class ExampleController extends Controller
     /**
      * Make a show builder.
      *
-     * @param mixed   $id
+     * @param mixed $id
      * @return Show
      */
     protected function detail($id)
     {
-        $show = new Show(YourModel::findOrFail($id));
+        $show = new Show(GoodsSpec::findOrFail($id));
 
-        $show->id('ID');
+        $show->id('Id');
+        $show->spec_no('规格编号');
+        $show->spec_name('规格名称');
         $show->created_at('创建时间');
         $show->updated_at('更新时间');
-
+//        $show->deleted_at('Deleted at');
+	    $show->values('规格值', function ($grid) {
+		    $grid->id();
+		    $grid->value('规格值');
+		    $grid->actions(function ($actions) {
+			    $actions->disableDelete();
+			    $actions->disableEdit();
+			    $actions->disableView();
+			   });
+		    $grid->tools(function ($tools) {
+			    $tools->batch(function ($batch) {
+				    $batch->disableDelete();
+			    });
+		    });
+		    $grid->disableFilter();//筛选
+		    $grid->disableCreateButton();//新增
+		    $grid->disableExport();//导出
+		    
+		    $grid->disableActions();//行操作
+		    $grid->disableRowSelector();//CheckBox
+	    });
         return $show;
     }
 
@@ -111,11 +137,13 @@ class ExampleController extends Controller
      */
     protected function form()
     {
-        $form = new Form(new YourModel);
+        $form = new Form(new GoodsSpec);
 
-        $form->display('id', 'ID');
-        $form->display('created_at', 'Created At');
-        $form->display('updated_at', 'Updated At');
+        $form->number('spec_no', '规格编号');
+        $form->text('spec_name', '规格名称');
+	    $form->hasMany('values','规格值',function (Form\NestedForm $form) {
+		    $form->text('value', '规格值');
+	    });
 
         return $form;
     }

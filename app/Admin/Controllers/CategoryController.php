@@ -83,9 +83,9 @@ class CategoryController extends Controller
         $grid = new Grid(new Category);
 
         $grid->id('Id');
-        $grid->created_at('Created at');
-        $grid->updated_at('Updated at');
-        $grid->deleted_at('Deleted at');
+        $grid->created_at('创建时间');
+        $grid->updated_at('更新时间');
+//        $grid->deleted_at('Deleted at');
         $grid->name('Name');
         $grid->order('Order');
         $grid->parentid('Parentid');
@@ -104,9 +104,9 @@ class CategoryController extends Controller
         $show = new Show(Category::findOrFail($id));
 
         $show->id('Id');
-        $show->created_at('Created at');
-        $show->updated_at('Updated at');
-        $show->deleted_at('Deleted at');
+        $show->created_at('创建时间');
+        $show->updated_at('更新时间');
+//        $show->deleted_at('Deleted at');
         $show->name('Name');
         $show->order('Order');
         $show->parentid('Parentid');
