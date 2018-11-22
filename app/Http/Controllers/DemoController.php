@@ -11,6 +11,8 @@ namespace App\Http\Controllers;
 
 use App\Components\NativePalceReagionManager;
 use App\Components\TemplateManager;
+use App\Models\Message;
+use App\Models\MessageContent;
 use App\Models\NativePlaceRegion;
 use Encore\Admin\Facades\Admin;
 use Illuminate\Http\Request;
@@ -18,8 +20,9 @@ use Illuminate\Http\Request;
 class DemoController extends Controller
 {
 	public function test(){
-		$item= NativePalceReagionManager::getFullAddress(211302);
-		return $item;
+		$item= MessageContent::find(1);
+		$item->content;
+		dd( $item->toArray());
 	}
 	public function test0(Request $request)
 	{

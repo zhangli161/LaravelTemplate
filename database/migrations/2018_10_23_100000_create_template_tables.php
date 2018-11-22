@@ -51,7 +51,7 @@ class CreateTemplateTables extends Migration
 		Schema::create('message_content', function (Blueprint $table) {
 			$table->integer('id')->autoIncrement();
 			$table->string('title',128)->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
-			$table->longText('content')->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
+//			$table->longText('content')->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
 			$table->string('send_type')->default(0);
 			$table->integer('source_id');
 			$table->text('attr')->nullable()->charset('utf8mb4')->collation('utf8mb4_unicode_ci');

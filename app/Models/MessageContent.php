@@ -26,4 +26,7 @@ class MessageContent extends Model
 	public function message(){
 			return $this->hasMany('App\Message','content_id','id');
 	}
+	public function content(){
+		return $this->morphOne(RichText::class,'item');
+	}
 }
