@@ -22,5 +22,6 @@ Route::group([
 	$router->resource('goods_sku', GoodsSKUController::class);
 	$router->resource('postage', PostageController::class);
 	$router->resource('spec', GoodsSpecController::class);
+	$router->resource('benefit', GoodsBenefitController::class);
 	
 });

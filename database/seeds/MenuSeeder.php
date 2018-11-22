@@ -124,7 +124,14 @@ class MenuSeeder extends Seeder
 				'icon' => 'fa-list',
 				'uri' => 'spec',
 			],
-			
+			[
+				'id' => 22,
+				'parent_id' => 18,
+				'order' => 0,
+				'title' => '促销活动',
+				'icon' => 'fa-dollar',
+				'uri' => 'benefit',
+			],
 			
 		]);
 	}

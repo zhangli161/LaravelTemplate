@@ -226,8 +226,7 @@ class GoodsSKUController extends Controller
 			    $options[$spec->id] = "【 $spec->spec_name 】";
 		    }
 		    $form->select('spec_id', '规格名称')->options($options)
-			    ->load('spec_value_id', '/api/admin/spec/getValueBySpec_id')
-			    ;
+			    ->load('spec_value_id', '/api/admin/spec/getValueBySpec_id');
 		    $spec_values=GoodsSpecValue::all();
 		    $options_2=array();
 		    foreach ($spec_values as $spec_value){

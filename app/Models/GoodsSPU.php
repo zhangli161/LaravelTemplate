@@ -12,13 +12,13 @@ class GoodsSPU extends Model
 	protected $table = 'goods_spu';  //表名
 	protected $dates = ['deleted_at'];  //软删除
 	
+	//子商品
 	public function skus(){
 		return $this->hasMany(GoodsSKU::class,'spu_id','id');
 	}
+	//规格
 	public function specs(){
 		return $this->belongsToMany(GoodsSpec::class,'goods_spu_spec','spu_id','spec_id')
 			->using(GoodsSPUSpec::class)->withTimestamps();
-//		return $this->hasMany(GoodsSpecValue::class,'sku_id','id');
 	}
-	
 }

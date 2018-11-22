@@ -81,6 +81,7 @@ class CreateGoodsTables extends Migration
 	    Schema::create('goods_sku_spec_value', function (Blueprint $table) {
 		    $table->increments('id');
 		    $table->integer('sku_id',false,true);//skuid
+		    $table->integer('spec_id',false,true);//skuid
 		    $table->integer('spec_value_id',false,true);//规格值id
 		
 		    $table->timestamps();

@@ -26,6 +26,7 @@ class DemoController extends Controller
 		foreach ($skus as $sku){
 			$spec_values=$sku->spec_values;
 			$sku->postages;
+			$sku->benefits;
 //			$sku->sku_postages;
 			foreach ($spec_values as $spec_value){
 				$spec_value->spec;

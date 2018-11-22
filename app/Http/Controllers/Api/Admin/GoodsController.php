@@ -9,12 +9,13 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\GoodsSKU;
 use App\Models\GoodsSpec;
 use App\Models\GoodsSpecValue;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class GoodsSpecController extends Controller
+class GoodsController extends Controller
 {
 	public function spec(Request $request)
 	{
@@ -23,4 +24,13 @@ class GoodsSpecController extends Controller
 		return GoodsSpecValue::query()->where('spec_id', $spec_id)->get(['id', DB::raw('value as text')]);
 	}
 	
+	public function sku(Request $request)
+	{
+		$q = $request->get('q');
+		
+		return GoodsSKU::query()->where('sku_name', 'like', "%$q%")
+			->orWhere('id', $q)
+			->orWhere('sku_no', $q)
+			->paginate(null, ['id', 'sku_name as text']);
+	}
 }

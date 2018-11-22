@@ -19,8 +19,16 @@ Route::group(['prefix' => 'admin'], function(){
 	Route::get('region/getByParentid', 'Api\RegionController@getByParentid');//根据父地区id获得地区
 	Route::get('regions', 'Api\RegionController@regions');//地区模糊搜索
 	
-	Route::get('spec/getValueBySpec_id', 'Api\Admin\GoodsSpecController@spec');//根据父地区id获得地区
-	
+	Route::get('spec/getValueBySpec_id', 'Api\Admin\GoodsController@spec');//根据规格id获得规格值
+	Route::get('sku/search', function (Request $request)
+	{
+		$q = $request->get('q');
+		
+		return \App\Models\GoodsSKU::query()->where('sku_name', 'like', "%$q%")
+			->orWhere('id',$q)
+			->orWhere('sku_no',$q)
+			->paginate(null, ['id', 'sku_name as text']);
+	});//根据父地区id获得地区
 	
 });
 
