@@ -94,9 +94,21 @@ class GoodsBenefitController extends Controller
 		$grid->desc('活动描述');
 		$grid->price('活动价');
 		$grid->origin_price('原价');
-		$grid->created_at('Created at');
-		$grid->updated_at('Updated at');
-		$grid->deleted_at('Deleted at');
+		$grid->status('活动状态')->display(function ($status) {
+			$ret="<label class='label label-danger'>未知的状态</label>";
+			switch ($status){
+				case '-1':
+					$ret="<label class='label label-default'>已结束</label>";
+					break;
+				case '0':
+					$ret="<label class='label label-primary'>未开始</label>";
+					break;
+				case '1':
+					$ret="<label class='label label-success'>进行中</label>";
+					break;
+			}
+			return$ret;
+		});
 		
 		$grid->actions(function ($actions) {
 //			$actions->disableEdit();
@@ -129,9 +141,9 @@ class GoodsBenefitController extends Controller
 		$show->desc('活动描述');
 		$show->price('活动价');
 		$show->origin_price('原价');
+		$show->status('活动状态')->using(['-1' => '已解释', '0' => '未开始','1'=>'进行中']);
 		$show->created_at('Created at');
 		$show->updated_at('Updated at');
-		$show->deleted_at('Deleted at');
 		
 		return $show;
 	}

@@ -21,7 +21,7 @@ class GoodsTablesSeeder extends Seeder
 			'thumb' => 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1542696681074&di=edf9b3e94186cb281ca2beedda5f038d&imgtype=0&src=http%3A%2F%2Fpic19.photophoto.cn%2F20110403%2F0037037049381747_b.jpg',
 			'view' => '0',
 			'sell' => '0',
-			'cate_id' => '0',
+			'cate_id' => '1',
 		]);
 		DB::table('goods_sku')->insert([
 			'id' => 1,
@@ -87,6 +87,27 @@ class GoodsTablesSeeder extends Seeder
 			'time_form' => now(),
 			'time_to' => \Carbon\Carbon::tomorrow(),
 			'reset' => 1,
+		]);
+		DB::table('category')->insert([
+			'name'=>'LED灯丝灯',
+			'parentid' => '0',
+		]);
+		DB::table('category')->insert([
+			'name'=>'SMD灯泡',
+			'parentid' => '0',
+		]);
+		DB::table('category')->insert([
+			'name'=>'装饰性大灯泡',
+			'parentid' => '0',
+		]);
+		DB::table('category')->insert([
+			'name'=>'吊线灯头',
+			'parentid' => '0',
+		]);
+		DB::table('rich_texts')->insert([
+			"content"=>"<p>精品吊灯</p>",
+			"item_id"=>1,
+			"item_type"=>"App\Models\GoodsSPU",
 		]);
 	}
 }

@@ -21,4 +21,12 @@ class GoodsSPU extends Model
 		return $this->belongsToMany(GoodsSpec::class,'goods_spu_spec','spu_id','spec_id')
 			->using(GoodsSPUSpec::class)->withTimestamps();
 	}
+	//商品详情图文
+	public function detail(){
+		return $this->morphOne(RichText::class,'item');
+	}
+	//相册
+	public function albums(){
+		return $this->hasMany(Album::class,'spu_id','id');
+	}
 }

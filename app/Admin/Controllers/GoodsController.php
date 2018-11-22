@@ -2,6 +2,8 @@
 
 namespace App\Admin\Controllers;
 
+use App\Models\Category;
+use App\Models\GoodsSKU;
 use App\Models\GoodsSPU;
 use App\Http\Controllers\Controller;
 use App\Models\Postage;
@@ -10,6 +12,7 @@ use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Show;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\MessageBag;
 
 class GoodsController extends Controller
@@ -131,9 +134,24 @@ class GoodsController extends Controller
 		$show->thumb('封面图片')->image();;
 		$show->view('浏览量');
 		$show->sell('销售量');
-//	    $show->postage('是否包邮')
-//		    ->using(['0' => '否', '1' => '是'])
-//		    ->label(['0' => 'default', '1' => 'success'][$item->postage]);
+		$show->albums('相册', function ($grid) {
+			
+			$grid->id();
+			$grid->order('排序');
+			$grid->url('图片')->lightbox();
+			
+			$grid->disableFilter();//筛选
+//		$grid->disableCreateButton();//新增
+			$grid->disableExport();//导出
+			
+			$grid->disableActions();//行操作
+			$grid->disableRowSelector();//CheckBox
+		});
+		$show->detail('商品详情', function ($detail) {
+			$detail->content('图文')->unescape();
+			
+		});
+		
 		$show->cate_id('分类');
 		$show->created_at('创建时间');
 		$show->updated_at('更新时间');
@@ -150,33 +168,57 @@ class GoodsController extends Controller
 	{
 		$form = new Form(new GoodsSPU);
 		
-		$form->number('spu_no', 'Spu编号');
-		$form->text('spu_name', '商品名称');
-		$form->textarea('desc', '描述');
-		$form->switch('status', '上架状态');
-		$form->file('thumb', '封面图片');
-//        $form->number('view', 'View');
-//        $form->number('sell', 'Sell');
-		$form->number('cate_id', '分类');
-		$form->hasMany('skus', '子类商品', function (Form\NestedForm $form) {
-			$form->number('sku_no', 'SKU编号');
-			$form->text('sku_name', '子商品名称');
-			$form->decimal('price', '价格（元）');
-			$form->number('stock', '库存量');
-//		    $form->number('shop_id','商铺id');
-			$form->radio('stock_type', '减库存时间')
-				->options([0 => '付款减库存', 1 => '下单减库存']);
-			$form->switch('postage', '是否包邮');
-			$form->number('order', '排序');
-//		    $form->hasMany('sku_postage', '邮寄方式',function (Form\NestedForm $form) {
-//		    	$postages=Postage::all();
-//		    	$options=array();
-//		    	foreach ($postages as $postage){
-//		    		$options[$postage->id]='【'.$postage->name.'】（价格'.$postage->cost.'）';
-//			    }
-//			    $form->select('postage_id','邮寄方式')->options([1 => 'foo', 2 => 'bar', 'val' => 'Option name']);
-//		    });
+		$form->tab('基本信息', function ($form) {
+			
+			$form->number('spu_no', 'Spu编号')->rules('required');
+			$form->text('spu_name', '商品名称')->rules('required');
+			$form->textarea('desc', '描述')->rules('required');
+			$form->switch('status', '上架状态')->rules('required');
+			$form->file('thumb', '封面图片')->rules('required');
+			$options=array();
+			$categories=Category::where('parentid','0')->get();
+			foreach ($categories as $category){
+				$options[$category->id]=$category->name;
+			}
+			$form->select('cate_id', '分类')->options($options);
+			
+		})->tab('图文详情', function ($form) {
+			
+			$form->editor('detail.content', '图文详情')->rules('required');
+			
+		})->tab('子类商品', function ($form) {
+			$form->hasMany('skus', '子类商品', function (Form\NestedForm $form) {
+				$form->number('sku_no', 'SKU编号')->rules('required');
+				$form->text('sku_name', '子商品名称')->rules('required');
+				$form->decimal('price', '价格（元）')->rules('required|min:0');
+				$form->number('stock', '库存量')->rules('required');
+				$form->radio('stock_type', '减库存时间')
+					->options([0 => '付款减库存', 1 => '下单减库存'])->rules('required');
+				$form->switch('postage', '是否包邮')->rules('required');
+				$form->number('order', '排序');
+			});
+			
+		})->tab('商品图片', function ($Form) {
+			
+			$Form->hasMany('albums', '商品图片', function (Form\NestedForm $form) use ($Form) {
+				$form->image('url', '图片')->rules('required');
+				$form->number('order', '排序');
+				
+				$options = array();
+				if ($Form->model()) {
+					$skus = GoodsSKU::query()->where('spu_id', $Form->model()->id)->get();
+					foreach ($skus as $sku) {
+						$options[$sku->id] = $sku->sku_name;
+					}
+				}
+				$form->select('sku_id', '关联子商品')
+					->options($options)
+					->help('非必填。用户选择该子商品时此图片会优先显示。
+					只能选择已保存的子商品。
+					可以勾选继续编辑后提交再进行关联。');
+			});
 		});
+		
 		
 		return $form;
 	}

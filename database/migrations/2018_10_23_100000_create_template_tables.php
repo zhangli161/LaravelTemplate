@@ -29,8 +29,8 @@ class CreateTemplateTables extends Migration
 		Schema::create('category', function (Blueprint $table) {
 			$table->integer('id')->autoIncrement();
 			$table->string('name', 255)->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
-			$table->integer('order');
-			$table->integer('parentid');
+			$table->integer('order')->default(0);
+			$table->integer('parentid')->default(0);
 			
 			$table->timestamps();
 			$table->timestamp('deleted_at')->nullable();
