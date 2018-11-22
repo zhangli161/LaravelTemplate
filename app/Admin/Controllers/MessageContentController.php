@@ -134,7 +134,7 @@ class MessageContentController extends Controller
 		$form = new Form(new MessageContent);
 		
 		$form->text('title', '标题')->rules('required');
-		$form->editor('content', '正文')->help('公告会以富文本形式在小程序端显示')->rules('required');
+		$form->editor('content.content', '正文')->help('公告会以富文本形式在小程序端显示')->rules('required');
 //        $form->textarea('content', '正文');
 		$form->hidden('send_type')->default(1)->rules('required');
 //        $form->number('source_id', 'Source id')->rules('required');

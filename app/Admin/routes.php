@@ -23,5 +23,6 @@ Route::group([
 	$router->resource('postage', PostageController::class);
 	$router->resource('spec', GoodsSpecController::class);
 	$router->resource('benefit', GoodsBenefitController::class);
+	$router->resource('richtext', RichTextController::class);
 	
 });
