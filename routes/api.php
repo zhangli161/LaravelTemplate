@@ -49,6 +49,9 @@ Route::group(['middleware' => 'auth:api', 'namespace' => 'api'], function() {
 	
 	Route::get('/message', 'MessageController@getList');//消息
 	Route::post('/message', 'MessageController@getList');//消息
+	
+	Route::get('/goods', 'GoodsController@getList');//消息
+	Route::get('/goods/getByid', 'GoodsController@getById');//消息
 });
 
 //Route::group(['prefix' => 'v1', 'middleware' => 'auth:api'], function(){

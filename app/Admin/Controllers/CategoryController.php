@@ -86,8 +86,8 @@ class CategoryController extends Controller
         $grid->created_at('创建时间');
         $grid->updated_at('更新时间');
 //        $grid->deleted_at('Deleted at');
-        $grid->name('Name');
-        $grid->order('Order');
+        $grid->name('名称');
+        $grid->order('排序');
         $grid->parentid('Parentid');
 
         return $grid;
@@ -107,9 +107,9 @@ class CategoryController extends Controller
         $show->created_at('创建时间');
         $show->updated_at('更新时间');
 //        $show->deleted_at('Deleted at');
-        $show->name('Name');
-        $show->order('Order');
-        $show->parentid('Parentid');
+        $show->name('名称');
+        $show->order('排序');
+//        $show->parentid('Parentid');
 
         return $show;
     }

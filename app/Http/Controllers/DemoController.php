@@ -9,6 +9,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Components\GoodsSPUManager;
 use App\Components\NativePalceReagionManager;
 use App\Components\TemplateManager;
 use App\Models\GoodsSPU;
@@ -20,21 +21,22 @@ class DemoController extends Controller
 {
 	public function test(){
 		$spu= GoodsSPU::find(1);
-		$skus=$spu->skus;
-		$specs=$spu->specs;
-		$item=[];
-		foreach ($skus as $sku){
-			$spec_values=$sku->spec_values;
-			$sku->postages;
-			$sku->benefits;
-//			$sku->sku_postages;
-			foreach ($spec_values as $spec_value){
-				$spec_value->spec;
-			}
-		}
-		foreach ($specs as $spec){
-			$spec->values;
-		}
+		$spu=GoodsSPUManager::getDetailsForApp($spu);
+//		$skus=$spu->skus;
+//		$specs=$spu->specs;
+//		$item=[];
+//		foreach ($skus as $sku){
+//			$spec_values=$sku->spec_values;
+//			$sku->postages;
+//			$sku->benefits;
+////			$sku->sku_postages;
+//			foreach ($spec_values as $spec_value){
+//				$spec_value->spec;
+//			}
+//		}
+//		foreach ($specs as $spec){
+//			$spec->values;
+//		}
 		dd( $spu->toArray());
 	}
 	public function test0(Request $request)
