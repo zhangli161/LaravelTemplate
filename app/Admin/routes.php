@@ -24,5 +24,6 @@ Route::group([
 	$router->resource('spec', GoodsSpecController::class);
 	$router->resource('benefit', GoodsBenefitController::class);
 	$router->resource('richtext', RichTextController::class);
+	$router->resource('coupon', CouponController::class);
 	
 });
