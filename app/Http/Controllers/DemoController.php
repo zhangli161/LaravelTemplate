@@ -9,35 +9,22 @@
 namespace App\Http\Controllers;
 
 
-use App\Components\GoodsSPUManager;
 use App\Components\NativePalceReagionManager;
 use App\Components\TemplateManager;
-use App\Models\GoodsSPU;
-use App\Models\Native_Place_Region;
+use App\Components\UserCreditManager;
+use App\Models\Message;
+use App\Models\MessageContent;
+use App\Models\NativePlaceRegion;
+use App\User;
 use Encore\Admin\Facades\Admin;
 use Illuminate\Http\Request;
 
 class DemoController extends Controller
 {
-	public function test(){
-		$spu= GoodsSPU::find(1);
-		$spu=GoodsSPUManager::getDetailsForApp($spu);
-//		$skus=$spu->skus;
-//		$specs=$spu->specs;
-//		$item=[];
-//		foreach ($skus as $sku){
-//			$spec_values=$sku->spec_values;
-//			$sku->postages;
-//			$sku->benefits;
-////			$sku->sku_postages;
-//			foreach ($spec_values as $spec_value){
-//				$spec_value->spec;
-//			}
-//		}
-//		foreach ($specs as $spec){
-//			$spec->values;
-//		}
-		dd( $spu->toArray());
+	public static function test(){
+		$user=User::find(1);
+		return UserCreditManager::changeCredit($user,['amount'=>1000,'reason'=>'赠送测试','editor'=>'system']);
+		
 	}
 	public function test0(Request $request)
 	{
@@ -5065,7 +5052,7 @@ class DemoController extends Controller
 			$Region_Types = ['民族乡','乡', '镇',  '自治县', '县', '自治区',  '特别行政区', '区','直辖市', '市', '自治州', '省'];
 			foreach ($parents as $region_id => $item) {
 				if(gettype($item)=='string'){
-					$obj = new Native_Place_Region();
+					$obj = new NativePlaceRegion();
 					$obj->region_id = $region_id;
 					$obj->parentid = $parentid;
 					$obj->region_name = $item;
@@ -5083,7 +5070,7 @@ class DemoController extends Controller
 					
 					array_push($results, $obj);
 				}elseif (gettype($item) == 'object') {
-					$obj = new Native_Place_Region();
+					$obj = new NativePlaceRegion();
 					$obj->region_id = $region_id;
 					$obj->parentid = $parentid;
 					$obj->region_name = $item->name;

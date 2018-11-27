@@ -6,5 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserCredit extends Model
 {
-    protected $fillable=['user_id','credit'];
+	protected $primaryKey='user_id';
+	
+	protected $fillable=['user_id','credit'];
 }
