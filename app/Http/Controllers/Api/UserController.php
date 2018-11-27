@@ -82,7 +82,7 @@ class UserController extends Controller
 	public function passport()
 	{
 		MessageManager::getGroupMessages(Auth::user());
-		return response()->json(['user' => Auth::user(), 'message' => Auth::user()->messages]);
+		return response()->json(['user' => Auth::user(), 'message' => Auth::user()->messages,'credit'=>Auth::user()->credit]);
 	}
 	
 	public static function sendVertifyCode(Request $request)

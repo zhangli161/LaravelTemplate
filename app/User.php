@@ -4,6 +4,7 @@ namespace App;
 
 use App\Models\Message;
 use App\Models\UserAddress;
+use App\Models\UserCredit;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
@@ -38,5 +39,9 @@ class User extends Authenticatable
 	public function messages()
 	{
 		return $this->hasMany(Message::class,'to_user_id','id');
+	}
+	
+	public function credit(){
+		return $this->hasOne(UserCredit::class,'user_id');
 	}
 }
