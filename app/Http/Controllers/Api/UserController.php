@@ -72,6 +72,8 @@ class UserController extends Controller
 			$ret['token'] = $user->createToken('Pi App')->accessToken;
 			$result = true;
 			$status = ApiResponse::SUCCESS_CODE;
+			
+			$user->credit or UserCredit::query()->create(['user_id' => $user->id, 'credit' => 0]);
 		} else {
 			$ret['error'] = "登录失败" . json_encode($json);
 			$status = ApiResponse::NO_USER;
@@ -81,7 +83,10 @@ class UserController extends Controller
 	
 	public function passport()
 	{
-		MessageManager::getGroupMessages(Auth::user());
+		$user=Auth::user();
+		MessageManager::getGroupMessages($user);
+		$user->credit or UserCredit::query()->create(['user_id' => $user->id, 'credit' => 0]);
+		
 		return response()->json(['user' => Auth::user(), 'message' => Auth::user()->messages,'credit'=>Auth::user()->credit]);
 	}
 	
