@@ -6,6 +6,7 @@ use App\Components\MessageManager;
 use App\Components\VertifyManager;
 use App\Components\XCXLoginManager;
 use App\Http\Helpers\ApiResponse;
+use App\Models\UserCredit;
 use App\Models\UserWX;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\Authenticatable;
