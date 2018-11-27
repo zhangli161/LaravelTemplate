@@ -11,18 +11,20 @@ namespace App\Http\Controllers;
 
 use App\Components\NativePalceReagionManager;
 use App\Components\TemplateManager;
+use App\Components\UserCreditManager;
 use App\Models\Message;
 use App\Models\MessageContent;
 use App\Models\NativePlaceRegion;
+use App\User;
 use Encore\Admin\Facades\Admin;
 use Illuminate\Http\Request;
 
 class DemoController extends Controller
 {
-	public function test(){
-		$item= MessageContent::find(1);
-		$item->content;
-		dd( $item->toArray());
+	public static function test(){
+		$user=User::find(1);
+		return UserCreditManager::changeCredit($user,['amount'=>1000,'reason'=>'赠送测试','editor'=>'system']);
+		
 	}
 	public function test0(Request $request)
 	{
