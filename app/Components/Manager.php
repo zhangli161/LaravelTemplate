@@ -43,10 +43,20 @@ abstract class Manager
 	 *
 	 * 2018-04-02
 	 */
-	public static function getList()
+	public static function getList(...$orderby)
 	{
-		$templates = self::getModle()->orderby(static::$primary_key, 'desc')->get();
-		return $templates;
+		if (!$orderby) {
+			$templates = self::getModle()->orderby(static::$primary_key, 'desc');
+			
+		} else {
+			for ($i = 0; $i < (count($orderby) - 1); $i += 2) {
+				$templates = self::getModle($orderby[$i])
+					->orderby($orderby[$i], $orderby[$i + 1]);
+			}
+			
+		}
+		
+		return $templates->get();
 	}
 	
 	/*

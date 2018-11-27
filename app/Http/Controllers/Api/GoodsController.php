@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 class GoodsController extends Controller
 {
 	public static function getList(){
-		$goods=GoodsSPUManager::getList();
+		$goods=GoodsSPUManager::getList('price','asc','id','desc');
 		foreach ($goods as $good){
 			$good=GoodsSPUManager::getDetailsForApp($good);
 		}
@@ -25,7 +25,9 @@ class GoodsController extends Controller
 	
 	public static function getById(Request $request){
 		$spu=GoodsSPUManager::getById($request->spu_id);
-		$spu=GoodsSPUManager::getDetailsForApp($spu);
+		$spu->view++;
+		$spu->save();
+		$spu=GoodsSPUManager::getDetailsForApp($spu,$request->sku_id);
 		return $spu;
 	}
 

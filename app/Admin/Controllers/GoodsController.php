@@ -134,19 +134,7 @@ class GoodsController extends Controller
 		$show->thumb('封面图片')->image();;
 		$show->view('浏览量');
 		$show->sell('销售量');
-		$show->albums('相册', function ($grid) {
-			
-			$grid->id();
-			$grid->order('排序');
-			$grid->url('图片')->lightbox();
-			
-			$grid->disableFilter();//筛选
-//		$grid->disableCreateButton();//新增
-			$grid->disableExport();//导出
-			
-			$grid->disableActions();//行操作
-			$grid->disableRowSelector();//CheckBox
-		});
+		
 		$show->detail('商品详情', function ($detail) {
 			$detail->content('图文')->unescape();
 			
@@ -197,28 +185,8 @@ class GoodsController extends Controller
 				$form->switch('postage', '是否包邮')->rules('required');
 				$form->number('order', '排序');
 			});
-			
-		})->tab('商品图片', function ($Form) {
-			
-			$Form->hasMany('albums', '商品图片', function (Form\NestedForm $form) use ($Form) {
-				$form->image('url', '图片')->rules('required');
-				$form->number('order', '排序');
-				
-				$options = array();
-				if ($Form->model()) {
-					$skus = GoodsSKU::query()->where('spu_id', $Form->model()->id)->get();
-					foreach ($skus as $sku) {
-						$options[$sku->id] = $sku->sku_name;
-					}
-				}
-				$form->select('sku_id', '关联子商品')
-					->options($options)
-					->help('非必填。用户选择该子商品时此图片会优先显示。
-					只能选择已保存的子商品。
-					可以勾选继续编辑后提交再进行关联。');
-			});
+
 		});
-		
 		
 		return $form;
 	}

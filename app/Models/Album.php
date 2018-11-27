@@ -6,8 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Album extends Model
 {
-	public function spu(){
-		return $this->belongsTo(GoodsSPU::class,'spu_id','id');
+	public function sku()
+	{
+		return $this->belongsTo(GoodsSKU::class, 'sku_id', 'id');
 	}
-	protected $fillable=['url','sku_id','order'];
+	
+	protected $fillable = ['url', 'sku_id', 'order'];
 }

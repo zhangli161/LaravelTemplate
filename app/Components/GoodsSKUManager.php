@@ -10,6 +10,7 @@ namespace App\Components;
 
 
 use App\Models\GoodsSKU;
+use Illuminate\Support\Facades\Storage;
 
 class GoodsSKUManager extends Manager
 {
@@ -25,7 +26,16 @@ class GoodsSKUManager extends Manager
 			$sku->spu = GoodsSPUManager::getDetailsForApp($sku->spu);
 		}
 		$sku->benefits;
+		$sku->benefit = $sku->benefits
+			->where('status', '>', 0)->first();
 		$sku->postages;
+		$pattern = array('/http:\/\//', '/https:\/\//');
+		foreach ($sku->albums as $album) {
+			$result = preg_match_all($pattern[0], $album->url, $m) || preg_match_all($pattern[1], $album->url, $m);
+			if (!$result) {
+				$album->url = Storage::disk('admin')->url($album->url);
+			}
+		};
 		$sku = self::getSpecValuesStr($sku);
 		
 		return $sku;

@@ -16,7 +16,7 @@ class CreateAlbumsTable extends Migration
         Schema::create('albums', function (Blueprint $table) {
             $table->increments('id');
 	        $table->tinyInteger('order',false,true)->default(0);
-	        $table->integer('spu_id',false,true);
+//	        $table->integer('spu_id',false,true);
 	        $table->integer('sku_id',false,true)->nullable();
 	        $table->string('url',255);//封面
 	        $table->timestamps();

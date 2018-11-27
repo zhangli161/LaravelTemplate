@@ -39,10 +39,12 @@ Route::group(['namespace' => 'api'], function () {
 	Route::post('/login', 'UserController@login');//登录
 	
 });
-Route::group(['middleware' => 'auth:api', 'namespace' => 'api'], function() {
+//Route::group(['middleware' => 'auth:api', 'namespace' => 'api'], function() {
+Route::group(['middleware' => 'test', 'namespace' => 'api'], function() {
+
 	Route::get('/putUserInfo', 'UserController@putUserInfo');//同步微信信息
 	
-	Route::get('/test/passport', 'UserController@passport');//获得用户信息
+	Route::get('/passport', 'UserController@passport');//获得用户信息
 	Route::get('/banner', 'BannerController@getList');//轮播图
 	
 	Route::post('/sendVertifyCode', 'UserController@sendVertifyCode');//发送验证码

@@ -130,10 +130,10 @@ class GoodsSKUController extends Controller
 		$show->updated_at('更新时间');
 //        $show->deleted_at('Deleted at');
 		$show->sku_spec_values('规格', function ($grid) {
-			$grid->spec_id('规格名称')->display(function($spec_id) {
+			$grid->spec_id('规格')->display(function ($spec_id) {
 				return GoodsSpec::find($spec_id)->spec_name;
 			});
-			$grid->spec_value_id('规格值')->display(function($spec_value_id) {
+			$grid->spec_value_id('规格值')->display(function ($spec_value_id) {
 				return GoodsSpecValue::find($spec_value_id)->value;
 			});
 			//行
@@ -142,7 +142,7 @@ class GoodsSKUController extends Controller
 				$actions->disableEdit();
 				$actions->disableView();
 				// 当前行的数据数组
-				$spec_id=$actions->row['spec_id'];
+				$spec_id = $actions->row['spec_id'];
 				
 				// 获取当前行主键值
 				$actions->getKey();
@@ -158,15 +158,15 @@ class GoodsSKUController extends Controller
 			$grid->disableFilter();//筛选
 			$grid->disableCreateButton();//新增
 			$grid->disableExport();//导出
-			
+
 //			$grid->disableActions();//行操作
 			$grid->disableRowSelector();//CheckBox
 		});
 		$show->sku_postages('快递方式', function ($grid) {
-			$grid->postage_id('快递方式')->display(function($postage_id) {
+			$grid->postage_id('快递方式')->display(function ($postage_id) {
 				return Postage::find($postage_id)->name;
 			});
-			$grid->column('费用')->display(function() {
+			$grid->column('费用')->display(function () {
 				return Postage::find($this->postage_id)->cost;
 			});
 			//行
@@ -175,7 +175,7 @@ class GoodsSKUController extends Controller
 				$actions->disableEdit();
 				$actions->disableView();
 				// 当前行的数据数组
-				$postage_id=$actions->row['postage_id'];
+				$postage_id = $actions->row['postage_id'];
 				
 				// 获取当前行主键值
 				$actions->getKey();
@@ -191,12 +191,65 @@ class GoodsSKUController extends Controller
 			$grid->disableFilter();//筛选
 			$grid->disableCreateButton();//新增
 			$grid->disableExport();//导出
-			
+
 //			$grid->disableActions();//行操作
 			$grid->disableRowSelector();//CheckBox
 		});
 		
-		return $show;
+		$show->albums('相册', function ($grid) {
+			
+			$grid->id();
+			$grid->order('排序');
+			$grid->url('图片')->lightbox();
+			
+			$grid->disableFilter();//筛选
+//		$grid->disableCreateButton();//新增
+			$grid->disableExport();//导出
+			
+			$grid->disableActions();//行操作
+			$grid->disableRowSelector();//CheckBox
+		});
+		
+		$show->benefits('活动', function ($grid) {
+			$grid->resource('/admin/benefit');
+			
+			$grid->id('Id');
+			$grid->title('活动标题');
+			$grid->desc('活动描述');
+			$grid->price('活动价');
+			$grid->origin_price('原价');
+			$grid->status('活动状态')->display(function ($status) {
+				$ret="<label class='label label-danger'>未知的状态</label>";
+				switch ($status){
+					case '-1':
+						$ret="<label class='label label-default'>已结束</label>";
+						break;
+					case '0':
+						$ret="<label class='label label-primary'>未开始</label>";
+						break;
+					case '1':
+						$ret="<label class='label label-success'>进行中</label>";
+						break;
+				}
+				return$ret;
+			});
+			
+			$grid->actions(function ($actions) {
+//			$actions->disableEdit();
+//			$actions->disableView();
+				$actions->disableDelete();
+			});
+			
+			$grid->disableFilter();//筛选
+//		$grid->disableCreateButton();//新增
+			$grid->disableExport();//导出
+
+//			$grid->disableActions();//行操作
+			$grid->disableRowSelector();//CheckBox
+			return $grid;
+		});
+			
+			return $show;
 	}
 	
 	/**
@@ -204,46 +257,74 @@ class GoodsSKUController extends Controller
 	 *
 	 * @return Form
 	 */
-	protected function form($item=null)
+	protected function form($item = null)
 	{
 		$form = new Form(new GoodsSKU);
 		
-		$form->number('sku_no', 'Sku编号');
-		$form->text('sku_name', '子商品名称')->default('默认商品');
-		$form->decimal('price', '价格')->default(0.00);
-		$form->number('stock', '库存');
+		$form->tab('基本信息', function ($form) {
+			$form->number('sku_no', 'Sku编号');
+			$form->text('sku_name', '子商品名称')->default('默认商品');
+			$form->decimal('price', '价格')->default(0.00);
+			$form->number('stock', '库存');
 //        $form->number('shop_id', 'Shop id');
-		$form->number('spu_id', '商品Spu id')->default(request('spu_id'));
-		$form->radio('stock_type', '减库存时间')
-			->options([0 => '付款减库存', 1 => '下单减库存']);
-		$form->switch('postage', '是否包邮');
-		$form->number('order', '排序');
-		
-	    $form->hasMany('sku_spec_values', '规格值', function (Form\NestedForm $form) {
-		    $specs = GoodsSpec::all();
-		    $options = array();
-		    foreach ($specs as $spec) {
-			    $options[$spec->id] = "【 $spec->spec_name 】";
-		    }
-		    $form->select('spec_id', '规格名称')->options($options)
-			    ->load('spec_value_id', '/api/admin/spec/getValueBySpec_id');
-		    $spec_values=GoodsSpecValue::all();
-		    $options_2=array();
-		    foreach ($spec_values as $spec_value){
-			    $options_2[$spec_value->id] =  $spec_value->value;
-		    }
-		    $form->select('spec_value_id')->options($options_2);
-	    });
-	    
-		$form->hasMany('sku_postages','快递方式', function (Form\NestedForm $form) {
-			$postages = Postage::all();
-			$options = array();
-			foreach ($postages as $postage) {
-				$options[$postage->id] = '【' . $postage->name . '】（价格' . $postage->cost . '）';
-			}
-			$form->select('postage_id', '邮寄方式')->options($options);
+			$form->number('spu_id', '商品Spu id')->default(request('spu_id'));
+			$form->radio('stock_type', '减库存时间')
+				->options([0 => '付款减库存', 1 => '下单减库存']);
+			$form->switch('postage', '是否包邮');
+			$form->number('order', '排序');
+		})->tab('商品规格', function ($form) {
+			$form->hasMany('sku_spec_values', '规格值', function (Form\NestedForm $form) {
+				$specs = GoodsSpec::all();
+				$options = array();
+				foreach ($specs as $spec) {
+					$options[$spec->id] = "【 $spec->spec_name 】";
+				}
+				$form->select('spec_id', '规格类型')->options($options)
+					->load('spec_value_id', '/api/admin/spec/getValueBySpec_id');
+				$spec_values = GoodsSpecValue::all();
+				$options_2 = array();
+				foreach ($spec_values as $spec_value) {
+					$options_2[$spec_value->id] = $spec_value->value;
+				}
+				$form->select('spec_value_id','规格值')->options($options_2);
+			});
+		})->tab('快递方式（包邮则可以不填）', function ($form) {
+			$form->hasMany('sku_postages', '快递方式', function (Form\NestedForm $form) {
+				$postages = Postage::all();
+				$options = array();
+				foreach ($postages as $postage) {
+					$options[$postage->id] = '【' . $postage->name . '】（价格' . $postage->cost . '）';
+				}
+				$form->select('postage_id', '邮寄方式')->options($options);
+			});
+		})->tab('商品图片', function ($Form) {
+			
+			$Form->hasMany('albums', '商品图片', function (Form\NestedForm $form) use ($Form) {
+				$form->image('url', '图片');
+				$form->number('order', '排序');
+				
+				$options = array();
+				if ($Form->model()) {
+					$skus = GoodsSKU::query()->where('spu_id', $Form->model()->id)->get();
+					foreach ($skus as $sku) {
+						$options[$sku->id] = $sku->sku_name;
+					}
+				}
+//				$form->select('sku_id', '关联子商品')
+//					->options($options)
+//					->help('非必填。用户选择该子商品时此图片会优先显示。
+//					只能选择已保存的子商品。
+//					可以勾选继续编辑后提交再进行关联。');
+			});
+//		})->tab('商品活动',function ($form){
+//			$form->text('benefit.title', '活动标题');
+//			$form->text('benefit.desc', '活动描述');
+//			$form->decimal('benefit.price', '活动价');
+//			$form->decimal('benefit.origin_price', '原价');
+//			$form->datetimeRange('benefit.time_form', 'time_to', '活动时间')->rules('after:now');
+//			$form->switch('benefit.reset', '结束时恢复原价')->default(1);
 		});
 //		$form->ignore(['spec_id']);
-		return $form;
-	}
+			return $form;
+		}
 }
