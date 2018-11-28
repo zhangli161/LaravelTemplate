@@ -57,6 +57,8 @@ Route::group(['middleware' => 'test', 'namespace' => 'api'], function() {
 	
 	Route::get('/goods', 'GoodsController@getList');//消息
 	Route::get('/goods/getByid', 'GoodsController@getById');//消息
+	Route::get('/goods/search', 'GoodsController@search');//消息
+	Route::get('/goods/addtocart', 'GoodsController@addToCart');//消息
 	
 	Route::get('/coupon', 'CouponController@getList');//消息
 	Route::get('/coupon/buy', 'CouponController@buy');//消息

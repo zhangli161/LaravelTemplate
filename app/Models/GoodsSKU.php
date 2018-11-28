@@ -57,4 +57,9 @@ class GoodsSKU extends Model
 	{
 		return $this->hasMany(Album::class, 'sku_id', 'id');
 	}
+	
+	public function search_word()
+	{
+		return $this->hasOne(GoodsSKUSearchWord::class, 'sku_id');
+	}
 }

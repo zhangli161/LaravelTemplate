@@ -13,6 +13,7 @@ use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Show;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class GoodsSKUController extends Controller
 {
@@ -272,6 +273,8 @@ class GoodsSKUController extends Controller
 				->options([0 => '付款减库存', 1 => '下单减库存']);
 			$form->switch('postage', '是否包邮');
 			$form->number('order', '排序');
+			$form->tags('search_word.search_words','搜索关键词');
+//			Log::info('表单'.json_encode($form->search_word->search_words));
 		})->tab('商品规格', function ($form) {
 			$form->hasMany('sku_spec_values', '规格值', function (Form\NestedForm $form) {
 				$specs = GoodsSpec::all();
@@ -325,6 +328,23 @@ class GoodsSKUController extends Controller
 //			$form->switch('benefit.reset', '结束时恢复原价')->default(1);
 		});
 //		$form->ignore(['spec_id']);
+		$form->saving(function (Form $form) {
+			
+//			dd($form);
+//			Log::info('表单'.json_encode($form->search_word['search_words']));
+			$search_words=$form->search_word['search_words'];
+			$skuname=$form->sku_name;
+//			$spuname=null;
+			if(!in_array($skuname,$search_words)){
+				array_unshift($search_words,$skuname);
+			}
+//			if(!in_array($spuname,$search_words)){
+//				array_unshift($search_words,$spuname);
+//			}
+			
+//			dd($search_words);
+			$form->input('search_word.search_words',$search_words);
+		});
 			return $form;
 		}
 }

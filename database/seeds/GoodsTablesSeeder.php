@@ -26,7 +26,7 @@ class GoodsTablesSeeder extends Seeder
 				'cate_id' => rand(1, 5),
 			]);
 			DB::table('goods_spu_spec')->insert([
-				'spu_id' => '1',
+				'spu_id' =>$spuid,
 				'spec_id' => '1',
 			]);
 			$sku1_id=$i * 2 + 1;
