@@ -4,6 +4,7 @@ namespace App;
 
 use App\Models\Cart;
 use App\Models\Favorite;
+use App\Models\FootPrint;
 use App\Models\Message;
 use App\Models\UserAddress;
 use App\Models\UserCoupon;
@@ -61,5 +62,8 @@ class User extends Authenticatable
 	}
 	public function coupons(){
 		return $this->hasMany(UserCoupon::class,'user_id');
+	}
+	public function foot_prints(){
+		return $this->hasMany(FootPrint::class,'user_id');
 	}
 }

@@ -16,25 +16,23 @@ use Illuminate\Http\Request;
 Route::get('/test', 'DemoController@test')->middleware('test');//测试接口
 
 //管理后台api接口
-Route::group(['prefix' => 'admin'], function(){
+Route::group(['prefix' => 'admin'], function () {
 	Route::get('category', 'Api\CategoryController@category');//类别
 	
 	Route::get('region/getByParentid', 'Api\RegionController@getByParentid');//根据父地区id获得地区
 	Route::get('regions', 'Api\RegionController@regions');//地区模糊搜索
 	
 	Route::get('spec/getValueBySpec_id', 'Api\Admin\GoodsController@spec');//根据规格id获得规格值
-	Route::get('sku/search', function (Request $request)
-	{
+	Route::get('sku/search', function (Request $request) {
 		$q = $request->get('q');
 		
 		return \App\Models\GoodsSKU::query()->where('sku_name', 'like', "%$q%")
-			->orWhere('id',$q)
-			->orWhere('sku_no',$q)
+			->orWhere('id', $q)
+			->orWhere('sku_no', $q)
 			->paginate(null, ['id', 'sku_name as text']);
 	});//根据父地区id获得地区
 	
 });
-
 
 
 //小程序api
@@ -43,7 +41,7 @@ Route::group(['namespace' => 'api'], function () {
 	
 });
 //Route::group(['middleware' => 'auth:api', 'namespace' => 'api'], function() {
-Route::group(['middleware' => 'test', 'namespace' => 'api'], function() {
+Route::group(['middleware' => 'test', 'namespace' => 'api'], function () {
 	
 	Route::get('/putUserInfo', 'UserController@putUserInfo');//同步微信信息
 	
@@ -56,7 +54,7 @@ Route::group(['middleware' => 'test', 'namespace' => 'api'], function() {
 	Route::post('/message', 'MessageController@getList');//消息
 	
 	Route::get('/goods', 'GoodsController@getList');//全部商品
-	Route::get('/goods/getByid', 'GoodsController@getById');//商品详情
+	Route::get('/goods/getById', 'GoodsController@getById');//商品详情
 	Route::get('/goods/search', 'GoodsController@search');//搜索
 	Route::get('/goods/addtocart', 'GoodsController@addToCart');//添加至购物车额
 	
@@ -64,8 +62,10 @@ Route::group(['middleware' => 'test', 'namespace' => 'api'], function() {
 	Route::get('/coupon/buy', 'CouponController@buy');//购买
 	Route::get('/coupon/my', 'CouponController@myCoupons');//我的优惠券
 	
-	Route::get('/favorite/my/goods', 'FavoriteController@myFavoriteSPU');//购买
-	Route::get('/favorite/add', 'FavoriteController@add');//购买
+	Route::get('/favorite/my/goods', 'FavoriteController@myFavoriteSPU');//我的收藏
+	Route::get('/favorite/add', 'FavoriteController@add');//收藏
+	
+	Route::get('/footprint', 'GoodsController@footprint');//足迹
 	
 });
 

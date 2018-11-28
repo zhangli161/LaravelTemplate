@@ -49,7 +49,7 @@ abstract class Manager
 			$templates = self::getModle()->orderby(static::$primary_key, 'desc');
 			
 		} else {
-			if (count($orderby > 1))
+			if (count($orderby) > 1)
 				for ($i = 0; $i < (count($orderby) - 1); $i += 2) {
 					$templates = self::getModle($orderby[$i])
 						->orderby($orderby[$i], $orderby[$i + 1]);

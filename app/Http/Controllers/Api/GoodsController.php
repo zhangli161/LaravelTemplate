@@ -12,8 +12,11 @@ namespace App\Http\Controllers\Api;
 use App\Components\GoodsSPUManager;
 use App\Http\Helpers\ApiResponse;
 use App\Models\Cart;
+use App\Models\FootPrint;
 use App\Models\GoodsSKU;
 use App\Models\GoodsSKUSearchWord;
+use App\Models\GoodsSPU;
+use Carbon\Carbon;
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -34,12 +37,29 @@ class GoodsController extends Controller
 	
 	public static function getById(Request $request)
 	{
-		$spu = GoodsSPUManager::getById($request->spu_id);
-		$spu->view++;
-		$spu->save();
-		$spu = GoodsSPUManager::getDetailsForApp($spu, $request->sku_id);
+		if ($request->filled('spu_id')) {
+			$spu = GoodsSPU::findOrFail($request->spu_id);
+			$foot_print = FootPrint::query()->firstOrCreate([
+				'user_id' => Auth::user()->id,
+				'spu_id' => $spu->id
+			]);
+			$foot_print->updated_at=Carbon::now();
+			$foot_print->save();
+			$count = FootPrint::where('user_id', Auth::user()->id)->count();
+			if ($count > 100) {
+				FootPrint::where('user_id', Auth::user()->id)
+					->orderBy('updated_at', 'asc')
+					->first()->delete();
+			}
+			
+			$spu->view++;
+			$spu->save();
+			$spu = GoodsSPUManager::getDetailsForApp($spu, $request->sku_id);
+			
+			return ApiResponse::makeResponse(true, $spu, ApiResponse::SUCCESS_CODE);
+		} else
+			return ApiResponse::MissingParam();
 		
-		return ApiResponse::makeResponse(true, $spu, ApiResponse::SUCCESS_CODE);
 	}
 	
 	public static function search(Request $request)
@@ -78,8 +98,15 @@ class GoodsController extends Controller
 			return ApiResponse::makeResponse(true, $cart, ApiResponse::SUCCESS_CODE);
 		} else
 			return ApiResponse::makeResponse(false, "参数不足", ApiResponse::MISSING_PARAM);
-		
-		
 	}
 	
+	public static function footprint()
+	{
+		$footprints = FootPrint::where('user_id', Auth::user()->id)->paginate();
+		foreach ($footprints as $footprint) {
+			$footprint->spu;
+			$footprint->spu = GoodsSPUManager::getDetailsForApp($footprint->spu);
+		}
+		return $footprints;
+	}
 }
