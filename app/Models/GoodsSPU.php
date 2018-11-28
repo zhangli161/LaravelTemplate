@@ -31,4 +31,7 @@ class GoodsSPU extends Model
 		return $this->morphOne(RichText::class, 'item');
 	}
 	
+	public function favorites(){
+		return $this->morphMany(Favorite::class,'item');
+	}
 }

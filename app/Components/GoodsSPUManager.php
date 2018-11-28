@@ -11,6 +11,7 @@ namespace App\Components;
 
 use App\Models\GoodsSPU;
 use Hamcrest\Core\Set;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class GoodsSPUManager extends Manager
@@ -24,6 +25,7 @@ class GoodsSPUManager extends Manager
 	public static function getDetailsForApp(GoodsSPU $spu, $skuid = null)
 	{
 		$spu->detail;
+		$spu->is_favorite=$spu->favorites()->where('user_id',Auth::user()->id)->exists();
 		
 		$spec_matrix = array();
 		$spec_ids = $spu->specs->pluck('id');

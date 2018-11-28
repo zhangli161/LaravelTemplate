@@ -64,6 +64,8 @@ Route::group(['middleware' => 'test', 'namespace' => 'api'], function() {
 	Route::get('/coupon/buy', 'CouponController@buy');//购买
 	Route::get('/coupon/my', 'CouponController@myCoupons');//我的优惠券
 	
+	Route::get('/favorite/my/goods', 'FavoriteController@myFavoriteSPU');//购买
+	Route::get('/favorite/add', 'FavoriteController@add');//购买
 	
 });
 
