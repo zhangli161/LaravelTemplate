@@ -26,7 +26,7 @@ class CreateGoodsTables extends Migration
 	        $table->integer('cate_id',false,true);//分类id
 	        
 	        $table->timestamps();
-	        $table->timestamp('deleted_at')->nullable();
+	        $table->softDeletes();
 	
 	        $table->unique('spu_no');
         });
@@ -44,7 +44,7 @@ class CreateGoodsTables extends Migration
 		    $table->unsignedTinyInteger('order',false)->default(0);//排序，越大越靠前
 		    
 		    $table->timestamps();
-		    $table->timestamp('deleted_at')->nullable();
+		    $table->softDeletes();
 		
 		    $table->unique('sku_no');
 	    });
@@ -55,7 +55,7 @@ class CreateGoodsTables extends Migration
 		    $table->string('spec_name',50)->charset('utf8mb4')->collation('utf8mb4_unicode_ci');//规格名称
 		    
 		    $table->timestamps();
-		    $table->timestamp('deleted_at')->nullable();
+		    $table->softDeletes();
 	    });
 	    //商品规格值表
 	    Schema::create('goods_spec_value', function (Blueprint $table) {
@@ -64,7 +64,7 @@ class CreateGoodsTables extends Migration
 		    $table->string('value',50)->charset('utf8mb4')->collation('utf8mb4_unicode_ci');//规格值
 		
 		    $table->timestamps();
-		    $table->timestamp('deleted_at')->nullable();
+		    $table->softDeletes();
 	    });
 	    
 	    //商品spu规格表
@@ -74,7 +74,7 @@ class CreateGoodsTables extends Migration
 		    $table->integer('spec_id',false,true);//规格id
 		    
 		    $table->timestamps();
-		    $table->timestamp('deleted_at')->nullable();
+		    $table->softDeletes();
 	    });
 	    
 	    //商品sku规格值表
@@ -85,7 +85,7 @@ class CreateGoodsTables extends Migration
 		    $table->integer('spec_value_id',false,true);//规格值id
 		
 		    $table->timestamps();
-		    $table->timestamp('deleted_at')->nullable();
+		    $table->softDeletes();
 	    });
     }
 

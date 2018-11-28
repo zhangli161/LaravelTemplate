@@ -18,14 +18,14 @@ class CreatePostagesTable extends Migration
             $table->string('name',50);
             $table->decimal('cost');
             $table->timestamps();
-	        $table->timestamp('deleted_at')->nullable();
+	        $table->softDeletes();
         });
 	    Schema::create('goods_sku_postage', function (Blueprint $table) {
 		    $table->increments('id');
 		    $table->integer('sku_id',false,true);
 		    $table->integer('postage_id',false,true);
 		    $table->timestamps();
-		    $table->timestamp('deleted_at')->nullable();
+		    $table->softDeletes();
 	    });
     }
 

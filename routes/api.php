@@ -12,6 +12,9 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::get('/test', 'DemoController@test')->middleware('test');//测试接口
+
 //管理后台api接口
 Route::group(['prefix' => 'admin'], function(){
 	Route::get('category', 'Api\CategoryController@category');//类别
@@ -41,7 +44,7 @@ Route::group(['namespace' => 'api'], function () {
 });
 //Route::group(['middleware' => 'auth:api', 'namespace' => 'api'], function() {
 Route::group(['middleware' => 'test', 'namespace' => 'api'], function() {
-
+	
 	Route::get('/putUserInfo', 'UserController@putUserInfo');//同步微信信息
 	
 	Route::get('/passport', 'UserController@passport');//获得用户信息
@@ -56,6 +59,10 @@ Route::group(['middleware' => 'test', 'namespace' => 'api'], function() {
 	Route::get('/goods/getByid', 'GoodsController@getById');//消息
 	
 	Route::get('/coupon', 'CouponController@getList');//消息
+	Route::get('/coupon/buy', 'CouponController@buy');//消息
+	Route::get('/coupon/my', 'CouponController@myCoupons');//消息
+	
+	
 });
 
 //Route::group(['prefix' => 'v1', 'middleware' => 'auth:api'], function(){

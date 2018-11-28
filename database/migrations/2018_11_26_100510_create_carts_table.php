@@ -21,7 +21,7 @@ class CreateCartsTable extends Migration
 	        $table->integer('count', false, true)->default(1);//商品数量
 				
 	        $table->timestamps();
-	        $table->timestamp('deleted_at')->nullable();
+	        $table->softDeletes();
 			
 	        $table->primary(['spu_id','sku_id','user_id']);
         });

@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\Favorite;
 use App\Models\Message;
 use App\Models\UserAddress;
+use App\Models\UserCoupon;
 use App\Models\UserCredit;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -57,5 +58,8 @@ class User extends Authenticatable
 	public function credit()
 	{
 		return $this->hasOne(UserCredit::class, 'user_id');
+	}
+	public function coupons(){
+		return $this->hasMany(UserCoupon::class,'user_id');
 	}
 }

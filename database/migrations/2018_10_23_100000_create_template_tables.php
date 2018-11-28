@@ -23,7 +23,7 @@ class CreateTemplateTables extends Migration
 			$table->text('attr')->nullable()->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
 			
 			$table->timestamps();
-			$table->timestamp('deleted_at')->nullable();
+			$table->softDeletes();
 		});
 		//2.分类表
 		Schema::create('category', function (Blueprint $table) {
@@ -33,7 +33,7 @@ class CreateTemplateTables extends Migration
 			$table->integer('parentid')->default(0);
 			
 			$table->timestamps();
-			$table->timestamp('deleted_at')->nullable();
+			$table->softDeletes();
 		});
 		//3.消息表
 		Schema::create('message', function (Blueprint $table) {
@@ -45,7 +45,7 @@ class CreateTemplateTables extends Migration
 			$table->integer('to_user_id');
 			
 			$table->timestamps();
-			$table->timestamp('deleted_at')->nullable();
+			$table->softDeletes();
 		});
 		//4.消息内容表
 		Schema::create('message_content', function (Blueprint $table) {
@@ -57,7 +57,7 @@ class CreateTemplateTables extends Migration
 			$table->text('attr')->nullable()->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
 			
 			$table->timestamps();
-			$table->timestamp('deleted_at')->nullable();
+			$table->softDeletes();
 		});
 		//5.消息来源表
 		Schema::create('message_source', function (Blueprint $table) {
@@ -66,7 +66,7 @@ class CreateTemplateTables extends Migration
 			$table->string('code')->default(0);
 			
 			$table->timestamps();
-			$table->timestamp('deleted_at')->nullable();
+			$table->softDeletes();
 		});
 		//6.地区表
 //		Schema::create('native_place_region', function (Blueprint $table) {
@@ -89,7 +89,7 @@ class CreateTemplateTables extends Migration
 			$table->string('mobile',20);
 			
 			$table->timestamps();
-			$table->timestamp('deleted_at')->nullable();
+			$table->softDeletes();
 		});
 		//8.用户绑定微信表
 		Schema::create('users_wx', function (Blueprint $table) {
@@ -105,7 +105,7 @@ class CreateTemplateTables extends Migration
 			$table->string('avatarUrl',255)->nullable();
 			
 			$table->timestamps();
-			$table->timestamp('deleted_at')->nullable();
+			$table->softDeletes();
 			
 			$table->primary('user_id');
 		});
@@ -117,7 +117,7 @@ class CreateTemplateTables extends Migration
 			$table->tinyInteger('status')->default(0)->comment('状态：1生效 0失效');
 			
 			$table->timestamps();
-			$table->timestamp('deleted_at')->nullable();
+			$table->softDeletes();
 		});
 	}
 	

@@ -27,7 +27,7 @@ class CreateGoodsBenefitsTable extends Migration
 			$table->tinyInteger('status', false, false)
 				->comment('状态,0未开始1进行中-1已过期')->default('0');
 			$table->timestamps();
-			$table->timestamp('deleted_at')->nullable();
+			$table->softDeletes();
 		});
 	}
 	

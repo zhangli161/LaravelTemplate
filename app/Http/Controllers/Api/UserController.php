@@ -87,7 +87,7 @@ class UserController extends Controller
 		$user=Auth::user();
 		MessageManager::getGroupMessages($user);
 		$user->credit or UserCredit::query()->create(['user_id' => $user->id, 'credit' => 0]);
-		
+//		$user->coupons;
 		return response()->json(['user' => Auth::user(), 'message' => Auth::user()->messages,'credit'=>Auth::user()->credit]);
 	}
 	
