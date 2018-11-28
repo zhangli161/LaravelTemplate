@@ -26,7 +26,7 @@ class CouponController
 //		$coupons=Coupon::whereIn('id',$coupon_ids)->paginate();
 		foreach ($coupons as $coupon)
 			$coupon->coupon;
-		return $coupons;
+		return ApiResponse::makeResponse(true, $coupons, ApiResponse::SUCCESS_CODE);
 	}
 	
 	public static function buy(Request $request)
@@ -55,7 +55,7 @@ class CouponController
 				->paginate();
 		foreach ($coupons as $coupon)
 			$coupon->coupon;
-		return $coupons;
+		return ApiResponse::makeResponse(true, $coupons, ApiResponse::SUCCESS_CODE);
 	}
 	
 }

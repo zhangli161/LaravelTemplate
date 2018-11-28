@@ -20,13 +20,16 @@ use Illuminate\Support\Facades\Auth;
 
 class GoodsController extends Controller
 {
-	public static function getList()
+	public static function getList(Request $request)
 	{
-		$goods = GoodsSPUManager::getList('price', 'asc', 'id', 'desc');
+		if (gettype($request->get('orderby')) == 'array')
+			$goods = GoodsSPUManager::getList($request->get('orderby'));
+		else
+			$goods = GoodsSPUManager::getList('price', 'asc', 'id', 'desc');
 		foreach ($goods as $good) {
 			$good = GoodsSPUManager::getDetailsForApp($good);
 		}
-		return $goods;
+		return ApiResponse::makeResponse(true, $goods, ApiResponse::SUCCESS_CODE);
 	}
 	
 	public static function getById(Request $request)
@@ -35,7 +38,8 @@ class GoodsController extends Controller
 		$spu->view++;
 		$spu->save();
 		$spu = GoodsSPUManager::getDetailsForApp($spu, $request->sku_id);
-		return $spu;
+		
+		return ApiResponse::makeResponse(true, $spu, ApiResponse::SUCCESS_CODE);
 	}
 	
 	public static function search(Request $request)
@@ -66,7 +70,7 @@ class GoodsController extends Controller
 				'sku_id' => $sku->id,
 			], [
 				'amount' => $request->filled('amount') ?
-					$request->get('amount') :1
+					$request->get('amount') : 1
 			]);
 			
 			if ($request->has('remove'))

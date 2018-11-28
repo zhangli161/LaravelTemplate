@@ -84,11 +84,12 @@ class UserController extends Controller
 	
 	public function passport()
 	{
-		$user=Auth::user();
+		$user = Auth::user();
 		MessageManager::getGroupMessages($user);
 		$user->credit or UserCredit::query()->create(['user_id' => $user->id, 'credit' => 0]);
+		$user->messages;
 //		$user->coupons;
-		return response()->json(['user' => Auth::user(), 'message' => Auth::user()->messages,'credit'=>Auth::user()->credit]);
+		return ApiResponse::makeResponse(true, $user, ApiResponse::SUCCESS_CODE);
 	}
 	
 	public static function sendVertifyCode(Request $request)

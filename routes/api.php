@@ -55,14 +55,14 @@ Route::group(['middleware' => 'test', 'namespace' => 'api'], function() {
 	Route::get('/message', 'MessageController@getList');//消息
 	Route::post('/message', 'MessageController@getList');//消息
 	
-	Route::get('/goods', 'GoodsController@getList');//消息
-	Route::get('/goods/getByid', 'GoodsController@getById');//消息
-	Route::get('/goods/search', 'GoodsController@search');//消息
-	Route::get('/goods/addtocart', 'GoodsController@addToCart');//消息
+	Route::get('/goods', 'GoodsController@getList');//全部商品
+	Route::get('/goods/getByid', 'GoodsController@getById');//商品详情
+	Route::get('/goods/search', 'GoodsController@search');//搜索
+	Route::get('/goods/addtocart', 'GoodsController@addToCart');//添加至购物车额
 	
-	Route::get('/coupon', 'CouponController@getList');//消息
-	Route::get('/coupon/buy', 'CouponController@buy');//消息
-	Route::get('/coupon/my', 'CouponController@myCoupons');//消息
+	Route::get('/coupon', 'CouponController@getList');//所有优惠券
+	Route::get('/coupon/buy', 'CouponController@buy');//购买
+	Route::get('/coupon/my', 'CouponController@myCoupons');//我的优惠券
 	
 	
 });
