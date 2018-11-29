@@ -67,6 +67,8 @@ Route::group(['middleware' => 'test', 'namespace' => 'api'], function () {
 	
 	Route::get('/footprint', 'GoodsController@footprint');//足迹
 	
+	Route::get('/credit/record', 'UserController@credit_record');//足迹
+	
 });
 
 //Route::group(['prefix' => 'v1', 'middleware' => 'auth:api'], function(){

@@ -107,5 +107,10 @@ class UserController extends Controller
 		}
 	}
 	
+	public static function credit_record()
+	{
+		return ApiResponse::makeResponse(false, Auth::user()->credit_records, ApiResponse::SUCCESS_CODE);
+	}
+	
 	
 }

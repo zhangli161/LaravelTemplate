@@ -9,6 +9,7 @@ use App\Models\Message;
 use App\Models\UserAddress;
 use App\Models\UserCoupon;
 use App\Models\UserCredit;
+use App\Models\UserCreditRecord;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
@@ -59,6 +60,10 @@ class User extends Authenticatable
 	public function credit()
 	{
 		return $this->hasOne(UserCredit::class, 'user_id');
+	}
+	public function credit_records()
+	{
+		return $this->hasMany(UserCreditRecord::class, 'user_id');
 	}
 	public function coupons(){
 		return $this->hasMany(UserCoupon::class,'user_id');
