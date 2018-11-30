@@ -75,4 +75,48 @@ class UserCouponManager
 		}
 		return false;
 	}
+	
+	public static function canUseCoupon(User $user, $coupon_id, $payment)
+	{
+		$user_coupon = $user->coupons()->find($coupon_id);
+		if ($user_coupon) {//优惠券存在
+			$expiry_date = strtotime($user_coupon->expiry_date . " +1 day");
+			$today = time();
+			if ($user_coupon->expiry_date > $today) {//未失效
+				if ($payment >= $user_coupon->coupon->min_cost) {//到达门槛价格
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	//返回打折后金额
+	public static function useCoupon(User $user, $coupon_id, $payment, $order_id = null)
+	{
+		$user_coupon = $user->coupons()->find($coupon_id);
+		$now = now();
+		if ($user_coupon) {//优惠券存在
+			switch ($user_coupon->coupon->type) {
+				case '1'://打折
+					$p = $user_coupon->coupon->value;
+					$payment *= $p;
+					$user_coupon->note = "【 $now 】:使用打折券进行折扣，比例 $p 。";
+					if ($order_id) $user_coupon->note .= "订单号：$order_id";
+					$user_coupon->save();
+					$user_coupon->delete();
+					break;
+				case '2'://2代金
+					$value = $user_coupon->coupon->value;
+					$payment -= $value;
+					$user_coupon->note = "【 $now 】:使用代金券进行折扣，金额 $value 。";
+					if ($order_id) $user_coupon->note .= "订单号：$order_id";
+					$user_coupon->save();
+					$user_coupon->delete();
+					break;
+			}
+		}
+		return $payment;
+	}
+	
 }

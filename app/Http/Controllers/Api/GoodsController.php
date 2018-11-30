@@ -26,9 +26,9 @@ class GoodsController extends Controller
 	public static function getList(Request $request)
 	{
 		if (gettype($request->get('orderby')) == 'array')
-			$goods = GoodsSPUManager::getList($request->get('orderby'));
+			$goods = GoodsSPUManager::getList(true,$request->get('orderby'));
 		else
-			$goods = GoodsSPUManager::getList('price', 'asc', 'id', 'desc');
+			$goods = GoodsSPUManager::getList(true,'price', 'asc', 'id', 'desc');
 		foreach ($goods as $good) {
 			$good = GoodsSPUManager::getDetailsForApp($good);
 		}

@@ -43,7 +43,7 @@ Route::group(['namespace' => 'api'], function () {
 //Route::group(['middleware' => 'auth:api', 'namespace' => 'api'], function() {
 Route::group(['middleware' => 'test', 'namespace' => 'api'], function () {
 	
-	Route::get('/putUserInfo', 'UserController@putUserInfo');//同步微信信息
+	Route::post('/putUserInfo', 'UserController@putUserInfo');//同步微信信息
 	
 	Route::get('/passport', 'UserController@passport');//获得用户信息
 	Route::get('/banner', 'BannerController@getList');//轮播图
@@ -51,23 +51,27 @@ Route::group(['middleware' => 'test', 'namespace' => 'api'], function () {
 	Route::post('/sendVertifyCode', 'UserController@sendVertifyCode');//发送验证码
 	
 	Route::get('/message', 'MessageController@getList');//消息
-	Route::post('/message', 'MessageController@getList');//消息
+//	Route::post('/message', 'MessageController@getList');//消息
 	
 	Route::get('/goods', 'GoodsController@getList');//全部商品
 	Route::get('/goods/getById', 'GoodsController@getById');//商品详情
 	Route::get('/goods/search', 'GoodsController@search');//搜索
-	Route::get('/goods/addtocart', 'GoodsController@addToCart');//添加至购物车额
+	Route::post('/goods/addtocart', 'GoodsController@addToCart');//添加至购物车额
 	
 	Route::get('/coupon', 'CouponController@getList');//所有优惠券
-	Route::get('/coupon/buy', 'CouponController@buy');//购买
+	Route::post('/coupon/buy', 'CouponController@buy');//购买
 	Route::get('/coupon/my', 'CouponController@myCoupons');//我的优惠券
 	
 	Route::get('/favorite/my/goods', 'FavoriteController@myFavoriteSPU');//我的收藏
-	Route::get('/favorite/add', 'FavoriteController@add');//收藏
+	Route::post('/favorite/add', 'FavoriteController@add');//收藏
 	
 	Route::get('/footprint', 'GoodsController@footprint');//足迹
 	
-	Route::get('/credit/record', 'UserController@credit_record');//足迹
+	Route::get('/credit/record', 'UserController@credit_record');//积分记录
+	
+	Route::get('/order/settlement', 'OrderController@settlement');//订单结算
+	Route::get('/order/create', 'OrderController@create');//生成订单
+	Route::get('/order/my', 'OrderController@my');//我的订单
 	
 });
 

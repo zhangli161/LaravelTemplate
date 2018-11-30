@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\Favorite;
 use App\Models\FootPrint;
 use App\Models\Message;
+use App\Models\Order;
 use App\Models\UserAddress;
 use App\Models\UserCoupon;
 use App\Models\UserCredit;
@@ -61,14 +62,24 @@ class User extends Authenticatable
 	{
 		return $this->hasOne(UserCredit::class, 'user_id');
 	}
+	
 	public function credit_records()
 	{
 		return $this->hasMany(UserCreditRecord::class, 'user_id');
 	}
-	public function coupons(){
-		return $this->hasMany(UserCoupon::class,'user_id');
+	
+	public function coupons()
+	{
+		return $this->hasMany(UserCoupon::class, 'user_id');
 	}
-	public function foot_prints(){
-		return $this->hasMany(FootPrint::class,'user_id');
+	
+	public function foot_prints()
+	{
+		return $this->hasMany(FootPrint::class, 'user_id');
+	}
+	
+	public function orders()
+	{
+		return $this->hasMany(Order::class, 'user_id');
 	}
 }

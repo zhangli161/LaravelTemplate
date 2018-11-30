@@ -132,6 +132,22 @@ class MenuSeeder extends Seeder
 				'icon' => 'fa-dollar',
 				'uri' => 'benefit',
 			],
+			[
+				'id' => 23,
+				'parent_id' => 18,
+				'order' => 0,
+				'title' => '优惠券',
+				'icon' => 'fa-ticket',
+				'uri' => 'coupon',
+			],
+			[
+				'id' => 24,
+				'parent_id' => 0,
+				'order' => 0,
+				'title' => '订单',
+				'icon' => 'fa-sticky-note-o',
+				'uri' => 'order',
+			],
 			
 		]);
 	}

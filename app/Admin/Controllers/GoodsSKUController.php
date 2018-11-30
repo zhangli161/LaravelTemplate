@@ -163,39 +163,39 @@ class GoodsSKUController extends Controller
 //			$grid->disableActions();//行操作
 			$grid->disableRowSelector();//CheckBox
 		});
-		$show->sku_postages('快递方式', function ($grid) {
-			$grid->postage_id('快递方式')->display(function ($postage_id) {
-				return Postage::find($postage_id)->name;
-			});
-			$grid->column('费用')->display(function () {
-				return Postage::find($this->postage_id)->cost;
-			});
-			//行
-			$grid->actions(function ($actions) {
-				$actions->disableDelete();
-				$actions->disableEdit();
-				$actions->disableView();
-				// 当前行的数据数组
-				$postage_id = $actions->row['postage_id'];
-				
-				// 获取当前行主键值
-				$actions->getKey();
-				
-				// append一个操作
-				$actions->append("<a href=\"/admin/postage/$postage_id\"><i class=\"fa fa-eye\"></i></a>");
-			});
-			$grid->tools(function ($tools) {
-				$tools->batch(function ($batch) {
-					$batch->disableDelete();
-				});
-			});
-			$grid->disableFilter();//筛选
-			$grid->disableCreateButton();//新增
-			$grid->disableExport();//导出
-
-//			$grid->disableActions();//行操作
-			$grid->disableRowSelector();//CheckBox
-		});
+//		$show->sku_postages('快递方式', function ($grid) {
+//			$grid->postage_id('快递方式')->display(function ($postage_id) {
+//				return Postage::find($postage_id)->name;
+//			});
+//			$grid->column('费用')->display(function () {
+//				return Postage::find($this->postage_id)->cost;
+//			});
+//			//行
+//			$grid->actions(function ($actions) {
+//				$actions->disableDelete();
+//				$actions->disableEdit();
+//				$actions->disableView();
+//				// 当前行的数据数组
+//				$postage_id = $actions->row['postage_id'];
+//
+//				// 获取当前行主键值
+//				$actions->getKey();
+//
+//				// append一个操作
+//				$actions->append("<a href=\"/admin/postage/$postage_id\"><i class=\"fa fa-eye\"></i></a>");
+//			});
+//			$grid->tools(function ($tools) {
+//				$tools->batch(function ($batch) {
+//					$batch->disableDelete();
+//				});
+//			});
+//			$grid->disableFilter();//筛选
+//			$grid->disableCreateButton();//新增
+//			$grid->disableExport();//导出
+//
+////			$grid->disableActions();//行操作
+//			$grid->disableRowSelector();//CheckBox
+//		});
 		
 		$show->albums('相册', function ($grid) {
 			
@@ -271,7 +271,7 @@ class GoodsSKUController extends Controller
 			$form->number('spu_id', '商品Spu id')->default(request('spu_id'));
 			$form->radio('stock_type', '减库存时间')
 				->options([0 => '付款减库存', 1 => '下单减库存']);
-			$form->switch('postage', '是否包邮');
+//			$form->switch('postage', '是否包邮')->default(1)->value(1);
 			$form->number('order', '排序');
 			$form->tags('search_word.search_words','搜索关键词');
 //			Log::info('表单'.json_encode($form->search_word->search_words));
@@ -291,15 +291,15 @@ class GoodsSKUController extends Controller
 				}
 				$form->select('spec_value_id','规格值')->options($options_2);
 			});
-		})->tab('快递方式（包邮则可以不填）', function ($form) {
-			$form->hasMany('sku_postages', '快递方式', function (Form\NestedForm $form) {
-				$postages = Postage::all();
-				$options = array();
-				foreach ($postages as $postage) {
-					$options[$postage->id] = '【' . $postage->name . '】（价格' . $postage->cost . '）';
-				}
-				$form->select('postage_id', '邮寄方式')->options($options);
-			});
+//		})->tab('快递方式（包邮则可以不填）', function ($form) {
+//			$form->hasMany('sku_postages', '快递方式', function (Form\NestedForm $form) {
+//				$postages = Postage::all();
+//				$options = array();
+//				foreach ($postages as $postage) {
+//					$options[$postage->id] = '【' . $postage->name . '】（价格' . $postage->cost . '）';
+//				}
+//				$form->select('postage_id', '邮寄方式')->options($options);
+//			});
 		})->tab('商品图片', function ($Form) {
 			
 			$Form->hasMany('albums', '商品图片', function (Form\NestedForm $form) use ($Form) {

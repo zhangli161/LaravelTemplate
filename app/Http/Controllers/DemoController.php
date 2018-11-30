@@ -10,22 +10,31 @@ namespace App\Http\Controllers;
 
 
 use App\Components\NativePalceReagionManager;
+use App\Components\OrderManager;
 use App\Components\TemplateManager;
 use App\Components\UserCreditManager;
+use App\Http\Helpers\SnowFlakeIDWorker;
+use App\Models\GoodsSKU;
 use App\Models\Message;
 use App\Models\MessageContent;
 use App\Models\NativePlaceRegion;
+use App\Models\Order;
+use App\Models\UserCoupon;
 use App\User;
 use Encore\Admin\Facades\Admin;
 use Illuminate\Http\Request;
 
 class DemoController extends Controller
 {
-	public static function test(){
-		$user=User::find(1);
-		return UserCreditManager::changeCredit($user,['amount'=>1000,'reason'=>'赠送测试','editor'=>'system']);
+//	static $worker=SnowFlakeIDWorker(1);
+	public static function test()
+	{
+		$date=strtotime(UserCoupon::find(1)->expiry_date." +1 day");
+		$today=time();
 		
+		return [$today,$date];
 	}
+	
 	public function test0(Request $request)
 	{
 		set_time_limit(0);
@@ -5049,9 +5058,9 @@ class DemoController extends Controller
 		function saveTree($parents, $parentid = 0)
 		{
 			$results = [];
-			$Region_Types = ['民族乡','乡', '镇',  '自治县', '县', '自治区',  '特别行政区', '区','直辖市', '市', '自治州', '省'];
+			$Region_Types = ['民族乡', '乡', '镇', '自治县', '县', '自治区', '特别行政区', '区', '直辖市', '市', '自治州', '省'];
 			foreach ($parents as $region_id => $item) {
-				if(gettype($item)=='string'){
+				if (gettype($item) == 'string') {
 					$obj = new NativePlaceRegion();
 					$obj->region_id = $region_id;
 					$obj->parentid = $parentid;
@@ -5069,7 +5078,7 @@ class DemoController extends Controller
 					$obj->save();
 					
 					array_push($results, $obj);
-				}elseif (gettype($item) == 'object') {
+				} elseif (gettype($item) == 'object') {
 					$obj = new NativePlaceRegion();
 					$obj->region_id = $region_id;
 					$obj->parentid = $parentid;
@@ -5093,9 +5102,8 @@ class DemoController extends Controller
 					}
 					
 					array_push($results, $obj);
-				}
-				else{
-					array_push($results, ["类型错误"=>$item]);
+				} else {
+					array_push($results, ["类型错误" => $item]);
 				}
 			}
 			return $results;

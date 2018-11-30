@@ -43,7 +43,7 @@ abstract class Manager
 	 *
 	 * 2018-04-02
 	 */
-	public static function getList(...$orderby)
+	public static function getList($paginate = false, ...$orderby)
 	{
 		if (!$orderby) {
 			$templates = self::getModle()->orderby(static::$primary_key, 'desc');
@@ -63,8 +63,10 @@ abstract class Manager
 			}
 			
 		}
-		
-		return $templates->get();
+		if ($paginate)
+			return $templates->paginate();
+		else
+			return $templates->get();
 	}
 	
 	/*

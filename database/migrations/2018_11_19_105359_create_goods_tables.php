@@ -40,7 +40,7 @@ class CreateGoodsTables extends Migration
 		    $table->integer('shop_id',false,true)->default(0);;//预留，店铺id。  0为自营
 		    $table->integer('spu_id',false,true);//spuid
 		    $table->unsignedTinyInteger('stock_type',false)->default(0);//减库存时间 0付款减库存1下单减库存
-		    $table->tinyInteger('postage')->default(0);//包邮  0否 1是
+		    $table->tinyInteger('postage')->default(1);//包邮  0否 1是
 		    $table->unsignedTinyInteger('order',false)->default(0);//排序，越大越靠前
 		    
 		    $table->timestamps();
