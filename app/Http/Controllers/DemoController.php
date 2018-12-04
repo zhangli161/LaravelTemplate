@@ -12,6 +12,7 @@ namespace App\Http\Controllers;
 use App\Components\NativePalceReagionManager;
 use App\Components\TemplateManager;
 use App\Components\UserCreditManager;
+use App\Models\Category;
 use App\Models\Message;
 use App\Models\MessageContent;
 use App\Models\NativePlaceRegion;
@@ -22,9 +23,8 @@ use Illuminate\Http\Request;
 class DemoController extends Controller
 {
 	public static function test(){
-		$user=User::find(1);
-		return UserCreditManager::changeCredit($user,['amount'=>1000,'reason'=>'赠送测试','editor'=>'system']);
-		
+		$cates=Category::all(['id as value','name as text']);
+		return $cates;
 	}
 	public function test0(Request $request)
 	{

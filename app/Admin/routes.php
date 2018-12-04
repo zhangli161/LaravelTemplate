@@ -19,5 +19,6 @@ Route::group([
 	$router->resource('message', MessageContentController::class);
 	$router->resource('message_source', MessageSourceController::class);
 	$router->resource('richtext', RichTextController::class);
+	$router->resource('article', ArticleController::class);
 	
 });
