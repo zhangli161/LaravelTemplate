@@ -26,5 +26,6 @@ Route::group([
 	$router->resource('richtext', RichTextController::class);
 	$router->resource('coupon', CouponController::class);
 	$router->resource('order', OrderController::class);
+	$router->resource('article', ArticleController::class);
 	
 });
