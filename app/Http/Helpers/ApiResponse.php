@@ -8,6 +8,7 @@
 
 namespace App\Http\Helpers;
 
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
 class ApiResponse
@@ -45,9 +46,6 @@ class ApiResponse
 	const NO_VALID_ENTERPRISE = 401; //没有进行企业认证
 	const NO_VALID_USERINFO = 402;    //没有进行个人信息认证
 	
-	//沈机动力错误码
-	const NO_ENTERPRISE = 501;  //暂无企业信息
-	
 	//映射错误信息
 	public static $returnMessage = [
 		self::SUCCESS_CODE => '操作成功',
@@ -77,12 +75,14 @@ class ApiResponse
 		self::NO_VALID_ENTERPRISE => '没有进行企业认证',
 		self::NO_VALID_USERINFO => '没有进行个人信息认证',
 		
-		self::NO_ENTERPRISE => '暂无企业信息',
-	
 	];
 	
 	
-	//格式化返回
+	/**
+	 * 格式化返回
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
 	public static function makeResponse($result, $ret, $code, $mapping_function = null, $params = [])
 	{
 		$rsp = [];
@@ -107,7 +107,8 @@ class ApiResponse
 			}
 		}
 		Log::info(__METHOD__ . " response:" . response()->json($rsp));
-		return response()->json($rsp, 200);
+		return Response::create($rsp);
+//		return response()->json($rsp, 200);
 	}
 	
 	public static function MissingParam()
