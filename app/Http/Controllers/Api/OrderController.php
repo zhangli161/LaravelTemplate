@@ -77,4 +77,8 @@ class OrderController extends Controller
 		return ApiResponse::makeResponse(true, $datas, ApiResponse::SUCCESS_CODE);
 		
 	}
+	
+	public static function getById(Request $request){
+		
+	}
 }

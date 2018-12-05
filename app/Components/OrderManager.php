@@ -86,6 +86,79 @@ class OrderManager extends Manager
 		
 		$order->save();
 		return $order;
+	}
+	
+	/**
+	 * 支付订单
+	 *
+	 * @param Order $order
+	 * @return mixed
+	 */
+	
+	public static function pay(Order $order)
+	{
+		return [];
+	}
+	
+	/**
+	 * 查询订单支付状态 （待完善）
+	 *
+	 * @param Order $order
+	 * @return bool
+	 */
+	public static function check_pay(Order $order)
+	{
+		//查询订单支付状态
+		$result = true;
+		if ($result)
+			$order->status = 2;//已付款
+		else {
+			$created_at = strtotime($order->created_at);
+			if (time() - $created_at > 30 * 60) {
+				$order->status = 6;//交易关闭
+			}
+		}
+		$order->save();
+		return $result;
+	}
+	
+	
+	/**
+	 * 检测物流信息
+	 *
+	 * @param Order $order
+	 * @return bool
+	 */
+	public static function check_postage(Order $order)
+	{
+		$postage = PostalInquiriesManager::inquire($order->postage);
 		
+		$result = $postage->status == "2" //已收货
+			&& (strtotime($order->updated_at) - time()) > 7 * 24 * 3600;//收货时间超过一星期
+		if ($result) {
+			$order->status=5;//自动已完成
+			$order->completed_at=now();
+			$order->save();
+		};
+		return $result;
+	}
+	/**
+	 * 检测所有订单的支付状态
+	 *
+	 */
+	public static function check_pay_all()
+	{
+		$orders = Order::where('status', 1)->get();
+		foreach ($orders as $order) {
+			self::check_pay($order);
+		}
+	}
+	
+	public static function check_postage_all()
+	{
+		$orders = Order::where('status', 4)->get();
+		foreach ($orders as $order) {
+			self::check_postage($order);
+		}
 	}
 }

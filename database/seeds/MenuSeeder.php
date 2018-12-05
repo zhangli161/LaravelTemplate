@@ -148,6 +148,14 @@ class MenuSeeder extends Seeder
 				'icon' => 'fa-sticky-note-o',
 				'uri' => 'order',
 			],
+			[
+				'id' => 25,
+				'parent_id' => 0,
+				'order' => 0,
+				'title' => '文章资讯',
+				'icon' => 'fa-book',
+				'uri' => 'article',
+			],
 			
 		]);
 	}

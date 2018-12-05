@@ -89,12 +89,12 @@ class OrderController extends Controller
 		$grid->status('订单状态')->display(function ($status) {
 			
 			return [
-				1=>"<lable class='label label-default'>未付款</lable>" ,
-				2=>"<lable class='label label-info'>已付款</lable>" ,
-				3=>"<lable class='label label-warning'>未发货</lable>" ,
-				4=>"<lable class='label label-primary'>已发货</lable>" ,
-				5=>"<lable class='label label-success'>交易成功</lable>" ,
-				6=>"<lable class='label label-danger'>交易关闭</lable>" ,
+				1 => "<lable class='label label-default'>未付款</lable>",
+				2 => "<lable class='label label-info'>已付款</lable>",
+				3 => "<lable class='label label-warning'>未发货</lable>",
+				4 => "<lable class='label label-primary'>已发货</lable>",
+				5 => "<lable class='label label-success'>交易成功</lable>",
+				6 => "<lable class='label label-danger'>交易关闭</lable>",
 			][$status];
 		})->sortable();
 //        $grid->paid_at('Paid at');
@@ -103,7 +103,7 @@ class OrderController extends Controller
 //        $grid->closed_at('Closed at');
 //		$grid->user_id('用户id');
 		$grid->user_id('用户名')->display(function ($user_id) {
-			$user=User::find($user_id);
+			$user = User::find($user_id);
 //	        $count = count($comments);
 //	        $user=json_encode($user);
 			return "<a class='label label-warning' href='/admin/users/{$user['id']}'>{$user['name']}</a>";
@@ -126,7 +126,22 @@ class OrderController extends Controller
 //			$actions->disableEdit();
 //			$actions->disableView();
 		});
-		
+		$grid->filter(function ($filter) {
+			// 设置created_at字段的范围查询
+			$filter->between('created_at', '下单时间')->datetime();
+			
+			$filter->equal('status', "订单状态")->select([
+				1 => "未付款 ",
+				2 => "已付款 ",
+//				3 => "未发货 ",
+				4 => "已发货 ",
+				5 => "交易成功 ",
+				6 => "交易关闭	",
+			]);
+			// 关联关系查询
+			$filter->scope('is_posted', "付款未发货订单")->where('status', 2)->doesntHave('postage');
+		});
+
 //		$grid->disableFilter();//筛选
 		$grid->disableCreateButton();//新增
 		$grid->disableExport();//导出
@@ -167,7 +182,12 @@ class OrderController extends Controller
 		$show->postage('快递信息', function ($author) {
 			$author->postage_name("快递名称");
 			$author->postage_code("快递单号");
-			
+			$author->status("状态")->using([
+				"0" => "无信息",
+				"1" => "运输中",
+				"2" => "已收货",
+			]);
+			$author->updated_at("物流更新时间");
 		});
 		return $show;
 	}
@@ -184,9 +204,9 @@ class OrderController extends Controller
 //	    $form->decimal('payment', 'Payment');
 //        $form->switch('payment_type', 'Payment type')->default(1);
 //        $form->decimal('post_fee', 'Post fee');
-        $form->select('status', '订单状态')->default(4)->options([4=>'已发货']);
+		$form->select('status', '订单状态')->default(4)->options([4 => '已发货']);
 //        $form->datetime('paid_at', 'Paid at')->default(date('Y-m-d H:i:s'));
-//        $form->datetime('consigned_at', 'Consigned at')->default(date('Y-m-d H:i:s'));
+        $form->datetime('consigned_at', '发货时间')->default(date('Y-m-d H:i:s'));
 //        $form->datetime('completed_at', 'Completed at')->default(date('Y-m-d H:i:s'));
 //        $form->datetime('closed_at', 'Closed at')->default(date('Y-m-d H:i:s'));
 //        $form->number('user_id', 'User id');

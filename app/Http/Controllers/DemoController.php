@@ -29,10 +29,10 @@ class DemoController extends Controller
 //	static $worker=SnowFlakeIDWorker(1);
 	public static function test()
 	{
-		$date=strtotime(UserCoupon::find(1)->expiry_date." +1 day");
-		$today=time();
+		OrderManager::check_postage_all();
 		
-		return [$today,$date];
+		
+		return Order::with('postage')->get();
 	}
 	
 	public function test0(Request $request)

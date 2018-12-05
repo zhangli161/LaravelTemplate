@@ -72,6 +72,8 @@ Route::group(['middleware' => 'test', 'namespace' => 'api'], function () {
 	Route::get('/order/settlement', 'OrderController@settlement');//订单结算
 	Route::get('/order/create', 'OrderController@create');//生成订单
 	Route::get('/order/my', 'OrderController@my');//我的订单
+	Route::get('/order/getById', 'OrderController@getById');//我的订单
+	
 	
 });
 
