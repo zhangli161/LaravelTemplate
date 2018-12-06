@@ -79,6 +79,7 @@ class OrderController extends Controller
 	}
 	
 	public static function getById(Request $request){
-		
+		$order=Auth::user()->orders()->findOrFail($request->get('id'));
+		return ApiResponse::makeResponse(true, $order, ApiResponse::SUCCESS_CODE);
 	}
 }

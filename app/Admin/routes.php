@@ -20,6 +20,10 @@ Route::group([
 	$router->resource('message_source', MessageSourceController::class);
 	$router->resource('goods', GoodsController::class);
 	$router->resource('goods_sku', GoodsSKUController::class);
+	$router->get('goods_skus/make_benifit', 'GoodsSKUController@benifit');
+	$router->post('goods_skus/make_benifit', 'GoodsSKUController@benifit_post');
+	
+	
 	$router->resource('postage', PostageController::class);
 	$router->resource('spec', GoodsSpecController::class);
 	$router->resource('benefit', GoodsBenefitController::class);

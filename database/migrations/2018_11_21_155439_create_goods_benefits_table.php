@@ -19,6 +19,7 @@ class CreateGoodsBenefitsTable extends Migration
 			$table->string('title', 50)->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
 			$table->string('desc', 255)->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
 			$table->decimal('price')->comment('现价');
+			$table->decimal('show_origin_price')->comment('原价');
 			$table->decimal('origin_price')->comment('原价');
 			$table->dateTime('time_form');
 			$table->dateTime('time_to');

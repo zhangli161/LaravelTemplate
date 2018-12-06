@@ -97,6 +97,21 @@ class OrderManager extends Manager
 	
 	public static function pay(Order $order)
 	{
+		foreach ($order->skus as $sku) {
+			if ($sku->stock_type == 0) {//付款减库存
+				if ($sku->stock > 0) {
+					$sku->stock--;
+					$sku->save();
+					$order->status = 2;
+					$order->save();
+				} else {
+					//库存不足
+					self::cancle($order);
+					//执行退款流程(待实现)
+					
+				}
+			}
+		}
 		return [];
 	}
 	
@@ -115,7 +130,7 @@ class OrderManager extends Manager
 		else {
 			$created_at = strtotime($order->created_at);
 			if (time() - $created_at > 30 * 60) {
-				$order->status = 6;//交易关闭
+				self::cancle($order);//交易关闭
 			}
 		}
 		$order->save();
@@ -136,12 +151,13 @@ class OrderManager extends Manager
 		$result = $postage->status == "2" //已收货
 			&& (strtotime($order->updated_at) - time()) > 7 * 24 * 3600;//收货时间超过一星期
 		if ($result) {
-			$order->status=5;//自动已完成
-			$order->completed_at=now();
+			$order->status = 5;//自动已完成
+			$order->completed_at = now();
 			$order->save();
 		};
 		return $result;
 	}
+	
 	/**
 	 * 检测所有订单的支付状态
 	 *
@@ -160,5 +176,29 @@ class OrderManager extends Manager
 		foreach ($orders as $order) {
 			self::check_postage($order);
 		}
+	}
+	
+	/**
+	 * 取消订单
+	 *
+	 * @param Order $order
+	 */
+	public static function cancle(Order $order)
+	{
+		$skus = $order->skus;
+		//释放库存
+		foreach ($skus as $sku) {
+			if ($sku->stock_type == 1)//1下单减库存
+			{
+				$sku->stock++;
+				$sku->save();
+			}
+		}
+		$order->closed_at = now();
+		$order->status = 6;
+		$order->save();
+		$order->delete();
+		
+		return;
 	}
 }
