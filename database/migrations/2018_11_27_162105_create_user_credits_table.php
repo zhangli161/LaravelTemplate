@@ -15,7 +15,7 @@ class CreateUserCreditsTable extends Migration
     {
         Schema::create('user_credits', function (Blueprint $table) {
             $table->integer('user_id',false,true);
-            $table->decimal('credit');
+            $table->decimal('credit')->comment("积分");
             $table->timestamps();
             
             $table->primary('user_id');

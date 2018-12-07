@@ -60,7 +60,7 @@ class User extends Authenticatable
 	
 	public function credit()
 	{
-		return $this->hasOne(UserCredit::class, 'user_id');
+		return $this->hasOne(UserCredit::class, 'user_id')->withDefault(["credit"=>0.00]);
 	}
 	
 	public function credit_records()

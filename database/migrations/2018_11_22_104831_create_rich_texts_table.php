@@ -15,7 +15,7 @@ class CreateRichTextsTable extends Migration
     {
         Schema::create('rich_texts', function (Blueprint $table) {
             $table->increments('id');
-	        $table->longText('content');
+	        $table->longText('content')->comment("内容");
 	        $table->integer('item_id',false,true);
 	        $table->string('item_type',100);
 	        

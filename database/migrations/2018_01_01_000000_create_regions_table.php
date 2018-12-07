@@ -13,11 +13,11 @@ class CreateRegionsTable extends Migration
 	public function up()
 	{
 		Schema::create('native_place_region', function (Blueprint $table) {
-			$table->integer('region_id', false, true);
-			$table->integer('parentid', false, true);
-			$table->string('region_name', 255)->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
-			$table->tinyInteger('have_children', false, true);
-			$table->integer('order', false, true);
+			$table->integer('region_id', false, true)->comment("地区编码");
+			$table->integer('parentid', false, true)->comment("父地区编码");
+			$table->string('region_name', 255)->charset('utf8mb4')->collation('utf8mb4_unicode_ci')->comment("地区名称");
+			$table->tinyInteger('have_children', false, true)->comment("是否有子地区");
+			$table->integer('order', false, true)->comment("排序");
 			$table->primary('region_id');
 		});
 		

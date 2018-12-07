@@ -19,7 +19,7 @@ class CreateCartsTable extends Migration
 	        $table->integer('spu_id', false, true);//spuid
 	        $table->integer('sku_id', false, true);//skuid
 	        $table->integer('shop_id', false, true)->default(0);//shopid
-	        $table->integer('amount', false, true)->default(0);//商品数量
+	        $table->integer('amount', false, true)->default(0)->comment("商品数量");//商品数量
 				
 	        $table->timestamps();
 	        $table->softDeletes();

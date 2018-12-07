@@ -19,7 +19,6 @@ class CreateFavoritesTable extends Migration
 	        $table->integer('item_id',false,true);
 	        $table->string('item_type',100);
             $table->timestamps();
-	        $table->primary(['item_type','item_id','user_id']);
         });
     }
 

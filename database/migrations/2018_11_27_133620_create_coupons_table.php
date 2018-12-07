@@ -44,5 +44,7 @@ class CreateCouponsTable extends Migration
 	public function down()
 	{
 		Schema::dropIfExists('coupons');
+		Schema::dropIfExists('coupon_skus');
+		
 	}
 }

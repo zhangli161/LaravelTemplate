@@ -16,7 +16,7 @@ class CreateFootPrintsTable extends Migration
         Schema::create('foot_prints', function (Blueprint $table) {
             $table->increments('id');
 	        $table->integer('user_id',false,true);
-	        $table->integer('spu_id',false,true);
+	        $table->integer('spu_id',false,true)->comment("足迹商品id");
 	        $table->timestamps();
         });
     }

@@ -16,13 +16,17 @@ class CreateArticlesTable extends Migration
         Schema::create('articles', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('cate_id',false,true);
-            $table->string("title",255)->collation('utf8mb4_unicode_ci');
-	        $table->string("desc",255)->collation('utf8mb4_unicode_ci')->nullable();
+            $table->string("title",255)->collation('utf8mb4_unicode_ci')
+	            ->comment("标题");
+	        $table->string("desc",255)->collation('utf8mb4_unicode_ci')->nullable()
+		        ->comment("描述");
 //	        $table->longText('content')->collation('utf8mb4_unicode_ci');
-	        $table->string("author",100)->collation('utf8mb4_unicode_ci');
-	        $table->integer('hits',false,true)->default(0);
-			$table->tinyInteger('on_top')->default(0);
-	        $table->string('thumb',255)->nullable();
+	        $table->string("author",100)->collation('utf8mb4_unicode_ci')
+		        ->comment("作者");
+	        $table->integer('hits',false,true)->default(0)
+		        ->comment("点击量");
+			$table->tinyInteger('on_top')->default(0)->comment("是否置顶");
+	        $table->string('thumb',255)->nullable()->comment("封面图片");
 	
 	        $table->timestamps();
         });

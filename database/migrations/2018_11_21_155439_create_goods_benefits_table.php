@@ -16,13 +16,15 @@ class CreateGoodsBenefitsTable extends Migration
 		Schema::create('goods_benefits', function (Blueprint $table) {
 			$table->increments('id');
 			$table->integer('sku_id', false, true);//skuid
-			$table->string('title', 50)->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
-			$table->string('desc', 255)->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
+			$table->string('title', 50)->charset('utf8mb4')->collation('utf8mb4_unicode_ci')
+			->comment("活动标题");
+			$table->string('desc', 255)->charset('utf8mb4')->collation('utf8mb4_unicode_ci')
+				->comment("活动描述");
 			$table->decimal('price')->comment('现价');
-			$table->decimal('show_origin_price')->comment('原价');
+			$table->decimal('show_origin_price')->comment('显示原价');
 			$table->decimal('origin_price')->comment('原价');
-			$table->dateTime('time_form');
-			$table->dateTime('time_to');
+			$table->dateTime('time_form')->comment('活动开始时间');
+			$table->dateTime('time_to')->comment("活动结束时间");
 			$table->tinyInteger('reset', false, true)
 				->comment('结束后恢复原价,0否1是')->default('1');
 			$table->tinyInteger('status', false, false)

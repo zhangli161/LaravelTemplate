@@ -15,7 +15,7 @@ class CreateGoodsSKUSearchWordsTable extends Migration
     {
         Schema::create('goods_sku_search_words', function (Blueprint $table) {
 	        $table->integer('sku_id',false,true);
-	        $table->text('search_words');
+	        $table->text('search_words')->comment("搜索关键词");
             $table->timestamps();
             $table->primary('sku_id');
         });

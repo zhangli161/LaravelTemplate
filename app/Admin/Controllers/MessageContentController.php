@@ -109,9 +109,8 @@ class MessageContentController extends Controller
 		$show->id('Id');
 		$show->title('标题');
 		$show->content('正文')->unescape();
-		$show->send_type('类型');
+		$show->send_type('类型')->using(['0'=>"指定用户","1"=>"群发消息"]);
 		$show->source('消息源', function ($source) {
-			
 			$source->setResource('/admin/message_source');
 			
 			$source->id('Id');

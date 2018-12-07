@@ -15,15 +15,15 @@ class CreatePostagesTable extends Migration
     {
         Schema::create('postage', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name',50);
-            $table->decimal('cost');
+            $table->string('name',50)->comment('名称');
+            $table->decimal('cost')->comment('费用');
             $table->timestamps();
 	        $table->softDeletes();
         });
 	    Schema::create('goods_sku_postage', function (Blueprint $table) {
 		    $table->increments('id');
-		    $table->integer('sku_id',false,true);
-		    $table->integer('postage_id',false,true);
+		    $table->integer('sku_id',false,true)->comment('sku_id');
+		    $table->integer('postage_id',false,true)->comment('邮递方式id');
 		    $table->timestamps();
 		    $table->softDeletes();
 	    });
@@ -36,6 +36,8 @@ class CreatePostagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('postages');
+        Schema::dropIfExists('postage');
+	    Schema::dropIfExists('goods_sku_postage');
+	
     }
 }
