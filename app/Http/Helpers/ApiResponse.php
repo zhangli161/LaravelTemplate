@@ -28,7 +28,7 @@ class ApiResponse
 	const REGISTER_FAILED = 104;     //注册失败
 	const NO_USER = 105;    //未找到用户或用户被封禁
 	const VERTIFY_ERROR = 106;   //验证码验证失败
-	const PHONENUM_DUP = 107;   //手机号重复
+	const USERNAME_DUP = 107;   //用户名重复
 	const PHONENUM_HAS_BEEN_SELECTED = 108; //号码已经被申请
 	const PHONENUM_IS_NOT_EXIST = 109;  //号码不存在
 	const UITIFY_ORDER_FAILED = 110;     //统一下单失败
@@ -60,7 +60,7 @@ class ApiResponse
 		self::REGISTER_FAILED => '注册失败',
 		self::NO_USER => '未找到用户或用户被封禁',
 		self::VERTIFY_ERROR => '验证码验证失败',
-		self::PHONENUM_DUP => '手机号重复',
+		self::USERNAME_DUP => '用户名重复',
 		self::PHONENUM_HAS_BEEN_SELECTED => '号码已经被申请',
 		self::PHONENUM_IS_NOT_EXIST => '号码不存在',
 		self::UITIFY_ORDER_FAILED => '统一下单失败',

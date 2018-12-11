@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers;
 
+use App\Components\ChartManager;
 use App\Models\Order;
 use App\Http\Controllers\Controller;
 use App\User;
@@ -10,6 +11,7 @@ use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Show;
+use Encore\Admin\Widgets\Box;
 
 class OrderController extends Controller
 {
@@ -189,6 +191,7 @@ class OrderController extends Controller
 			]);
 			$author->updated_at("物流更新时间");
 		});
+		
 		return $show;
 	}
 	
@@ -206,7 +209,7 @@ class OrderController extends Controller
 //        $form->decimal('post_fee', 'Post fee');
 		$form->select('status', '订单状态')->default(4)->options([4 => '已发货']);
 //        $form->datetime('paid_at', 'Paid at')->default(date('Y-m-d H:i:s'));
-        $form->datetime('consigned_at', '发货时间')->default(date('Y-m-d H:i:s'));
+		$form->datetime('consigned_at', '发货时间')->default(date('Y-m-d H:i:s'));
 //        $form->datetime('completed_at', 'Completed at')->default(date('Y-m-d H:i:s'));
 //        $form->datetime('closed_at', 'Closed at')->default(date('Y-m-d H:i:s'));
 //        $form->number('user_id', 'User id');
@@ -221,5 +224,69 @@ class OrderController extends Controller
 		$form->text("postage.postage_code", '快递单号');
 		
 		return $form;
+	}
+	
+	public function chart(Content $content)
+	{
+		$data = [
+			
+			"labels" => ["January", "February", "March", "April", "May", "June", "July"],
+			"datasets" => [
+				[
+					"label" => "My First dataset",
+					"fillColor" => "rgba(220,220,220,0.5)",
+					"strokeColor" => "rgba(220,220,220,0.8)",
+					"highlightFill" => "rgba(220,220,220,0.75)",
+					"highlightStroke" => "rgba(220,220,220,1)",
+					"data" => [65, 59, 80, 81, 56, 55, 40]
+				], [
+					"label" => "My Second dataset",
+					"fillColor" => "rgba(151, 187, 205, 0.5)",
+					"strokeColor" => "rgba(151, 187, 205, 0.8)",
+					"highlightFill" => "rgba(151, 187, 205, 0.75)",
+					"highlightStroke" => "rgba(151,187,205,1)",
+					"data" => [28, 48, 40, 19, 86, 27, 90]
+				]]
+		];
+		$options = [
+			//Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
+			"scaleBeginAtZero" => true,
+			
+			//Boolean - Whether grid lines are shown across the chart
+			"scaleShowGridLines" => true,
+			
+			//String - Colour of the grid lines
+			"scaleGridLineColor" => "rgba(0,0,0,.05)",
+			
+			//Number - Width of the grid lines
+			"scaleGridLineWidth" => 1,
+			
+			//Boolean - Whether to show horizontal lines (except X axis)
+			"scaleShowHorizontalLines" => true,
+			
+			//Boolean - Whether to show vertical lines (except Y axis)
+			"scaleShowVerticalLines" => true,
+			
+			//Boolean - If there is a stroke on each bar
+			"barShowStroke" => true,
+			
+			//Number - Pixel width of the bar stroke
+			"barStrokeWidth" => 2,
+			
+			//Number - Spacing between each of the X value sets
+			"barValueSpacing" => 5,
+			
+			//Number - Spacing between data sets within X values
+			"barDatasetSpacing" => 1,
+			
+			//String - A legend template
+			// {{--legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"--}}
+		
+		];
+		return $content
+			->header('Chartjs')
+			->body(new Box('Bar chart',
+				ChartManager::newChart("line", $data, $options
+				)));
 	}
 }

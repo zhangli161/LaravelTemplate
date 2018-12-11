@@ -1,0 +1,27 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Acer
+ * Date: 2018/12/7
+ * Time: 12:01
+ */
+
+namespace App\Components;
+
+
+class ChartManager
+{
+	public static function newChart(string $type = "bar", array $data = [], array $options = [
+		"animation"=>true
+	], float $width = 400, float $height = 400)
+	{
+		return view('admin.chart.chart', [
+			"type" => $type,
+			"data" => json_encode($data),
+			"options" => json_encode($options),
+			"width" => $width,
+			"height" => $height,
+		]);
+	}
+	
+}

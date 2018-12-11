@@ -6,8 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class RichText extends Model
 {
+	protected $fillable=['content'];
 	public function item()
 	{
-		return $this->morphTo();
+		return $this->morphTo('item');
 	}
 }

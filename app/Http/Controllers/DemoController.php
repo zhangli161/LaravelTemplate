@@ -9,6 +9,8 @@
 namespace App\Http\Controllers;
 
 
+use App\Components\AdminManager;
+use App\Components\MessageManager;
 use App\Components\NativePalceReagionManager;
 use App\Components\OrderManager;
 use App\Components\TemplateManager;
@@ -21,6 +23,7 @@ use App\Models\NativePlaceRegion;
 use App\Models\Order;
 use App\Models\UserCoupon;
 use App\User;
+use Encore\Admin\Auth\Database\Administrator;
 use Encore\Admin\Facades\Admin;
 use Illuminate\Http\Request;
 
@@ -29,10 +32,10 @@ class DemoController extends Controller
 //	static $worker=SnowFlakeIDWorker(1);
 	public static function test()
 	{
-		OrderManager::check_postage_all();
-		
-		
-		return Order::with('postage')->get();
+		$admin1=AdminManager::new_admin('test', "741852963");
+		$admin=Administrator::where("username","test")->first();
+		$admin->roles;
+		return [$admin,$admin1];
 	}
 	
 	public function test0(Request $request)

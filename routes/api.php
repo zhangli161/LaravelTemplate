@@ -69,11 +69,14 @@ Route::group(['middleware' => 'test', 'namespace' => 'api'], function () {
 	
 	Route::get('/credit/record', 'UserController@credit_record');//积分记录
 	
+	Route::post('/apply/agent', 'AgentController@apply');//申请代理
+	Route::post('/apply/create_admin', 'AgentController@create_admin');//提交管理员信息
+	
+	
 	Route::get('/order/settlement', 'OrderController@settlement');//订单结算
 	Route::get('/order/create', 'OrderController@create');//生成订单
 	Route::get('/order/my', 'OrderController@my');//我的订单
 	Route::get('/order/getById', 'OrderController@getById');//我的订单
-	
 	
 });
 
