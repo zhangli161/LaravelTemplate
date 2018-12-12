@@ -13,6 +13,7 @@ use App\Components\AdminManager;
 use App\Components\MessageManager;
 use App\Components\NativePalceReagionManager;
 use App\Components\OrderManager;
+use App\Components\PostageMananger;
 use App\Components\TemplateManager;
 use App\Components\UserCreditManager;
 use App\Http\Helpers\SnowFlakeIDWorker;
@@ -21,6 +22,7 @@ use App\Models\Message;
 use App\Models\MessageContent;
 use App\Models\NativePlaceRegion;
 use App\Models\Order;
+use App\Models\Postage;
 use App\Models\UserCoupon;
 use App\User;
 use Encore\Admin\Auth\Database\Administrator;
@@ -32,10 +34,7 @@ class DemoController extends Controller
 //	static $worker=SnowFlakeIDWorker(1);
 	public static function test()
 	{
-		$admin1=AdminManager::new_admin('test', "741852963");
-		$admin=Administrator::where("username","test")->first();
-		$admin->roles;
-		return [$admin,$admin1];
+		return date('Y-m-d', strtotime("+365 days"));;
 	}
 	
 	public function test0(Request $request)

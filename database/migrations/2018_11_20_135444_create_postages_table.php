@@ -27,6 +27,12 @@ class CreatePostagesTable extends Migration
 		    $table->timestamps();
 		    $table->softDeletes();
 	    });
+	    Schema::create('postage_regions', function (Blueprint $table) {
+		    $table->increments('id');
+		    $table->integer('region_id',false,true)->comment('地区编码');
+		    $table->integer('postage_id',false,true)->comment('邮递方式id');
+		    $table->timestamps();
+	    });
     }
 
     /**

@@ -20,15 +20,25 @@ class NativePalceReagionManager extends Manager
 	
 	protected static $Modle = NativePlaceRegion::class;
 	
-	public static function getFullAddress($region_id,string $separator='')
+	public static function getFullAddress($region_id, string $separator = '')
 	{
 		$t = self::getById($region_id);
-		return $t ? self::getFullAddress($t->parentid,$separator) .$separator. $t->region_name : '';
+		return $t ? self::getFullAddress($t->parentid, $separator) . $separator . $t->region_name : '';
 	}
 	
 	public static function getByParentId($parentid)
 	{
 		$datas = self::getModle()->where('parentid', '=', $parentid)->get();
 		return $datas;
+	}
+	
+	public static function getProvienceId($region_id)
+	{
+		$t = self::getById($region_id);
+		if ($t->parentid == '0') {
+			return $t->region_id;
+		} else {
+			return self::getProvienceId($t->parentid);
+		}
 	}
 }

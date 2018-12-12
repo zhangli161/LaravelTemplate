@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-	protected $fillable = ['payment', 'payment_type', 'post_fee', 'user_id','buyer_nick',
+	protected $fillable = ['payment', 'payment_type', 'postage','post_fee', 'user_id','buyer_nick',"buyer_message",
 		'receiver_name','receiver_phone','receiver_region_id','receiver_address'];
 	
 	public function skus()

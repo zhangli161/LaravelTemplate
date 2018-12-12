@@ -76,19 +76,23 @@ class UserCouponManager
 		return false;
 	}
 	
-	public static function canUseCoupon(User $user, $coupon_id, $payment)
+	public static function canUseCoupon(User $user, $user_coupon_id, $payment)
 	{
-		$user_coupon = $user->coupons()->find($coupon_id);
+		$user_coupon = $user->coupons()->find($user_coupon_id);
 		if ($user_coupon) {//优惠券存在
 			$expiry_date = strtotime($user_coupon->expiry_date . " +1 day");
 			$today = time();
-			if ($user_coupon->expiry_date > $today) {//未失效
+			if (strtotime($user_coupon->expiry_date) > $today) {//未失效
 				if ($payment >= $user_coupon->coupon->min_cost) {//到达门槛价格
-					return true;
+					return ["result" => true, "reson" => null];
+				} else {
+					return ["result" => false, "reson" => "未达到门槛价格"];
 				}
+			} else {
+				return ["result" => false, "reson" => "优惠券已过期"];
 			}
 		}
-		return false;
+		return ["result" => false, "reson" => "优惠券不存在"];
 	}
 	
 	//返回打折后金额
@@ -119,4 +123,22 @@ class UserCouponManager
 		return $payment;
 	}
 	
+	public static function paymentAfterUsingCoupon(Coupon $coupon, $payment)
+	{
+//		$coupon = Coupon::find($coupon_id);
+		$now = now();
+		if ($coupon) {//优惠券存在
+			switch ($coupon->type) {
+				case '1'://打折
+					$p = $coupon->value;
+					$payment *= $p;
+					break;
+				case '2'://2代金
+					$value = $coupon->value;
+					$payment -= $value;
+					break;
+			}
+		}
+		return $payment;
+	}
 }

@@ -18,6 +18,8 @@ class CreateOrdersTable extends Migration
 			$table->decimal('payment')->comment('实付商品金额');
 			$table->tinyInteger('payment_type', false, true)
 				->comment('付款方式 1在线支付 2货到付款')->default(1);
+			$table->tinyInteger('postage', false, true)
+				->comment('是否包邮 0不包邮 1包邮')->default(0);
 			$table->decimal('post_fee')->comment('邮费');
 			$table->tinyInteger('status', false, true)
 				->comment("状态：1未付款 2已付款 3未发货 4已发货 5交易成功 6交易关闭")
@@ -34,8 +36,9 @@ class CreateOrdersTable extends Migration
 			$table->string('receiver_address', 20)->comment('收件人详细地址');
 			$table->string('buyer_message', 255)->comment("买家留言")->nullable();
 			$table->string('buyer_nick', 50)->comment("买家昵称");
-			
-			
+			$table->integer('used_user_coupon_id', false, true)
+			->comment("使用的用户优惠券id")->nullable();
+
 			$table->timestamps();
 //			$table->primary('id');
 		});

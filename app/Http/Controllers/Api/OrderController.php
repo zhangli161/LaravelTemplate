@@ -21,32 +21,21 @@ class OrderController extends Controller
 {
 	public static function settlement(Request $request)
 	{
-		$user = Auth::user();
-		if ($request->filled('skus')) {
-			$sku_opts = json_decode($request->skus, true);
-			if ($request->has('form_chart'))
-				foreach ($sku_opts as $sku_opt) {
-					$sku = $user->carts()->find($sku_opt['sku_id']);
-					if ($sku) {
-						$sku->amount -= $sku_opt['amount'];
-						if ($sku->amount <= 0)
-							$sku->delete();
-						else
-							$sku->save();
-					}
-				}
+		if ($request->filled(['skus'])) {
+			$sku_opts = $request->get("skus");
+//			dd( $sku_opts);
+//			return;
+			$user = Auth::user();
 			
-			$result = array();
-			$result['addresses'] = Auth::user()->addresses;
-			$result['skus'] = array();
-			foreach ($sku_opts as $sku_opt) {
-				$sku = GoodsSKU::findOrFail($sku_opt['sku_id']);
-				if (!$sku->postage)
-					$sku->postages;
-				array_push($result['skus'], $sku);
-			}
-			
-			return ApiResponse::makeResponse(true, $result, ApiResponse::SUCCESS_CODE);
+			$order = OrderManager::settlement(
+				$user,
+				$sku_opts,
+				$request->get("user_address_id"),
+				$request->get("coupon_id"),
+				$request->get("buyer_message")
+			);
+//			$order->skus;
+			return ApiResponse::makeResponse(true, $order, ApiResponse::SUCCESS_CODE);
 		} else {
 			return ApiResponse::MissingParam();
 		}
@@ -55,14 +44,15 @@ class OrderController extends Controller
 	public static function create(Request $request)
 	{
 		if ($request->filled(['skus', 'user_address_id'])) {
-			$sku_opts = json_decode($request->skus, true);
+			$sku_opts = $request->get("skus");
 			$user = Auth::user();
 			
 			$order = OrderManager::newOrder(
 				$user,
 				$sku_opts,
-				$request->user_address_id,
-				$request->coupon_id
+				$request->get("user_address_id"),
+				$request->get("coupon_id"),
+				$request->get("buyer_message")
 			);
 			$order->skus;
 			return ApiResponse::makeResponse(true, $order, ApiResponse::SUCCESS_CODE);
