@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\User;
 use Encore\Admin\Auth\Database\Administrator;
 use Encore\Admin\Facades\Admin;
 use Illuminate\Database\Eloquent\Model;
@@ -27,8 +28,13 @@ class Agent extends Model
 	{
 		return $this->belongsTo(Administrator::class, 'admin_id');
 	}
+	
 	public function region()
 	{
 		return $this->belongsTo(NativePlaceRegion::class, 'region_id');
+	}
+	
+	public function users(){
+		return $this->hasMany(User::class,"agent_id");
 	}
 }

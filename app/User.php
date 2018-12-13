@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\Agent;
 use App\Models\Cart;
 use App\Models\Favorite;
 use App\Models\FootPrint;
@@ -81,5 +82,8 @@ class User extends Authenticatable
 	public function orders()
 	{
 		return $this->hasMany(Order::class, 'user_id');
+	}
+	public function agent(){
+		return $this->belongsTo(Agent::class,"agent_id");
 	}
 }

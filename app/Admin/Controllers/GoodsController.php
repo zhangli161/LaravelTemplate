@@ -87,15 +87,15 @@ class GoodsController extends Controller
 		$grid = new Grid(new GoodsSPU);
 		
 		$grid->id('Id');
-		$grid->spu_no('Spu编号');
+		$grid->spu_no('Spu编号')->sortable();
 		$grid->spu_name('商品名称');
 		$grid->desc('描述');
 		$grid->status('上架状态');
 		$grid->thumb('封面图片')->lightbox();;
-		$grid->view('浏览量');
-		$grid->sell('销售量');
+		$grid->view('浏览量')->sortable();
+		$grid->sell('销售量')->sortable();
 //        $grid->postage('是否包邮');
-		$grid->cate_id('分类');
+		$grid->cate_id('分类')->sortable();
 		$grid->created_at('创建时间');
 		$grid->updated_at('更新时间');
 //        $grid->deleted_at('Deleted at');

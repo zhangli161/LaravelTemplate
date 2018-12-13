@@ -6,6 +6,7 @@ use App\Components\MessageManager;
 use App\Components\VertifyManager;
 use App\Components\XCXLoginManager;
 use App\Http\Helpers\ApiResponse;
+use App\Models\Agent;
 use App\Models\UserCredit;
 use App\Models\UserWX;
 use Carbon\Carbon;
@@ -109,8 +110,18 @@ class UserController extends Controller
 	
 	public static function credit_record()
 	{
-		return ApiResponse::makeResponse(false, Auth::user()->credit_records, ApiResponse::SUCCESS_CODE);
+		return ApiResponse::makeResponse(true, Auth::user()->credit_records, ApiResponse::SUCCESS_CODE);
 	}
 	
-	
+	public static function bindAgent(Request $request)
+	{
+		$user = Auth::user();
+		$agent = Agent::findOrFail($request->get("agent_id"));
+		if (!$user->agent) {
+			$user->agent()->associate($agent);
+			$user->save();
+			return ApiResponse::makeResponse(true, Auth::user()->agent, ApiResponse::SUCCESS_CODE);
+		} else
+			return ApiResponse::makeResponse(false, "用户已绑定过其他运营商！", ApiResponse::UNKNOW_ERROR);
+	}
 }

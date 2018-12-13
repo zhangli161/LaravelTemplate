@@ -21,6 +21,7 @@ class CreateUsersTable extends Migration
 	        $table->string('avatar',255)->nullable();
             $table->string('email',255)->nullable();
 	        $table->timestamp('latest_login_time')->nullable();
+	        $table->integer('agent_id',false,true)->nullable();
 	        $table->rememberToken();
             $table->timestamps();
         });

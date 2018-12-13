@@ -119,7 +119,7 @@ class OrderManager extends Manager
 
 //		$order->save();
 //
-			return ["order" => $order, "address" => $user->addresses, "user_coupons" => $coupons];
+		return ["order" => $order, "address" => $user->addresses, "user_coupons" => $coupons];
 	}
 	
 	/**
@@ -155,9 +155,13 @@ class OrderManager extends Manager
 		$order_skus = array();
 		foreach ($sku_opts as $sku_opt) {
 			$sku = GoodsSKU::findOrFail($sku_opt['sku_id']);
+			
 			$amount = $sku_opt['amount'] or 1;
 			$total_price = $amount * $sku->price;
 			$payment += $total_price;
+			
+			//下单计算销量
+			$sku->sell += $amount;
 			
 			array_push($order_skus, [
 				'sku_id' => $sku->id,
