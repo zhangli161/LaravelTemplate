@@ -41,4 +41,9 @@ class NativePalceReagionManager extends Manager
 			return self::getProvienceId($t->parentid);
 		}
 	}
+	
+	public static function getProviences(){
+		$proviences=self::getByParentId(0);
+		return $proviences;
+	}
 }

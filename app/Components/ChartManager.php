@@ -12,9 +12,13 @@ namespace App\Components;
 class ChartManager
 {
 	public static function newChart(string $type = "bar", array $data = [], array $options = [
-		"animation"=>true
+		"animation" => true
 	], float $width = 400, float $height = 400)
 	{
+		if (count($options) == 0) {
+			$options = [];
+		}
+		
 		return view('admin.chart.chart', [
 			"type" => $type,
 			"data" => json_encode($data),
@@ -24,4 +28,13 @@ class ChartManager
 		]);
 	}
 	
+	public static function line(array $labels, string $data_label, array $data, float $width = 400, float $height = 400)
+	{
+		return view('admin.echart.line', [
+			"labels"=>json_encode($labels),
+			"data_label"=>$data_label,
+			"data"=>json_encode($data),
+			"width" => $width,
+			"height" => $height]);
+	}
 }

@@ -36,5 +36,9 @@ Route::group([
 	$router->resource('agent', AgentController::class);
 	$router->resource('apply/agent', AgentApplyController::class);
 	
+	$router->resource('statistic/order', StatisticOrderController::class);
+	$router->any('chart/order/count', "StatisticOrderController@chart1");
+	$router->any('chart/order/payment', "StatisticOrderController@chart2");
+	
 	
 });
