@@ -12,6 +12,7 @@ use App\Models\UserAddress;
 use App\Models\UserCoupon;
 use App\Models\UserCredit;
 use App\Models\UserCreditRecord;
+use App\Models\UserWX;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
@@ -85,5 +86,9 @@ class User extends Authenticatable
 	}
 	public function agent(){
 		return $this->belongsTo(Agent::class,"agent_id");
+	}
+	
+	public function WX(){
+		return $this->hasOne(UserWX::class,'user_id');
 	}
 }

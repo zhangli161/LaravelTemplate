@@ -14,9 +14,11 @@ use App\Components\MessageManager;
 use App\Components\NativePalceReagionManager;
 use App\Components\OrderManager;
 use App\Components\PostageMananger;
+use App\Components\QRManager;
 use App\Components\StatisticManager;
 use App\Components\TemplateManager;
 use App\Components\UserCreditManager;
+use App\Http\Helpers\ApiResponse;
 use App\Http\Helpers\SnowFlakeIDWorker;
 use App\Models\GoodsSKU;
 use App\Models\Message;
@@ -35,7 +37,7 @@ class DemoController extends Controller
 //	static $worker=SnowFlakeIDWorker(1);
 	public static function test()
 	{
-	
+		return QRManager::getXCXQR(1);
 	}
 	
 	//Manager的用法

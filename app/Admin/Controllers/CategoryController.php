@@ -125,6 +125,8 @@ class CategoryController extends Controller
 
         $form->text('name', '类别名称');
 //        $form->number('order', '排序');
+	    $form->image('icon',"图标");
+	    $form->image('image',"图片");
         $form->select('parentid', '父级类别')->options('/api/admin/category');
 
         return $form;

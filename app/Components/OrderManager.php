@@ -9,9 +9,12 @@
 namespace App\Components;
 
 
+use App\Http\Controllers\PayController;
 use App\Models\GoodsSKU;
 use App\Models\Order;
 use App\Http\Helpers\SnowFlakeIDWorker;
+use App\Models\OrderCoupon;
+use App\Models\OrderSKU;
 use App\Models\UserCoupon;
 use App\User;
 
@@ -27,12 +30,16 @@ class OrderManager extends Manager
 	 * 结算订单
 	 * @param User $user
 	 * @param array $sku_opts
+	 * @param bool $save
 	 * @param null $user_address_id
 	 * @param null $coupon_id
+	 * @param string $buyer_message
 	 * @param int $payment_type
-	 * @return Order|array
+	 * @return Order
 	 */
-	public static function settlement(User $user, array $sku_opts, $user_address_id = null, $coupon_id = null, $buyer_message = "", $payment_type = 1)
+	
+	
+	public static function settlement(User $user, array $sku_opts, $save = false, $user_address_id = null, $coupon_id = null, $buyer_message = "", $payment_type = 1)
 	{
 		if ($user_address_id)
 			$user_address = $user->addresses()->findOrFail($user_address_id);
@@ -54,16 +61,23 @@ class OrderManager extends Manager
 				'receiver_phone' => $user_address->mobile,
 				'receiver_region_id' => $user_address->region_id,
 				'receiver_address' => $user_address->address], $order_arr);
-		$order = new Order($order_arr);
+		if ($save) {
+			$order =  Order::create($order_arr);
+		} else {
+			$order = new Order($order_arr);
+			//预生成订单时创建数组
+			$order->skus = array();
+		}
+		//以上为创建订单主体部分
 		
-		$order_skus = array();
+		
 		foreach ($sku_opts as $sku_opt) {
 			$sku = GoodsSKU::findOrFail($sku_opt['sku_id']);
 			$amount = $sku_opt['amount'] or 1;
 			$total_price = $amount * $sku->price;
 			$payment += $total_price;
 			
-			array_push($order_skus, [
+			$order_sku = new OrderSKU([
 				'sku_id' => $sku->id,
 				'sku_name' => $sku->name,
 				'thumb' => $sku->spu->thumb,
@@ -72,54 +86,54 @@ class OrderManager extends Manager
 				'total_price' => $total_price,
 			]);
 			
-			//不包邮时计算邮费
-			if (!$sku->postage) {
-//				$sku_postage = $sku->postages()->findOrFail($sku_opt['postage_id']);
-//				$post_fee += $sku_postage->cost;
-			} else {
+			if ($sku->postage) {
 				//包邮时所有的商品都包邮
 				$postage = 1;
 			}
-			$order->skus = $order_skus;
-
-//			array_push($order->skus, [
-//				'sku_id' => $sku->id,
-//				'sku_name' => $sku->sku_name,
-//				'thumb' => $sku->spu->thumb,
-//				'amount' => $amount,
-//				'price' => $sku->price,
-//				'total_price' => $amount * $sku->price,
-//			]);
-		
-		
+			if ($save) {
+				$order->skus()->associate($order_sku);
+			}
+			else{
+				$skus=$order->skus;
+				array_push($skus,$order_sku);
+				$order->skus=$skus;
+			}
 		}
-		
+		//以上为循环添加所有的sku到订单内
 		
 		$order->payment = $payment;
 		$order->post_fee = $postage == 0 ? $post_fee : 0;
 		$order->postage = $postage;
+		//以上为结算邮费
 		
-		$coupons = $user->coupons;
-		foreach ($coupons as $coupon) {
-			$coupon->can_use = UserCouponManager::canUseCoupon($user, $coupon->id, $order->payment);
-		}
 		
 		if ($coupon_id) {
 			if (UserCouponManager::canUseCoupon($user, $coupon_id, $order->payment)["result"]) {
+				//不保存的情况下结算优惠券，将不消耗优惠券
+				if (!$save)
+					$payment = UserCouponManager::paymentAfterUsingCoupon($user->coupons()->find($coupon_id)->coupon, $order->payment);
+				else
+					$payment = UserCouponManager::useCoupon($user, $coupon_id, $payment = $order->payment, $order->id);
 				
-				$payment = UserCouponManager::paymentAfterUsingCoupon($user->coupons()->find($coupon_id)->coupon, $order->payment);
-				$order->used_user_coupon_id = $coupon_id;
-//				$payment = UserCouponManager::useCoupon($user, $coupon_id, $payment = $order->payment, $order->id);
 				if ($payment) {
+					$order->coupon()->associate(new OrderCoupon([
+						"user_coupon_id" => $coupon_id,
+						"pirce" => $order->payment - $payment
+					]));
+					$t = $payment / $order->payment;
 					$order->payment = $payment;
+					foreach ($order->skus as $order_sku) {
+						$order_sku->total_price *= $t;
+						$order_sku->average_price = $order_sku->total_price / $order_sku->amount;
+					}
 				}
 			}
-//			else return ["aaaaa"];
 		}
-
-//		$order->save();
-//
-		return ["order" => $order, "address" => $user->addresses, "user_coupons" => $coupons];
+		
+		if ($save) {
+			$order->save();
+		}
+		return $order;
 	}
 	
 	/**
@@ -224,13 +238,13 @@ class OrderManager extends Manager
 	}
 	
 	/**
-	 * 支付订单
+	 * 支付后对订单进行处理
 	 *
 	 * @param Order $order
 	 * @return mixed
 	 */
 	
-	public static function pay(Order $order)
+	public static function afterPaid(Order $order)
 	{
 		foreach ($order->skus as $sku) {
 			if ($sku->stock_type == 0) {//付款减库存
@@ -259,16 +273,27 @@ class OrderManager extends Manager
 	public static function check_pay(Order $order)
 	{
 		//查询订单支付状态
-		$result = true;
-		if ($result)
+		$pay = new PayController();
+		$ret = $pay->orderQuery("XCX_" . $order->id);
+		$pay_update = [
+			'openid' => array_get($ret, "openid"),
+			'trade_state' => array_get($ret, "trade_state"),
+			'trade_state_desc' => array_get($ret, "trade_state_desc"),
+		];
+		$result = ($ret['trade_state'] == "SUCCESS");
+		if ($result) {
 			$order->status = 2;//已付款
-		else {
+			$pay_update['total_fee'] = array_get($ret, "total_fee");
+		} else {
 			$created_at = strtotime($order->created_at);
 			if (time() - $created_at > 30 * 60) {
 				self::cancle($order);//交易关闭
 			}
 		}
 		$order->save();
+		$order->xcx_pay()->update($pay_update);
+
+//		return $ret;
 		return $result;
 	}
 	

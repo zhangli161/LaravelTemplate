@@ -78,7 +78,13 @@ Route::group(['middleware' => 'test', 'namespace' => 'api'], function () {
 	Route::post('/order/create', 'OrderController@create');//生成订单
 	Route::get('/order/my', 'OrderController@my');//我的订单
 	Route::get('/order/getById', 'OrderController@getById');//我的订单
+	Route::any('/order/pay', 'OrderController@pay');//微信统一下单订单
 	
+	
+	//得到预支付交易单
+	Route::post('payment/prepay_id', 'WeiXinXPayController@requestPayment');
+//小程序支付回掉
+	Route::any('payment/notify', 'WeiXinXPayController@notifyPay');
 });
 
 //Route::group(['prefix' => 'v1', 'middleware' => 'auth:api'], function(){

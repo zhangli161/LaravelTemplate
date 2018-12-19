@@ -22,7 +22,8 @@ class CreateOrderSKUsTable extends Migration
 		    $table->integer('amount',false,true)
 			    ->comment("数量");
 		    $table->decimal('price')->comment("单价");
-		    $table->decimal('total_price')->comment("总价");
+		    $table->decimal('total_price')->comment("折后总价");
+		    $table->decimal('average_price')->comment("折后平均单价");
 		    $table->tinyInteger('is_buyer_rated',false,true)
 			    ->comment("买家是否评价")->default(0);
 		    $table->timestamps();
@@ -36,6 +37,6 @@ class CreateOrderSKUsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('order_s_k_us');
+        Schema::dropIfExists('order_skus');
     }
 }

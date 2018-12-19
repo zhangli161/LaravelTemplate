@@ -139,6 +139,16 @@ class AgentController extends Controller
 		$show->business('从事行业');
 		$show->store('门店信息');
 		$show->status('Status');
+		$show->qr("推广二维码")->lightbox();
+		$show->qr("推广二维码")->unescape()->as(function ($qr) {
+			if($qr){
+				$html="<image src='$qr'></image>";
+			}
+			else{
+				$html="<a href='/admin/'>生成二维码</a>";
+			}
+			return $html;
+		});
 		$show->created_at('Created at');
 		$show->updated_at('Updated at');
 		

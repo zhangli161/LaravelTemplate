@@ -32,8 +32,11 @@ class CreateTemplateTables extends Migration
 		Schema::create('category', function (Blueprint $table) {
 			$table->integer('id')->autoIncrement();
 			$table->string('name', 255)->charset('utf8mb4')->collation('utf8mb4_unicode_ci')->comment("分类名称");
-			$table->integer('order')->default(0)->comment("排序");;
-			$table->integer('parentid')->default(0)->comment("父类id");;
+			$table->integer('order')->default(0)->comment("排序");
+			$table->string('icon', 255)->charset('utf8mb4')->collation('utf8mb4_unicode_ci')->comment("图标")->nullable();
+			$table->string('image', 255)->charset('utf8mb4')->collation('utf8mb4_unicode_ci')->comment("图片")->nullable();
+			
+			$table->integer('parentid')->default(0)->comment("父类id");
 			
 			$table->timestamps();
 			$table->softDeletes();

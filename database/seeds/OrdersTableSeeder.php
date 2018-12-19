@@ -24,7 +24,7 @@ class OrdersTableSeeder extends Seeder
 				"receiver_name" => "测试订单",
 				"receiver_phone" => "测试订单",
 				"receiver_address" => "测试订单",
-				"receiver_region_id" => \App\Models\NativePlaceRegion::inRandomOrder()->first()->region_id,
+				"receiver_region_id" => \App\Models\NativePlaceRegion::where('have_children','<>','1')->inRandomOrder()->first()->region_id,
 				"buyer_nick"=>"测试"
 			]);
 		}
