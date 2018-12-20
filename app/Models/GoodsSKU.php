@@ -14,11 +14,11 @@ class GoodsSKU extends Model
 		'spu_no', 'sku_name', 'price', 'stock', 'stock_type', 'postage', 'order'
 	];
 	
-	//快递方式关联
-	public function sku_postages()
-	{
-		return $this->hasMany('App\Models\GoodsSKUPostage', 'sku_id', 'id');
-	}
+//	//快递方式关联
+//	public function sku_postages()
+//	{
+//		return $this->hasMany('App\Models\GoodsSKUPostage', 'sku_id', 'id');
+//	}
 	
 	//规格值关联
 	public function sku_spec_values()
@@ -39,12 +39,12 @@ class GoodsSKU extends Model
 			->withTimestamps();
 	}
 	
-	//邮递方式
-	public function postages()
-	{
-		return $this->belongsToMany(Postage::class, 'goods_sku_postage', 'sku_id', 'postage_id')
-			->withTimestamps();
-	}
+//	//邮递方式
+//	public function postages()
+//	{
+//		return $this->belongsToMany(Postage::class, 'goods_sku_postage', 'sku_id', 'postage_id')
+//			->withTimestamps();
+//	}
 	
 	//促销活动
 	public function benefits()

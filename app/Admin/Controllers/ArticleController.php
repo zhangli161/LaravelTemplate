@@ -82,14 +82,19 @@ class ArticleController extends Controller
     {
         $grid = new Grid(new Article);
 
-        $grid->id('Id');
-        $grid->cate_id('分类');
+        $grid->id('Id')->sortable();
+        $grid->cate_id('分类')->display(function ($cate_id) {
+            $cate=Category::find($cate_id);
+            $cate_name=$cate?$cate->name:"未知";
+            return "<label class='label label-primary'>$cate_name</label>";
+
+        })->sortable();
         $grid->title('标题');
         $grid->desc('描述');
 //        $grid->content('内容');
         $grid->author('作者');
-        $grid->hits('点击量');
-        $grid->on_top('置顶');
+        $grid->hits('点击量')->sortable();
+        $grid->on_top('置顶')->sortable();
         $grid->thumb('封面图片');
         $grid->created_at('Created at');
         $grid->updated_at('Updated at');
@@ -134,7 +139,7 @@ class ArticleController extends Controller
     {
         $form = new Form(new Article);
 	
-	    $cates=Category::all(['id','name'])->toArray();
+	    $cates=Category::where("parentid",'3')->get(['id','name'])->toArray();
 	    $options= array_column($cates, 'name','id');
         $form->select('cate_id', '分类')->options($options);
         $form->text('title', '标题');

@@ -20,13 +20,13 @@ class CreatePostagesTable extends Migration
             $table->timestamps();
 	        $table->softDeletes();
         });
-	    Schema::create('goods_sku_postage', function (Blueprint $table) {
-		    $table->increments('id');
-		    $table->integer('sku_id',false,true)->comment('sku_id');
-		    $table->integer('postage_id',false,true)->comment('邮递方式id');
-		    $table->timestamps();
-		    $table->softDeletes();
-	    });
+//	    Schema::create('goods_sku_postage', function (Blueprint $table) {
+//		    $table->increments('id');
+//		    $table->integer('sku_id',false,true)->comment('sku_id');
+//		    $table->integer('postage_id',false,true)->comment('邮递方式id');
+//		    $table->timestamps();
+//		    $table->softDeletes();
+//	    });
 	    Schema::create('postage_regions', function (Blueprint $table) {
 		    $table->increments('id');
 		    $table->integer('region_id',false,true)->comment('地区编码');

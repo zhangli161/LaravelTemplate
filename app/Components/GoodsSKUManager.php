@@ -28,7 +28,7 @@ class GoodsSKUManager extends Manager
 		$sku->benefits;
 		$sku->benefit = $sku->benefits
 			->where('status', '>', 0)->first();
-		$sku->postages;
+//		$sku->postages;
 		$pattern = array('/http:\/\//', '/https:\/\//');
 		foreach ($sku->albums as $album) {
 			$result = preg_match_all($pattern[0], $album->url, $m) || preg_match_all($pattern[1], $album->url, $m);
