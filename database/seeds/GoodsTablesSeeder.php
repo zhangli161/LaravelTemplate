@@ -15,7 +15,7 @@ class GoodsTablesSeeder extends Seeder
 		for ($i = 0; $i < 10; $i++) {
 			$spuid=$i + 1;
 			DB::table('goods_spu')->insert([
-				'id' => $spuid,
+			    'id' => $spuid,
 				'spu_no' => 10000 + $spuid,
 				'spu_name' => '示例spu' . $spuid,
 				'desc' => '描述',
@@ -23,7 +23,7 @@ class GoodsTablesSeeder extends Seeder
 				'thumb' => 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1542696681074&di=edf9b3e94186cb281ca2beedda5f038d&imgtype=0&src=http%3A%2F%2Fpic19.photophoto.cn%2F20110403%2F0037037049381747_b.jpg',
 				'view' => '0',
 				'sell' => '0',
-				'cate_id' => rand(1, 5),
+				'cate_id' => 1,
 			]);
 			DB::table('goods_spu_spec')->insert([
 				'spu_id' =>$spuid,
@@ -53,6 +53,7 @@ class GoodsTablesSeeder extends Seeder
 				'title' => "促销活动",
 				'desc' => '描述',
 				'price' => $sku1_price,
+                'show_origin_price' => 30,
 				'origin_price' => 30,
 				'time_form' => \Carbon\Carbon::tomorrow(),
 				'time_to' => \Carbon\Carbon::create(2100,1,1),

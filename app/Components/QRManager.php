@@ -17,7 +17,7 @@ use Mockery\Exception;
 
 class QRManager
 {
-	public static function getXCXQR($agent_id, $page = 'pages/index/index')
+	public static function getAgentXCXQR($agent_id, $page = 'pages/index/index')
 	{
 		$time =time();
 //			date("Y-m-d_h:i:s");
@@ -65,7 +65,8 @@ class QRManager
 		file_put_contents($filePath, $info);
 //		$url = qiniu_upload($filePath, 'wxqr');  //调用的全局函数
 //		unlink($filePath);
-		return $filePath;
+        $app_url=env("APP_URL");
+		return "$app_url/storage/agentQR/{$filename}.jpg";
 //		dd($info);
 	}
 	

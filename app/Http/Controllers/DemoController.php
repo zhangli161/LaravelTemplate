@@ -35,21 +35,21 @@ use Illuminate\Http\Request;
 class DemoController extends Controller
 {
 //	static $worker=SnowFlakeIDWorker(1);
-	public static function test()
-	{
-		return QRManager::getXCXQR(1);
-	}
-	
-	//Manager的用法
-	public function test1()
-	{
-		$mgr = new TemplateManager();
-		
-		$template = $mgr->createObject();
-		$template = $mgr->set($template, ['value' => 'aaaaa']);
-		$template->save();
-		return $mgr->getList();
-	}
-	
-	
+    public static function test()
+    {
+        NativePalceReagionManager::getChildren([211300]);
+    }
+
+    //Manager的用法
+    public function test1()
+    {
+        $mgr = new TemplateManager();
+
+        $template = $mgr->createObject();
+        $template = $mgr->set($template, ['value' => 'aaaaa']);
+        $template->save();
+        return $mgr->getList();
+    }
+
+
 }

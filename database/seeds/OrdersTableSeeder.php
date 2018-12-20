@@ -11,7 +11,7 @@ class OrdersTableSeeder extends Seeder
 	 */
 	public function run()
 	{
-		for ($i = 1; $i <= 1000; $i++) {
+		for ($i = 1; $i <= 3000; $i++) {
 			DB::table('orders')->insert([
 //		        'id' => $spuid,
 				'payment' => rand(100, 1000) / 10.0,
