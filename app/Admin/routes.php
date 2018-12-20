@@ -38,9 +38,9 @@ Route::group([
     $router->any('agent/getQR/{id}', "AgentController@getQR");
 
 
-    $router->resource('statistic/order', StatisticOrderController::class);
-	$router->any('chart/order/count', "StatisticOrderController@chart1");
-	$router->any('chart/order/payment', "StatisticOrderController@chart2");
+    $router->any('statistic/order', "StatisticOrderController@index");
+	$router->any('chart/order/count', "StatisticOrderController@count_chart");
+	$router->any('chart/order/payment', "StatisticOrderController@payment_chart");
 	
 	
 });

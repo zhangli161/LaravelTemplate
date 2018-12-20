@@ -37,7 +37,11 @@ class DemoController extends Controller
 //	static $worker=SnowFlakeIDWorker(1);
     public static function test()
     {
-        NativePalceReagionManager::getChildren([211300]);
+//        dd(getDatesBetween('2018-12-1','2018-12-31',0));
+//        dd(getDatesBetween('2018-12-1','2018-12-31',1));
+//        dd(getDatesBetween('2018-1-1','2018-12-31',2));
+        dd(getDatesBetween('2016-11-1','2018-11-31',3));
+        dd(getDatesBetween('2016-1-1','2018-12-31',4));
     }
 
     //Manager的用法

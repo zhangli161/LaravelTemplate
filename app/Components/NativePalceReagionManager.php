@@ -46,4 +46,22 @@ class NativePalceReagionManager extends Manager
 		$proviences=self::getByParentId(0);
 		return $proviences;
 	}
+    public static function getProviencesAndCitys(){
+        $regions=NativePlaceRegion::whereIn("have_children",[1,2])->orderBy('region_id')->get();
+        return $regions;
+    }
+	public static function getChildren($region_ids){
+//	    $region=NativePlaceRegion::findOrFail($region_id);
+        if(gettype($region_ids)!=="array")
+            $region_ids=array($region_ids);
+	    $regions=NativePlaceRegion::query()
+            ->whereIn("parentid",$region_ids)->get();
+//	    return $regions->pluck('region_id')->toArray();
+	    if (count($regions)>0){
+	        return $regions->merge(self::getChildren($regions->pluck('region_id')->toArray()));
+        }
+        else{
+	        return $regions;
+        }
+    }
 }
