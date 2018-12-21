@@ -5,18 +5,32 @@ use Illuminate\Support\Facades\DB;
 
 class PostageTablesSeeder extends Seeder
 {
-	/**
-	 * Run the database seeds.
-	 *
-	 * @return void
-	 */
-	public function run()
-	{
-//		DB::table('postage')->insert([
-//			'id' => 1,
-//			'name' => '顺丰',
-//			'cost' => 20.00,
-//		]);
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        DB::table('postage')->insert([
+            'id' => 1,
+            'name' => '江浙沪',
+            'cost' => 6,
+        ]);
+        DB::table("postage_regions")->insert([
+            [
+                "region_id"=>310000,
+                "postage_id"=>1,
+            ],
+            [
+                "region_id"=>320000,
+                "postage_id"=>1,
+            ],
+            [
+                "region_id"=>330000,
+                "postage_id"=>1,
+            ]
+        ]);
 //		DB::table('postage')->insert([
 //			'id' => 2,
 //			'name' => '韵达',
@@ -34,5 +48,5 @@ class PostageTablesSeeder extends Seeder
 //			'sku_id' => '2',
 //			'postage_id' => '1',
 //		]);
-	}
+    }
 }

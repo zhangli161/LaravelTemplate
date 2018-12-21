@@ -116,7 +116,7 @@ class OrderController extends Controller
 //        $grid->receiver_address('Receiver address');
 //        $grid->buyer_message('Buyer message');
 //        $grid->buyer_nick('Buyer nick');
-		$grid->postage("快递处理状态")->display(function ($postage) {
+		$grid->wuliu("快递处理状态")->display(function ($postage) {
 			return $postage ?
 				"<lable class='label label-success'>是</lable>" :
 				"<lable class='label label-danger'>否</lable>";
@@ -181,7 +181,7 @@ class OrderController extends Controller
 		$show->buyer_nick('Buyer nick');
 		$show->created_at('Created at');
 		$show->updated_at('Updated at');
-        $show->xcx_pay('支付信息', function ($show) {
+        $show->wuliu('物流信息', function ($show) {
             $show->postage_name("快递名称");
             $show->postage_code("快递单号");
             $show->status("状态")->using([
@@ -191,7 +191,7 @@ class OrderController extends Controller
             ]);
             $show->updated_at("物流更新时间");
         });
-		$show->postage('快递信息', function ($show) {
+		$show->xcx_pay('支付信息', function ($show) {
 			$show->total_fee("支付金额");
 			$show->out_trade_no("微信外部订单号");
 			$show->trade_state("订单状态");

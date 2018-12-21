@@ -16,7 +16,7 @@ class MenuSeeder extends Seeder
 				'id' => 8,
 				'parent_id' => 0,
 				'order' => 8,
-				'title' => '用户',
+				'title' => '用户管理',
 				'icon' => 'fa-child',
 				'uri' => 'users',
 			],

@@ -23,7 +23,8 @@ class GoodsTablesSeeder extends Seeder
                 'thumb' => 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1542696681074&di=edf9b3e94186cb281ca2beedda5f038d&imgtype=0&src=http%3A%2F%2Fpic19.photophoto.cn%2F20110403%2F0037037049381747_b.jpg',
                 'view' => '0',
                 'sell' => '0',
-                'cate_id' => 1,
+                'cate_id' => \App\Models\Category::query()->where('parentid',1)->inRandomOrder()->first()->id,
+                'sence_cate_id' => \App\Models\Category::query()->where('parentid',2)->inRandomOrder()->first()->id,
             ]);
             DB::table('goods_spu_spec')->insert([
                 'spu_id' => $spuid,

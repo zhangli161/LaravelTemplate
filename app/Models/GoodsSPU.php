@@ -34,4 +34,11 @@ class GoodsSPU extends Model
 	public function favorites(){
 		return $this->morphMany(Favorite::class,'item');
 	}
+
+	public function cate(){
+	    return $this->belongsTo(Category::class,"cate_id");
+    }
+	public function sence(){
+        return $this->belongsTo(Category::class,"sence_cate_id");
+    }
 }

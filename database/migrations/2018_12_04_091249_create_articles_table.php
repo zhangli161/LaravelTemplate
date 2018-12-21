@@ -25,7 +25,7 @@ class CreateArticlesTable extends Migration
 		        ->comment("作者");
 	        $table->integer('hits',false,true)->default(0)
 		        ->comment("点击量");
-			$table->tinyInteger('on_top')->default(0)->comment("是否置顶");
+			$table->integer('order')->default(0)->comment("排序 越大越靠前");
 	        $table->string('thumb',255)->nullable()->comment("封面图片");
 	
 	        $table->timestamps();

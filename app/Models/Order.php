@@ -23,7 +23,7 @@ class Order extends Model
 		return $this->hasOne(OrderCoupon::class, 'order_id');
 	}
 	
-	public function postage()
+	public function wuliu()
 	{
 		return $this->hasOne(OrderPostage::class, 'order_id');
 	}

@@ -95,7 +95,16 @@ class GoodsController extends Controller
 		$grid->view('浏览量')->sortable();
 		$grid->sell('销售量')->sortable();
 //        $grid->postage('是否包邮');
-		$grid->cate_id('分类')->sortable();
+		$grid->cate_id('商品分类')->display(function ($cate_id){
+		    $cate=Category::find($cate_id);
+		    $cate_name=$cate?$cate->name:"未知";
+		    return "<lable class='label label-primary'>$cate_name</lable>";
+        })->sortable();
+        $grid->sence_cate_id('场景分类')->display(function ($cate_id){
+            $cate=Category::find($cate_id);
+            $cate_name=$cate?$cate->name:"未知";
+            return "<lable class='label label-primary'>$cate_name</lable>";
+        })->sortable();
 		$grid->created_at('创建时间');
 		$grid->updated_at('更新时间');
 //        $grid->deleted_at('Deleted at');
@@ -137,10 +146,10 @@ class GoodsController extends Controller
 		
 		$show->detail('商品详情', function ($detail) {
 			$detail->content('图文')->unescape();
-			
 		});
 		
-		$show->cate_id('分类');
+        $show->cate('商品分类')->name()->label();
+        $show->cate('场景分类')->sence()->label();
 		$show->created_at('创建时间');
 		$show->updated_at('更新时间');
 		
@@ -164,11 +173,18 @@ class GoodsController extends Controller
 			$form->switch('status', '上架状态')->rules('required');
 			$form->file('thumb', '封面图片')->rules('required');
 			$options=array();
-			$categories=Category::where('parentid','0')->get();
+			$categories=Category::where('parentid','1')->get();
 			foreach ($categories as $category){
 				$options[$category->id]=$category->name;
 			}
-			$form->select('cate_id', '分类')->options($options);
+			$form->select('cate_id', '商品分类')->options($options);
+
+            $options1=array();
+            $categories=Category::where('parentid','2')->get();
+            foreach ($categories as $category){
+                $options1[$category->id]=$category->name;
+            }
+            $form->select('sence_cate_id', '场景分类')->options($options1);
 			
 		})->tab('图文详情', function ($form) {
 			

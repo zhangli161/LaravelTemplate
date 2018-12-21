@@ -29,7 +29,7 @@ Route::group([
 	$router->resource('richtext', RichTextController::class);
 	$router->resource('coupon', CouponController::class);
 	$router->resource('order', OrderController::class);
-	$router->get('chart/order', 'OrderController@chart');
+//	$router->get('chart/order', 'OrderController@chart');
 	
 	$router->resource('article', ArticleController::class);
 	
