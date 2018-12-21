@@ -1,9 +1,9 @@
 <script src="{{URL::asset('js/echarts.common.min.js')}}"></script>
-<div id="main" style="width:100%;height:{{$height}}px"></div>
+<div id="{{isset($canvas_id)?$canvas_id:"main"}}" style="width:100%;height:{{$height}}px"></div>
 {{--<div id="main" style="width: {{$width}}px;height:{{$height}}px;"></div>--}}
 <script type="text/javascript">
     // 基于准备好的dom，初始化echarts实例
-    var myChart = echarts.init(document.getElementById('main'));
+    var myChart = echarts.init(document.getElementById('{{isset($canvas_id)?$canvas_id:"main"}}'));
 
     // 指定图表的配置项和数据
 
@@ -20,7 +20,7 @@
             }
         },
         legend: {
-            data:['{{$data_label}}']
+            data: ['{{$data_label}}']
         },
         grid: {
             top: 70,
@@ -56,8 +56,8 @@
         ],
         series: [
             {
-                name:'{{$data_label}}',
-                type:'line',
+                name: '{{$data_label}}',
+                type: 'line',
                 smooth: true,
                 data: JSON.parse('{!! $data !!}')
             }

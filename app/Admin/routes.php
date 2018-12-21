@@ -33,14 +33,17 @@ Route::group([
 	
 	$router->resource('article', ArticleController::class);
 	
-	$router->resource('agent', AgentController::class);
+	$router->resource('agents', AgentsController::class);
 	$router->resource('apply/agent', AgentApplyController::class);
-    $router->any('agent/getQR/{id}', "AgentController@getQR");
+    $router->any('agent/getQR/{id}', "AgentsController@getQR");
 
 
     $router->any('statistic/order', "StatisticOrderController@index");
 	$router->any('chart/order/count', "StatisticOrderController@count_chart");
 	$router->any('chart/order/payment', "StatisticOrderController@payment_chart");
-	
-	
+
+    $router->get('agent', "AgentController@index");
+    $router->any('agent/chart/order', "AgentController@orderChart");
+    $router->any('agent/chart/fans', "AgentController@funsChart");
+
 });

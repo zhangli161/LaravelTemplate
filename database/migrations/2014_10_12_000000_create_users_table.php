@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('email',255)->nullable();
 	        $table->timestamp('latest_login_time')->nullable();
 	        $table->integer('agent_id',false,true)->nullable();
+            $table->timestamp('bind_agent_time')->nullable();
 	        $table->rememberToken();
             $table->timestamps();
         });

@@ -10,6 +10,7 @@ namespace App\Http\Controllers;
 
 
 use App\Components\AdminManager;
+use App\Components\AgentManager;
 use App\Components\MessageManager;
 use App\Components\NativePalceReagionManager;
 use App\Components\OrderManager;
@@ -20,6 +21,7 @@ use App\Components\TemplateManager;
 use App\Components\UserCreditManager;
 use App\Http\Helpers\ApiResponse;
 use App\Http\Helpers\SnowFlakeIDWorker;
+use App\Models\Agent;
 use App\Models\GoodsSKU;
 use App\Models\Message;
 use App\Models\MessageContent;
@@ -42,7 +44,8 @@ class DemoController extends Controller
 //        dd(getDatesBetween('2018-1-1','2018-12-31',2));
 //        dd(getDatesBetween('2016-11-1','2018-11-31',3));
 //        dd(getDatesBetween('2016-1-1','2018-12-31',4));
-        return json_encode(["1111",222]);
+        dd(date('Y-m-d',strtotime('last Monday')));
+//        return json_encode(count(AgentManager::getOrders(Agent::find(1))));
     }
 
     //Manager的用法

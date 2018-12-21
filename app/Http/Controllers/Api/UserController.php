@@ -119,6 +119,7 @@ class UserController extends Controller
 		$agent = Agent::findOrFail($request->get("agent_id"));
 		if (!$user->agent) {
 			$user->agent()->associate($agent);
+			$user->bind_agent_time=Carbon::now();
 			$user->save();
 			return ApiResponse::makeResponse(true, Auth::user()->agent, ApiResponse::SUCCESS_CODE);
 		} else
