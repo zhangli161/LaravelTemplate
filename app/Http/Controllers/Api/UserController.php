@@ -66,12 +66,13 @@ class UserController extends Controller
 				};
 			};
 
-            Auth::guard('users')->login($user,true);
+            Auth::login($user);
 		} else
 			Auth::logout();
 		
 		if (Auth::check()) {
 			$user = Auth::user();
+
 			$ret['token'] = $user->createToken('Pi App')->accessToken;
 			$result = true;
 			$status = ApiResponse::SUCCESS_CODE;
