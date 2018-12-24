@@ -40,8 +40,8 @@ Route::group(['namespace' => 'api'], function () {
     Route::post('/login', 'UserController@login');//登录
 
 });
-//Route::group(['middleware' => 'auth:api', 'namespace' => 'api'], function() {
-Route::group(['middleware' => 'test', 'namespace' => 'api'], function () {
+Route::group(['middleware' => 'auth:api', 'namespace' => 'api'], function() {
+//Route::group(['middleware' => 'test', 'namespace' => 'api'], function () {
 
     Route::post('/putUserInfo', 'UserController@putUserInfo');//同步微信信息
 
