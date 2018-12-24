@@ -51,8 +51,7 @@ class UserController extends Controller
 		
 		if ($user and $user->status != 0) {
 			$user = $this->users->firstOrNew(['id' => $user->id]);
-			
-			Auth::login($user);
+
 			if (array_key_exists('rawData', $data)) {
 				$wx_userinfo = XCXLoginManager::decryptData($request, $sessionkey);
 				Log::info('用户信息：' . json_encode($wx_userinfo));
@@ -66,6 +65,8 @@ class UserController extends Controller
 					$ret['wx_userInfo'] = $user_wx;
 				};
 			};
+			
+            Auth::login($user);
 		} else
 			Auth::logout();
 		
