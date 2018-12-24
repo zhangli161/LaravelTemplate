@@ -65,7 +65,7 @@ class UserController extends Controller
 					$ret['wx_userInfo'] = $user_wx;
 				};
 			};
-			
+
             Auth::login($user);
 		} else
 			Auth::logout();
@@ -81,6 +81,7 @@ class UserController extends Controller
 			$ret['error'] = "登录失败" . json_encode($json);
 			$status = ApiResponse::NO_USER;
 		}
+        $ret['wx_return'] = json_encode($json);
 		return ApiResponse::makeResponse(true, $ret, $status);
 	}
 	
