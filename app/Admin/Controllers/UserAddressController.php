@@ -172,7 +172,7 @@ class UserAddressController extends Controller
 		
 		$form->number('user_id', '用户id')->rules('required|min:1');
 		$form->text('name', '收货人姓名')->rules('required|max:20');
-		$form->distpicker(['region_id_1', 'region_id_2', 'region_id'], '请选择省、市、区')->rules('required');
+		$form->distpicker(['region_id_1', 'region_id_2', 'region_id'], '请选择省、市、区')->attribute('data-value-type', 'code')->rules('required');
 		$form->text('address', '详细地址')->rules('required')->rules('required');
 		$form->mobile('mobile', '手机号码')->options(['mask' => '999 9999 9999'])->rules('required');
 		

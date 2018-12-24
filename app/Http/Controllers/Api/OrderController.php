@@ -148,8 +148,31 @@ class OrderController extends Controller
     {
         $pay_c = new PayController();
         $data = $pay_c->getNotifyData();
-        Log::info("支付回调信息：".json_encode($data));
+        Log::info("支付回调信息：" . json_encode($data));
 
         $pay_c->replyNotify();
+    }
+
+    public static function refund(Request $request)
+    {
+        if ($request->filled(['order_id', 'sku_id', "amount"])) {
+            $order = Order::
+//            where('status', '5')-> //只寻找交易成功的订单
+            findOrFail($request->get("order_id"));
+            if (!$order)
+                return ApiResponse::makeResponse(false, "订单不存在或未完成", ApiResponse::UNKNOW_ERROR);
+            $order_sku = $order->skus()->find($request->get("sku_id"));
+            if (!$order_sku)
+                return ApiResponse::makeResponse(false, "订单中不存在该商品", ApiResponse::UNKNOW_ERROR);
+            if ($order_sku->refund_amount + $request->get("amount") > $order_sku->amount)
+                return ApiResponse::makeResponse(false, "商品超过最大退换货次数", ApiResponse::UNKNOW_ERROR);
+            $return = OrderManager::refund($order, $order_sku, $request->get("amount"));
+
+//            $return = [$order, $order_sku];
+            return ApiResponse::makeResponse(true, $return, ApiResponse::SUCCESS_CODE);
+        } else {
+            return ApiResponse::MissingParam();
+        }
+
     }
 }

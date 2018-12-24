@@ -106,6 +106,7 @@ class CreateTemplateTables extends Migration
 				->charset('utf8mb4')->collation('utf8mb4_unicode_ci')
 				->comment("详细地址");
 			$table->string('mobile',20)->comment("手机号码");
+			$table->tinyInteger("is_main")->comment("是否为默认地址")->default(0);
 			
 			$table->timestamps();
 			$table->softDeletes();

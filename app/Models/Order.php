@@ -31,4 +31,8 @@ class Order extends Model
 	public function xcx_pay(){
 		return $this->hasOne(WeiXinXPay::class,'order_id');
 	}
+
+	public function refund(){
+	    return $this->hasMany(OrderRefund::class,'order_id');
+    }
 }

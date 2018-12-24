@@ -46,4 +46,6 @@ Route::group([
     $router->any('agent/chart/order', "AgentController@orderChart");
     $router->any('agent/chart/fans', "AgentController@funsChart");
 
+    $router->resource('refund/order', OrderRefundController::class);
+
 });

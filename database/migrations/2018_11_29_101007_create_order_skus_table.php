@@ -26,6 +26,9 @@ class CreateOrderSKUsTable extends Migration
 		    $table->decimal('average_price')->comment("折后平均单价");
 		    $table->tinyInteger('is_buyer_rated',false,true)
 			    ->comment("买家是否评价")->default(0);
+            $table->integer('refund_amount',false,true)
+                ->comment("已退款数量")->default(0);
+
 		    $table->timestamps();
 	    });
     }
