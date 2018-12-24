@@ -36,7 +36,7 @@ Route::group(['prefix' => 'admin'], function () {
 
 
 //小程序api
-Route::group(['namespace' => 'api'], function () {
+Route::group(['namespace' => 'Api'], function () {
     Route::post('/login', 'UserController@login');//登录
 
 });
