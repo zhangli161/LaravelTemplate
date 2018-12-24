@@ -66,7 +66,7 @@ class UserController extends Controller
 				};
 			};
 
-            Auth::login($user);
+            Auth::guard('users')->login($user,true);
 		} else
 			Auth::logout();
 		
