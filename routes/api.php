@@ -82,6 +82,8 @@ Route::group(['middleware' => 'auth:api', 'namespace' => 'Api'], function () {
     Route::any('/order/pay', 'OrderController@pay');//微信统一下单订单
     Route::any('/order/refund', 'OrderController@refund');//微信统一下单订单
 
+    Route::post('/order/comment', 'OrderController@comment');//微信统一下单订单
+
     Route::get('/article/getByCategory', 'ArticleController@getByCategory');//根据分类获取列表
     Route::get('/article/getOneByCategory', 'ArticleController@getOneByCategory');//根据分类获取单个
     Route::get('/article/getById', 'ArticleController@getById');//根据分类获取单个
@@ -92,6 +94,10 @@ Route::group(['middleware' => 'auth:api', 'namespace' => 'Api'], function () {
     Route::post('/user/address/edit', 'UserAddressController@edit');//编辑地址
 
     Route::post('/user/info', 'UserController@editInfo');//更改用户信息
+
+    Route::get('/category/getByParentid', 'CategoryController@getByParentid');//用户地址
+
+
 });
 Route::any('payment/notify', 'OrderController@notify');//微信支付回调
 

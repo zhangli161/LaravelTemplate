@@ -312,11 +312,26 @@ class OrderManager extends Manager
         $result = $postage->status == "2" //已收货
             && (strtotime($order->updated_at) - time()) > 7 * 24 * 3600;//收货时间超过一星期
         if ($result) {
-            $order->status = 5;//自动已完成
-            $order->completed_at = now();
-            $order->save();
+            $order=self::complete($order);
         };
         return $result;
+    }
+
+    public static function complete(Order $order){
+        $order->status = 5;//已完成
+        $order->completed_at = now();
+        $order->save();
+
+        //计算销量
+        foreach ($order->skus as $order_sku){
+            $sku=$order_sku->sku;
+            if($sku){
+                $spu=$sku->spu;
+                $spu->increment('sell',$order_sku->amount);
+            }
+        }
+
+        return $order;
     }
 
     /**

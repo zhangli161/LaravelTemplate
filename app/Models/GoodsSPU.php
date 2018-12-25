@@ -41,4 +41,7 @@ class GoodsSPU extends Model
 	public function sence(){
         return $this->belongsTo(Category::class,"sence_cate_id");
     }
+    public function comments(){
+	    return $this->hasMany(Comment::class,'sku_id');
+    }
 }

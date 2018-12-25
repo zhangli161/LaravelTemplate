@@ -14,6 +14,7 @@ use App\Components\UserCouponManager;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\PayController;
 use App\Http\Helpers\ApiResponse;
+use App\Models\Comment;
 use App\Models\GoodsSKU;
 use App\Models\Order;
 use App\Models\OrderRefund;
@@ -90,7 +91,7 @@ class OrderController extends Controller
 
     public static function my(Request $request)
     {
-        $datas = Auth::user()->orders();
+        $datas = Auth::user()->orders;
 
         return ApiResponse::makeResponse(true, $datas, ApiResponse::SUCCESS_CODE);
 
@@ -170,13 +171,13 @@ class OrderController extends Controller
 
     public static function refund(Request $request)
     {
-        if ($request->filled(['order_id', 'sku_id', "amount"])) {
+        if ($request->filled(['order_id', 'order_sku_id', "amount"])) {
             $order = Order::
 //            where('status', '5')-> //只寻找交易成功的订单
             findOrFail($request->get("order_id"));
             if (!$order)
                 return ApiResponse::makeResponse(false, "订单不存在或未完成", ApiResponse::UNKNOW_ERROR);
-            $order_sku = $order->skus()->find($request->get("sku_id"));
+            $order_sku = $order->skus()->find($request->get("order_sku_id"));
             if (!$order_sku)
                 return ApiResponse::makeResponse(false, "订单中不存在该商品", ApiResponse::UNKNOW_ERROR);
             if ($order_sku->refund_amount + $request->get("amount") > $order_sku->amount)
@@ -189,5 +190,44 @@ class OrderController extends Controller
             return ApiResponse::MissingParam();
         }
 
+    }
+
+    public static function comment(Request $request)
+    {
+        if ($request->filled(['order_id', 'order_sku_id', "content", 'star_1', 'star_2', 'star_3'])) {
+            $order = Order::
+//            where('status', '5')-> //只寻找交易成功的订单
+            findOrFail($request->get("order_id"));
+            if (!$order)
+                return ApiResponse::makeResponse(false, "订单不存在或未完成", ApiResponse::UNKNOW_ERROR);
+            $order_sku = $order->skus()->find($request->get("order_sku_id"));
+            if (!$order_sku)
+                return ApiResponse::makeResponse(false, "订单中不存在该商品", ApiResponse::UNKNOW_ERROR);
+            if ($order_sku->refund_amount >= $order_sku->amount)
+                return ApiResponse::makeResponse(false, "商品已退货", ApiResponse::UNKNOW_ERROR);
+            if ($order_sku->is_buyer_rated !=0)
+                return ApiResponse::makeResponse(false, "已经评论过了", ApiResponse::UNKNOW_ERROR);
+
+            $comment =
+                new Comment([
+                    'star_1' => $request->get('star_1'),
+                    'star_2' => $request->get('star_2'),
+                    'star_3' => $request->get('star_3'),
+                    'content' => $request->get('content'),
+                    'albums' => $request->filled('albums') ? $request->get('albums') : [],
+                ]);
+//            return $order_sku;
+            $comment->star = ($request->get('star_1') + $request->get('star_2')+ $request->get('star_3')) / 3.0;
+            $comment->sku_id = $order_sku->sku_id;
+            $comment->spu_id = $order_sku->sku->spu_id;
+            $comment->order_sku_id = $order_sku->id;
+            $comment->save();
+            $order_sku->is_buyer_rated=1;
+            $order_sku->save();
+
+            return ApiResponse::makeResponse(true, $comment, ApiResponse::SUCCESS_CODE);
+        } else {
+            return ApiResponse::MissingParam();
+        }
     }
 }
