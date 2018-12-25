@@ -128,4 +128,11 @@ class UserController extends Controller
 		} else
 			return ApiResponse::makeResponse(false, "用户已绑定过其他运营商！", ApiResponse::UNKNOW_ERROR);
 	}
+
+	public static function editInfo(Request $request){
+        $user = Auth::user();
+//        return 111;
+        $user->update($request->all());
+        return ApiResponse::makeResponse(true, $user, ApiResponse::SUCCESS_CODE);
+    }
 }

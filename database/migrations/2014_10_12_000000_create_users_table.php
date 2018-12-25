@@ -23,6 +23,8 @@ class CreateUsersTable extends Migration
 	        $table->timestamp('latest_login_time')->nullable();
 	        $table->integer('agent_id',false,true)->nullable();
             $table->timestamp('bind_agent_time')->nullable();
+            $table->tinyInteger('gender')->default(0)->comment('状态：1男 2女 0保密 ');
+            $table->string('mobile',50)->nullable();
 	        $table->rememberToken();
             $table->timestamps();
         });

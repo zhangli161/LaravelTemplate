@@ -16,6 +16,8 @@ use App\Http\Controllers\PayController;
 use App\Http\Helpers\ApiResponse;
 use App\Models\GoodsSKU;
 use App\Models\Order;
+use App\Models\OrderRefund;
+use App\Models\OrderSKU;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -74,9 +76,22 @@ class OrderController extends Controller
         }
     }
 
+    public static function getCount()
+    {
+        $datas = Auth::user()->orders();
+
+        $status_1_count = $datas->where('status', 1)->count();
+        $status_2_3_4_count = $datas->whereIn('status', [2, 3, 4])->count();
+        $status_5_ids = $datas->where('status', 1)->pluck("id");
+        $commentable_count = OrderSKU::whereIn('order_id', $status_5_ids)->where("is_buyer_rated", 0)->count();
+        $refund_count = OrderRefund::whereIn('order_id', $status_5_ids)->count();
+        return ApiResponse::makeResponse(true, [$status_1_count, $status_2_3_4_count, $commentable_count, $refund_count], ApiResponse::SUCCESS_CODE);
+    }
+
     public static function my(Request $request)
     {
-        $datas = Auth::user()->orders;
+        $datas = Auth::user()->orders();
+
         return ApiResponse::makeResponse(true, $datas, ApiResponse::SUCCESS_CODE);
 
     }

@@ -33,8 +33,11 @@ class GoodsSKUManager extends Manager
 		foreach ($sku->albums as $album) {
 			$result = preg_match_all($pattern[0], $album->url, $m) || preg_match_all($pattern[1], $album->url, $m);
 			if (!$result) {
-				$album->url = Storage::disk('admin')->url($album->url);
-			}
+				$album->url =
+//                    Storage::disk('admin')->url($album->url);
+                env("APP_URL") . "/storage/admin/" . $album->url;
+
+            }
 		};
 		$sku = self::getSpecValuesStr($sku);
 		

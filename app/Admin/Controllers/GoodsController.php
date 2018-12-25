@@ -116,7 +116,8 @@ class GoodsController extends Controller
 			
 			$spu_id = $actions->getKey();
 			// prepend一个操作
-			$actions->prepend("<a href=\"http://localhost/admin/goods_sku?spu_id=$spu_id\" title='子商品'><i class=\"fa fa-align-left\"></i></a>");
+            $app_url=env("APP_URL");
+			$actions->prepend("<a href=\"$app_url/admin/goods_sku?spu_id=$spu_id\" title='子商品'><i class=\"fa fa-align-left\"></i></a>");
 		});
 		
 		return $grid;

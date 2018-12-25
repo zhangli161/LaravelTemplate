@@ -6,6 +6,7 @@
  * Date: 2017/9/28
  * Time: 10:19
  */
+
 namespace App\Models;
 
 use App\User;
@@ -21,13 +22,15 @@ class UserAddress extends Model
 //	protected $primaryKey = 'id';       //主键
     protected $dates = ['deleted_at'];  //软删除
 //	protected $hidden = ['password'];//隐藏的字段
-	
-	public function user()
-	{
-		return $this->belongsTo(User::class,'user_id','id');
-	}
-	public function region()
-	{
-		return $this->belongsTo(NativePlaceRegion::class,'region_id','region_id');
-	}
+    protected $fillable = ['region_id', 'region_id_1', 'region_id_2', 'address', 'mobile', 'is_main','name'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function region()
+    {
+        return $this->belongsTo(NativePlaceRegion::class, 'region_id', 'region_id');
+    }
 }

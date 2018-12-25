@@ -36,12 +36,11 @@ Route::group(['prefix' => 'admin'], function () {
 
 
 //小程序api
-Route::group(['namespace' => 'Api'], function () {
-    Route::post('/login', 'UserController@login');//登录
 
-});
+Route::post('/login', 'Api\UserController@login');//登录
 
-Route::group(['middleware' => 'auth:api', 'namespace' => 'Api'], function() {
+
+Route::group(['middleware' => 'auth:api', 'namespace' => 'Api'], function () {
 //Route::group(['middleware' => 'test', 'namespace' => 'api'], function () {
 
     Route::post('/putUserInfo', 'UserController@putUserInfo');//同步微信信息
@@ -87,6 +86,12 @@ Route::group(['middleware' => 'auth:api', 'namespace' => 'Api'], function() {
     Route::get('/article/getOneByCategory', 'ArticleController@getOneByCategory');//根据分类获取单个
     Route::get('/article/getById', 'ArticleController@getById');//根据分类获取单个
 
+    Route::get('/user/orders/count', 'OrderController@getCount');//用户地址
+
+    Route::get('/user/addresses', 'UserAddressController@my');//用户地址
+    Route::post('/user/address/edit', 'UserAddressController@edit');//编辑地址
+
+    Route::post('/user/info', 'UserController@editInfo');//更改用户信息
 });
 Route::any('payment/notify', 'OrderController@notify');//微信支付回调
 
