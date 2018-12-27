@@ -63,4 +63,8 @@ class GoodsSKU extends Model
 	{
 		return $this->hasOne(GoodsSKUSearchWord::class, 'sku_id');
 	}
+
+    public function favorites(){
+        return $this->morphMany(Favorite::class,'item');
+    }
 }
