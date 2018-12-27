@@ -65,6 +65,9 @@ function getDatesBetween(string $start_date_str, string $end_date_str, int $type
 
 function getRealImageUrl($url)
 {
+    if (!$url) {
+        return '';
+    }
     $pattern = array('/http:\/\//', '/https:\/\//');
     $result = preg_match_all($pattern[0], $url, $m) || preg_match_all($pattern[1], $url, $m);
     if (!$result) {
