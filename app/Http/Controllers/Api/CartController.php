@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api;
 
 
+use App\Components\GoodsSKUManager;
 use App\Components\GoodsSPUManager;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\ApiResponse;
@@ -24,6 +25,7 @@ class CartController extends Controller
         $carts = Auth::user()->carts;
         foreach ($carts as $cart) {
             $cart->spu = GoodsSPUManager::getDetailsForApp($cart->spu, $cart->sku_id);
+            $cart->sku=GoodsSKUManager::getDetailsForApp($cart->sku);
         }
         return ApiResponse::makeResponse(true, $carts, ApiResponse::SUCCESS_CODE);
     }
