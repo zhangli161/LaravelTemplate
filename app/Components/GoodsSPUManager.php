@@ -28,7 +28,7 @@ class GoodsSPUManager extends Manager
         $spu->comment = $spu->comments()->orderBy('created_at', 'desc')->first();
         $spu->comment_count = $spu->comments()->count();
         $spu->is_favorite = $spu->favorites()->where('user_id', Auth::user()->id)->exists();
-        $spu->haopinglv = "无数据";
+        $spu->haopinglv = "0";
         $comments_count = $spu->comments()->count();
         $comments_good_count = $spu->comments()->where('star', '>', 4)->count();
         if ($comments_count > 0) {

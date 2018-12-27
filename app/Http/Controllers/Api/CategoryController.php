@@ -38,6 +38,10 @@ class CategoryController extends Controller
     {
         if ($request->filled(['parentid'])) {
             $ret=Category::where("parentid",$request->get('parentid'))->get();
+            foreach ($ret as $item){
+                $item->image=getRealImageUrl($item->image);
+                $item->icon=getRealImageUrl($item->icon);
+            }
             return ApiResponse::makeResponse(true, $ret, ApiResponse::SUCCESS_CODE);
         } else {
             return ApiResponse::MissingParam();

@@ -26,8 +26,8 @@ class BannerController extends Controller
 //                    Storage::disk('admin')->url($banner->img_url);
                     env("APP_URL") . "/storage/admin/" . $banner->img_url;
             }
-            $banner->result = [preg_match_all($pattern[0], $banner->image, $m),
-                preg_match_all($pattern[1], $banner->image, $m)];
+//            $banner->result = [preg_match_all($pattern[0], $banner->image, $m),
+//                preg_match_all($pattern[1], $banner->image, $m)];
         }
         return ApiResponse::makeResponse(true, $banners, ApiResponse::SUCCESS_CODE);
     }

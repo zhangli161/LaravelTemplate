@@ -13,6 +13,7 @@ use App\Components\GoodsSPUManager;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\ApiResponse;
 use App\Models\Favorite;
+use App\Models\GoodsSKU;
 use App\Models\GoodsSPU;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -20,7 +21,7 @@ use Illuminate\Http\Request;
 class FavoriteController extends Controller
 {
 	const TYPE_TO_CLASS = [
-		'goods' => GoodsSPU::class
+		'goods' => GoodsSKU::class
 	];
 	
 	public static function myFavoriteSPU()

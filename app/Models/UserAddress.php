@@ -33,4 +33,12 @@ class UserAddress extends Model
     {
         return $this->belongsTo(NativePlaceRegion::class, 'region_id', 'region_id');
     }
+    public function region_1()
+    {
+        return $this->belongsTo(NativePlaceRegion::class, 'region_id_1', 'region_id');
+    }
+    public function region_2()
+    {
+        return $this->belongsTo(NativePlaceRegion::class, 'region_id_2', 'region_id');
+    }
 }
