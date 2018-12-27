@@ -16,8 +16,12 @@ class GoodsSKUSpecValue extends Model
 	
 	public function spec()
 	{
-		return $this->belongsTo(GoodsSpec::class,'spec_value_id','id');
+		return $this->belongsTo(GoodsSpec::class,'spec_id','id');
 	}
+    public function spec_value()
+    {
+        return $this->belongsTo(GoodsSpecValue::class,'spec_value_id','id');
+    }
 	public function sku()
 	{
 		return $this->belongsTo(GoodsSKU::class,'sku_id','id');

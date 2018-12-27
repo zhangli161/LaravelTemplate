@@ -354,7 +354,15 @@ class GoodsSKUController extends Controller
 //			dd($search_words);
 			$form->input('search_word.search_words', $search_words);
 		});
-		return $form;
+        $form->saved(function (Form $form) {
+            $sku=$form->model()->id;
+            $spec_values=$sku->sku_spec_values;
+            foreach ($spec_values as $spec_value){
+                $spec_value->spec_id=$spec_value->spec_value->spec_id;
+                $spec_value->save();
+            }
+        });
+            return $form;
 	}
 	
 	public function benifit(Content $content, Request $request)

@@ -38,6 +38,7 @@ class GoodsSKU extends Model
 		return $this->belongsToMany(GoodsSpecValue::class, 'goods_sku_spec_value', 'sku_id', 'spec_value_id')
 			->withTimestamps();
 	}
+
 	
 //	//邮递方式
 //	public function postages()

@@ -160,13 +160,25 @@ class OrderController extends Controller
         }
     }
 
+    public static function checkPayment(Request $request)
+    {
+        $data = new PayController();
+        $order = Order::findOrFail($request->get("order_id"));
+
+        $ret = $data->orderQuery(
+            "XCX_" . $order->id           // 订单号
+        );
+        return ApiResponse::makeResponse(true, $ret, ApiResponse::SUCCESS_CODE);
+
+    }
+
     public static function notify(Request $request)
     {
         $pay_c = new PayController();
         $data = $pay_c->getNotifyData();
         Log::info("支付回调信息：" . json_encode($data));
 
-        $data1=$request->all();
+        $data1 = $request->all();
         Log::info("【 $data1 】");
         $pay_c->replyNotify();
     }
@@ -207,7 +219,7 @@ class OrderController extends Controller
                 return ApiResponse::makeResponse(false, "订单中不存在该商品", ApiResponse::UNKNOW_ERROR);
             if ($order_sku->refund_amount >= $order_sku->amount)
                 return ApiResponse::makeResponse(false, "商品已退货", ApiResponse::UNKNOW_ERROR);
-            if ($order_sku->is_buyer_rated !=0)
+            if ($order_sku->is_buyer_rated != 0)
                 return ApiResponse::makeResponse(false, "已经评论过了", ApiResponse::UNKNOW_ERROR);
 
             $comment =
@@ -219,12 +231,12 @@ class OrderController extends Controller
                     'albums' => $request->filled('albums') ? $request->get('albums') : [],
                 ]);
 //            return $order_sku;
-            $comment->star = ($request->get('star_1') + $request->get('star_2')+ $request->get('star_3')) / 3.0;
+            $comment->star = ($request->get('star_1') + $request->get('star_2') + $request->get('star_3')) / 3.0;
             $comment->sku_id = $order_sku->sku_id;
             $comment->spu_id = $order_sku->sku->spu_id;
             $comment->order_sku_id = $order_sku->id;
             $comment->save();
-            $order_sku->is_buyer_rated=1;
+            $order_sku->is_buyer_rated = 1;
             $order_sku->save();
 
             return ApiResponse::makeResponse(true, $comment, ApiResponse::SUCCESS_CODE);
