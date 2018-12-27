@@ -61,7 +61,9 @@ class UserController extends Controller
 					$user_wx = UserWX::query()->firstOrNew(['user_id' => $user->id]);
 					$user_wx->fill($userinfo)->save();
 					$user->avatar = $user_wx->avatarUrl;
-					$user->save();
+                    $user->name = $user_wx->nickName;
+
+                    $user->save();
 					$ret['wx_userInfo'] = $user_wx;
 				};
 			};
