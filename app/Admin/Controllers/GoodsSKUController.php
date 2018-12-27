@@ -355,7 +355,7 @@ class GoodsSKUController extends Controller
 			$form->input('search_word.search_words', $search_words);
 		});
         $form->saved(function (Form $form) {
-            $sku=$form->model()->id;
+            $sku=GoodsSKU::find($form->model()->id);
             $spec_values=$sku->sku_spec_values;
             foreach ($spec_values as $spec_value){
                 $spec_value->spec_id=$spec_value->spec_value->spec_id;
