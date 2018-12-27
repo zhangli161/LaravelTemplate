@@ -81,7 +81,7 @@ class OrderManager extends Manager
             $order_sku = new OrderSKU([
                 'sku_id' => $sku->id,
                 'sku_name' => $sku->sku_name,
-                'thumb' => $sku->spu->thumb,
+                'thumb' => getRealImageUrl($sku->spu->thumb),
                 'amount' => $amount,
                 'price' => $sku->price,
                 'total_price' => $total_price,
@@ -121,7 +121,7 @@ class OrderManager extends Manager
                         "pirce" => $order->payment - $payment
                     ]));
                     $t = $payment / $order->payment;
-                    $order->payment = $payment;
+                    $order->payment = $payment >= 0 ? $payment : 0;
                     foreach ($order->skus as $order_sku) {
                         $order_sku->total_price *= $t;
                         $order_sku->average_price = $order_sku->total_price / $order_sku->amount;
@@ -180,7 +180,7 @@ class OrderManager extends Manager
             array_push($order_skus, [
                 'sku_id' => $sku->id,
                 'sku_name' => $sku->name,
-                'thumb' => $sku->spu->thumb,
+                'thumb' => getRealImageUrl($sku->spu->thumb),
                 'amount' => $amount,
                 'price' => $sku->price,
                 'total_price' => $total_price,
@@ -198,7 +198,7 @@ class OrderManager extends Manager
             $order->skus()->create([
                 'sku_id' => $sku->id,
                 'sku_name' => $sku->sku_name,
-                'thumb' => $sku->spu->thumb,
+                'thumb' => getRealImageUrl($sku->spu->thumb),
                 'amount' => $amount,
                 'price' => $sku->price,
                 'total_price' => $amount * $sku->price,
@@ -229,7 +229,7 @@ class OrderManager extends Manager
                 $order->used_user_coupon_id = $coupon_id;
 
                 if ($payment) {
-                    $order->payment = $payment;
+                    $order->payment = $payment >= 0 ? $payment : 0;
                 }
             }
         }
@@ -312,22 +312,23 @@ class OrderManager extends Manager
         $result = $postage->status == "2" //已收货
             && (strtotime($order->updated_at) - time()) > 7 * 24 * 3600;//收货时间超过一星期
         if ($result) {
-            $order=self::complete($order);
+            $order = self::complete($order);
         };
         return $result;
     }
 
-    public static function complete(Order $order){
+    public static function complete(Order $order)
+    {
         $order->status = 5;//已完成
         $order->completed_at = now();
         $order->save();
 
         //计算销量
-        foreach ($order->skus as $order_sku){
-            $sku=$order_sku->sku;
-            if($sku){
-                $spu=$sku->spu;
-                $spu->increment('sell',$order_sku->amount);
+        foreach ($order->skus as $order_sku) {
+            $sku = $order_sku->sku;
+            if ($sku) {
+                $spu = $sku->spu;
+                $spu->increment('sell', $order_sku->amount);
             }
         }
 
@@ -381,15 +382,15 @@ class OrderManager extends Manager
     public static function refund(Order $order, OrderSKU $order_sku, int $amount)
     {
 
-        $refund=$order->refund()->create([
+        $refund = $order->refund()->create([
             'order_sku_id' => $order_sku->id,
             'amount' => $amount,
             'reason' => request('reason'),
             'status' => 0,
             'payment' => $amount * $order_sku->average_price,
             'note']);
-        if($refund){
-            $order_sku->increment('refund_amount',$amount);
+        if ($refund) {
+            $order_sku->increment('refund_amount', $amount);
         }
         return $refund;
     }
