@@ -36,12 +36,12 @@ class GoodsSPUManager extends Manager
 //        $spu->is_favorite = $spu->favorites()->where('user_id', Auth::user()->id)->exists();
         $spu->thumb = getRealImageUrl($spu->thumb);
         $spec_matrix = array();
-        $spec_ids = $spu->specs->pluck('id');
-        foreach ($spec_ids as $spec_id) {
-            foreach ($spec_ids as $other_spec_id) {
-
-            }
-        }
+//        $spec_ids = $spu->specs->pluck('id');
+//        foreach ($spec_ids as $spec_id) {
+//            foreach ($spec_ids as $other_spec_id) {
+//
+//            }
+//        }
 
         foreach ($spu->skus as $sku) {
             $sku = GoodsSKUManager::getDetailsForApp($sku);
