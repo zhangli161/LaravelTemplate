@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api;
 
 
+use App\Components\GoodsSKUManager;
 use App\Components\GoodsSPUManager;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\ApiResponse;
@@ -28,7 +29,7 @@ class FavoriteController extends Controller
     {
         $datas = Auth::user()->favorites()->where('item_type', self::TYPE_TO_CLASS['goods'])->paginate();
         foreach ($datas as $data)
-            $data->item = GoodsSPUManager::getDetailsForApp($data->item_id);
+            $data->item = GoodsSKUManager::getDetailsForApp($data->item);
         return ApiResponse::makeResponse(true, $datas, ApiResponse::SUCCESS_CODE);
     }
 
