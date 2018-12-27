@@ -26,7 +26,7 @@ class FavoriteController extends Controller
 	
 	public static function myFavoriteSPU()
 	{
-		$datas = Auth::user()->favorites()->where('item_type', GoodsSPU::class)->paginate();
+		$datas = Auth::user()->favorites()->where('item_type', self::TYPE_TO_CLASS['goods'])->paginate();
 		foreach ($datas as $data)
 			$data->item = GoodsSPUManager::getDetailsForApp($data->item);
 		return ApiResponse::makeResponse(true, $datas, ApiResponse::SUCCESS_CODE);
