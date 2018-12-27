@@ -146,14 +146,14 @@ class OrderManager extends Manager
      * @param int $payment_type
      * @return mixed
      */
-    public static function newOrder(User $user, array $sku_opts, $user_address_id, $coupon_id, $buyer_message = "", $payment_type = 1)
+    public static function newOrder(User $user, array $sku_opts, $user_address_id, $coupon_id, $buyer_message = null, $payment_type = 1)
     {
         $user_address = $user->addresses()->findOrFail($user_address_id);
         $payment = 0.0;
         $post_fee = PostageMananger::getPostageFee($user_address->region_id);
         $postage = 0;
 
-        $order = Order::create([
+        $create = [
             'payment_type' => $payment_type,
             'user_id' => $user->id,
             'buyer_nick' => $user->name,
@@ -164,8 +164,12 @@ class OrderManager extends Manager
             'payment' => $payment,
             "postage" => $postage,//默认不包邮
             'post_fee' => $post_fee,
-            'buyer_message' => $buyer_message
-        ]);
+        ];
+        if ($buyer_message) {
+            $create['buyer_message'] = $buyer_message;
+        }
+
+        $order = Order::create($create);
 
         $order_skus = array();
         foreach ($sku_opts as $sku_opt) {
@@ -260,7 +264,7 @@ class OrderManager extends Manager
                     //库存不足
                     self::cancle($order);
                     //执行退款流程
-                    self::refund($order, $order_sku, $order_sku->amount,"付款后库存不足");
+                    self::refund($order, $order_sku, $order_sku->amount, "付款后库存不足");
                 }
             }
         }
@@ -349,7 +353,7 @@ class OrderManager extends Manager
      */
     public static function check_pay_all()
     {
-        Log::info(time()."订单支付状态查询:");
+        Log::info(time() . "订单支付状态查询:");
         $orders = Order::where('status', 1)->get();
         foreach ($orders as $order) {
             self::check_pay($order);
