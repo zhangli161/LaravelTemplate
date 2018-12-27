@@ -10,6 +10,7 @@ namespace App\Components;
 
 
 use App\Models\GoodsSKU;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class GoodsSKUManager extends Manager
@@ -30,6 +31,7 @@ class GoodsSKUManager extends Manager
             ->where('status', '>', 0)->first();
 //		$sku->postages;
         $sku->favorites_count = $sku->favorites()->count();
+        $sku->is_favorite = $sku->favorites()->where('user_id', Auth::user()->id)->exists();
 
         $pattern = array('/http:\/\//', '/https:\/\//');
         foreach ($sku->albums as $album) {

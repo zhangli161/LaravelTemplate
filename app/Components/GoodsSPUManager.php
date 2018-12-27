@@ -27,14 +27,13 @@ class GoodsSPUManager extends Manager
         $spu->detail;
         $spu->comment = $spu->comments()->orderBy('created_at', 'desc')->first();
         $spu->comment_count = $spu->comments()->count();
-        $spu->is_favorite = $spu->favorites()->where('user_id', Auth::user()->id)->exists();
         $spu->haopinglv = "0";
         $comments_count = $spu->comments()->count();
         $comments_good_count = $spu->comments()->where('star', '>', 4)->count();
         if ($comments_count > 0) {
             $spu->haopinglv = ($comments_good_count / $comments_count * 100) . "%";
         }
-        $spu->is_favorite = $spu->favorites()->where('user_id', Auth::user()->id)->exists();
+//        $spu->is_favorite = $spu->favorites()->where('user_id', Auth::user()->id)->exists();
         $spu->thumb = getRealImageUrl($spu->thumb);
         $spec_matrix = array();
         $spec_ids = $spu->specs->pluck('id');
