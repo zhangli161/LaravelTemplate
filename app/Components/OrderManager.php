@@ -80,7 +80,7 @@ class OrderManager extends Manager
 
             $order_sku = new OrderSKU([
                 'sku_id' => $sku->id,
-                'sku_name' => $sku->name,
+                'sku_name' => $sku->sku_name,
                 'thumb' => $sku->spu->thumb,
                 'amount' => $amount,
                 'price' => $sku->price,
