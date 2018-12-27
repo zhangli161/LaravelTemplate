@@ -27,8 +27,11 @@ class MessageController extends Controller
 			->orderBy('created_at','desc')
 			->get();
 		foreach ($messages as $message){
-			$message->content=$message->content()->first()
-				->content->content;
+            $message->content;
+            $message->content->content;
+//			$message->content()->with('content')->get();
+//                =$message->content()->first()
+//				->content->content;
 			$message->sender=MessageManager::getSender($message);
 		}
 		return ApiResponse::makeResponse(true, $messages,ApiResponse::SUCCESS_CODE);
