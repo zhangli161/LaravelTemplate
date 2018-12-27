@@ -19,6 +19,7 @@ class CreateUserCouponsTable extends Migration
 	        $table->integer('coupon_id',false,true);
 	        $table->date('expiry_date')->comment("有效期至");
 	        $table->text('note')->nullable()->comment("备注");
+            $table->decimal('payment')->comment("总优惠价格")->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
