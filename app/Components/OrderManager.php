@@ -247,7 +247,8 @@ class OrderManager extends Manager
 
     public static function afterPaid(Order $order)
     {
-        foreach ($order->skus as $sku) {
+        foreach ($order->skus as $order_sku) {
+            $sku = GoodsSKU::find($order_sku->sku_id);
             if ($sku->stock_type == 0) {//付款减库存
                 if ($sku->stock > 0) {
                     $sku->stock--;
@@ -257,8 +258,8 @@ class OrderManager extends Manager
                 } else {
                     //库存不足
                     self::cancle($order);
-                    //执行退款流程(待实现)
-
+                    //执行退款流程
+                    self::refund($order, $order_sku, $order_sku->amount,"付款后库存不足");
                 }
             }
         }
@@ -266,7 +267,7 @@ class OrderManager extends Manager
     }
 
     /**
-     * 查询订单支付状态 （待完善）
+     * 查询订单支付状态
      *
      * @param Order $order
      * @return bool
@@ -285,10 +286,14 @@ class OrderManager extends Manager
         if ($result) {
             $order->status = 2;//已付款
             $pay_update['total_fee'] = array_get($ret, "total_fee");
+            $order->save();
+            $order->xcx_pay()->update($pay_update);
+            self::afterPaid($order);
+
         } else {
             $created_at = strtotime($order->created_at);
             if (time() - $created_at > 30 * 60) {
-                self::cancle($order);//交易关闭
+                self::cancle($order);//30分钟交易关闭
             }
         }
         $order->save();
@@ -332,6 +337,8 @@ class OrderManager extends Manager
             }
         }
 
+        //结算佣金  待完成
+
         return $order;
     }
 
@@ -364,9 +371,15 @@ class OrderManager extends Manager
     {
         $skus = $order->skus;
         //释放库存
-        foreach ($skus as $sku) {
-            if ($sku->stock_type == 1)//1下单减库存
+        foreach ($skus as $order_sku) {
+            $sku = GoodsSKU::find($order_sku->sku_id);
+            if ($sku->stock_type == 1 ||
+                ($sku->stock_type == 0 &&
+                    ($order->status == 2 || $order->status == 3)
+                )
+            )//1.下单减库存的商品   2.付款减库存的商品，如果订单已付款未发货
             {
+//                $sku->
                 $sku->stock++;
                 $sku->save();
             }
@@ -379,13 +392,13 @@ class OrderManager extends Manager
         return;
     }
 
-    public static function refund(Order $order, OrderSKU $order_sku, int $amount)
+    public static function refund(Order $order, OrderSKU $order_sku, int $amount, $reason = null)
     {
 
         $refund = $order->refund()->create([
             'order_sku_id' => $order_sku->id,
             'amount' => $amount,
-            'reason' => request('reason'),
+            'reason' => $reason ? $reason : request('reason'),
             'status' => 0,
             'payment' => $amount * $order_sku->average_price,
             'note']);

@@ -165,9 +165,7 @@ class OrderController extends Controller
         $data = new PayController();
         $order = Order::findOrFail($request->get("order_id"));
 
-        $ret = $data->orderQuery(
-            "XCX_" . $order->id           // 订单号
-        );
+        $ret=OrderManager::check_pay($order);
         return ApiResponse::makeResponse(true, $ret, ApiResponse::SUCCESS_CODE);
 
     }
