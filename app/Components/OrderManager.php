@@ -18,6 +18,7 @@ use App\Models\OrderRefund;
 use App\Models\OrderSKU;
 use App\Models\UserCoupon;
 use App\User;
+use Illuminate\Support\Facades\Log;
 
 class OrderManager extends Manager
 {
@@ -348,6 +349,7 @@ class OrderManager extends Manager
      */
     public static function check_pay_all()
     {
+        Log::info(time()."订单支付状态查询:");
         $orders = Order::where('status', 1)->get();
         foreach ($orders as $order) {
             self::check_pay($order);
