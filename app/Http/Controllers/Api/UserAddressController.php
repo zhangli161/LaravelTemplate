@@ -19,7 +19,7 @@ class UserAddressController
     public static function my()
     {
         $user = Auth::user();
-        $ret = $user->addresses()->with(['region','region_1','region_2']);
+        $ret = $user->addresses()->with(['region','region_1','region_2'])->get();
         return ApiResponse::makeResponse(true, $ret, ApiResponse::SUCCESS_CODE);
     }
 
