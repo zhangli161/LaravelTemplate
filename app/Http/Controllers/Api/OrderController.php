@@ -165,7 +165,7 @@ class OrderController extends Controller
         $data = new PayController();
         $order = Order::findOrFail($request->get("order_id"));
 
-        $ret=OrderManager::check_pay($order);
+        $ret = OrderManager::check_pay($order);
         return ApiResponse::makeResponse(true, $ret, ApiResponse::SUCCESS_CODE);
 
     }
@@ -208,7 +208,7 @@ class OrderController extends Controller
     {
         if ($request->filled(['order_id', 'order_sku_id', "content", 'star_1', 'star_2', 'star_3'])) {
             $order = Order::
-//            where('status', '5')-> //只寻找交易成功的订单
+            where('status', '5')-> //只寻找交易成功的订单
             findOrFail($request->get("order_id"));
             if (!$order)
                 return ApiResponse::makeResponse(false, "订单不存在或未完成", ApiResponse::UNKNOW_ERROR);
@@ -241,5 +241,15 @@ class OrderController extends Controller
         } else {
             return ApiResponse::MissingParam();
         }
+    }
+
+    //确认收货
+    public static function confirm(Request $request)
+    {
+        $order = Auth::user()->orders()->whereIn('status', [2, 3, 4])
+            ->findOrFail($request->get('order_id'));
+        $order = OrderManager::complete($order);
+
+        return ApiResponse::makeResponse(true, $order, ApiResponse::SUCCESS_CODE);
     }
 }
