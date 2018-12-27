@@ -20,36 +20,36 @@ use Illuminate\Http\Request;
 
 class FavoriteController extends Controller
 {
-	const TYPE_TO_CLASS = [
-		'goods' => GoodsSKU::class
-	];
-	
-	public static function myFavoriteSPU()
-	{
-		$datas = Auth::user()->favorites()->where('item_type', self::TYPE_TO_CLASS['goods'])->paginate();
-		foreach ($datas as $data)
-			$data->item = GoodsSPUManager::getDetailsForApp($data->item);
-		return ApiResponse::makeResponse(true, $datas, ApiResponse::SUCCESS_CODE);
-	}
-	
-	public static function add(Request $request)
-	{
-		if ($request->filled(['item_id', 'item_type'])) {
-			$favorite = Favorite::query()->firstOrNew([
-				'user_id' => Auth::user()['id'],
-				'item_id' => $request->get('item_id'),
-				'item_type' => self::TYPE_TO_CLASS[$request->get('item_type')],
-			]);
-			if (!$request->has('cancle')) {
-				$favorite->save();
-				$ret = '加入收藏成功';
-			} else {
-				$favorite->delete();
-				$ret = '移出收藏成功';
-			}
-			return ApiResponse::makeResponse(true, $ret, ApiResponse::SUCCESS_CODE);
-		} else
-			return ApiResponse::makeResponse(false, "缺少参数", ApiResponse::MISSING_PARAM);
-		
-	}
+    const TYPE_TO_CLASS = [
+        'goods' => GoodsSKU::class
+    ];
+
+    public static function myFavoriteSPU()
+    {
+        $datas = Auth::user()->favorites()->where('item_type', self::TYPE_TO_CLASS['goods'])->paginate();
+        foreach ($datas as $data)
+            $data->item = GoodsSPUManager::getDetailsForApp($data->item_id);
+        return ApiResponse::makeResponse(true, $datas, ApiResponse::SUCCESS_CODE);
+    }
+
+    public static function add(Request $request)
+    {
+        if ($request->filled(['item_id', 'item_type'])) {
+            $favorite = Favorite::query()->firstOrNew([
+                'user_id' => Auth::user()['id'],
+                'item_id' => $request->get('item_id'),
+                'item_type' => self::TYPE_TO_CLASS[$request->get('item_type')],
+            ]);
+            if (!$request->has('cancle')) {
+                $favorite->save();
+                $ret = '加入收藏成功';
+            } else {
+                $favorite->delete();
+                $ret = '移出收藏成功';
+            }
+            return ApiResponse::makeResponse(true, $ret, ApiResponse::SUCCESS_CODE);
+        } else
+            return ApiResponse::makeResponse(false, "缺少参数", ApiResponse::MISSING_PARAM);
+
+    }
 }
