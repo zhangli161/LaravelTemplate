@@ -106,7 +106,7 @@ class ApiResponse
 				}
 			}
 		}
-		Log::info(__METHOD__ . " response:" . response()->json($rsp));
+//		Log::info(__METHOD__ . " response:" . response()->json($rsp));
 		return Response::create($rsp);
 //		return response()->json($rsp, 200);
 	}
