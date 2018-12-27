@@ -23,90 +23,104 @@ use Illuminate\Support\Facades\Auth;
 
 class GoodsController extends Controller
 {
-	public static function getList(Request $request)
-	{
-		if (gettype($request->get('orderby')) == 'array')
-			$goods = GoodsSPUManager::getList(true,$request->get('orderby'));
-		else
-			$goods = GoodsSPUManager::getList(true,'price', 'asc', 'id', 'desc');
-		foreach ($goods as $good) {
-			$good = GoodsSPUManager::getDetailsForApp($good);
-		}
-		return ApiResponse::makeResponse(true, $goods, ApiResponse::SUCCESS_CODE);
-	}
-	
-	public static function getById(Request $request)
-	{
-		if ($request->filled('spu_id')) {
-			$spu = GoodsSPU::findOrFail($request->spu_id);
-			$foot_print = FootPrint::query()->firstOrCreate([
-				'user_id' => Auth::user()->id,
-				'spu_id' => $spu->id
-			]);
-			$foot_print->updated_at=Carbon::now();
-			$foot_print->save();
-			$count = FootPrint::where('user_id', Auth::user()->id)->count();
-			if ($count > 100) {
-				FootPrint::where('user_id', Auth::user()->id)
-					->orderBy('updated_at', 'asc')
-					->first()->delete();
-			}
-			
-			$spu->view++;
-			$spu->save();
-			$spu = GoodsSPUManager::getDetailsForApp($spu, $request->sku_id);
-			
-			return ApiResponse::makeResponse(true, $spu, ApiResponse::SUCCESS_CODE);
-		} else
-			return ApiResponse::MissingParam();
-		
-	}
-	
-	public static function search(Request $request)
-	{
-		if ($request->filled('search_words')) {
-			$searchwords = explode(' ', $request->get('search_words'));
-			$query = GoodsSKUSearchWord::query();
-			foreach ($searchwords as $searchword) {
-				$query->where('search_words', 'like', "%$searchword%");
-			}
-			$results = $query->paginate();
-			foreach ($results as $result) {
-				$result->spu = GoodsSPUManager::getDetailsForApp($result->sku->spu, $result->sku_id);
-			}
-			return ApiResponse::makeResponse(true, $results, ApiResponse::SUCCESS_CODE);
-		} else
-			return ApiResponse::makeResponse(false, "参数不足", ApiResponse::MISSING_PARAM);
-	}
-	
-	public static function addToCart(Request $request)
-	{
-		if ($request->filled('sku_id')) {
-			$sku = GoodsSKU::findOrFail($request->get('sku_id'));
-			$spu = $sku->spu;
-			$cart = Cart::query()->updateOrCreate([
-				'user_id' => Auth::user()->id,
-				'spu_id' => $spu->id,
-				'sku_id' => $sku->id,
-			], [
-				'amount' => $request->filled('amount') ?
-					$request->get('amount') : 1
-			]);
-			
-			if ($request->has('remove'))
-				$cart->delete();
-			return ApiResponse::makeResponse(true, $cart, ApiResponse::SUCCESS_CODE);
-		} else
-			return ApiResponse::makeResponse(false, "参数不足", ApiResponse::MISSING_PARAM);
-	}
-	
-	public static function footprint()
-	{
-		$footprints = FootPrint::where('user_id', Auth::user()->id)->paginate();
-		foreach ($footprints as $footprint) {
-			$footprint->spu;
-			$footprint->spu = GoodsSPUManager::getDetailsForApp($footprint->spu);
-		}
-		return $footprints;
-	}
+    public static function getList(Request $request)
+    {
+        $query = GoodsSPU::query()->orderby("id", 'desc');
+        if (gettype($request->get('orderby')) == 'array') {
+            $orderby = $request->get('orderby');
+            for ($i = 0; $i < (count($orderby) - 1); $i += 2) {
+                $query
+                    ->orderby($orderby[$i], $orderby[$i + 1]);
+            }
+        }
+//        $goods = GoodsSPUManager::getList(true, $request->get('orderby'));
+//		else
+//			$goods = GoodsSPUManager::getList(true,'price', 'asc', 'id', 'desc');
+        if ($request->filled('cate_id')) {
+            $query->where('cate_id', $request->get('cate_id'));
+        }
+        if ($request->filled('sence_cate_id')) {
+            $query->where('sence_cate_id', $request->get('sence_cate_id'));
+        }
+        $goods = $query->get();
+        foreach ($goods as $good) {
+            $good = GoodsSPUManager::getDetailsForApp($good);
+        }
+        return ApiResponse::makeResponse(true, $goods, ApiResponse::SUCCESS_CODE);
+    }
+
+    public static function getById(Request $request)
+    {
+        if ($request->filled('spu_id')) {
+            $spu = GoodsSPU::findOrFail($request->spu_id);
+            $foot_print = FootPrint::query()->firstOrCreate([
+                'user_id' => Auth::user()->id,
+                'spu_id' => $spu->id
+            ]);
+            $foot_print->updated_at = Carbon::now();
+            $foot_print->save();
+            $count = FootPrint::where('user_id', Auth::user()->id)->count();
+            if ($count > 100) {
+                FootPrint::where('user_id', Auth::user()->id)
+                    ->orderBy('updated_at', 'asc')
+                    ->first()->delete();
+            }
+
+            $spu->view++;
+            $spu->save();
+            $spu = GoodsSPUManager::getDetailsForApp($spu, $request->sku_id);
+
+            return ApiResponse::makeResponse(true, $spu, ApiResponse::SUCCESS_CODE);
+        } else
+            return ApiResponse::MissingParam();
+
+    }
+
+    public static function search(Request $request)
+    {
+        if ($request->filled('search_words')) {
+            $searchwords = explode(' ', $request->get('search_words'));
+            $query = GoodsSKUSearchWord::query();
+            foreach ($searchwords as $searchword) {
+                $query->where('search_words', 'like', "%$searchword%");
+            }
+            $results = $query->paginate();
+            foreach ($results as $result) {
+                $result->spu = GoodsSPUManager::getDetailsForApp($result->sku->spu, $result->sku_id);
+            }
+            return ApiResponse::makeResponse(true, $results, ApiResponse::SUCCESS_CODE);
+        } else
+            return ApiResponse::makeResponse(false, "参数不足", ApiResponse::MISSING_PARAM);
+    }
+
+    public static function addToCart(Request $request)
+    {
+        if ($request->filled('sku_id')) {
+            $sku = GoodsSKU::findOrFail($request->get('sku_id'));
+            $spu = $sku->spu;
+            $cart = Cart::query()->updateOrCreate([
+                'user_id' => Auth::user()->id,
+                'spu_id' => $spu->id,
+                'sku_id' => $sku->id,
+            ], [
+                'amount' => $request->filled('amount') ?
+                    $request->get('amount') : 1
+            ]);
+
+            if ($request->has('remove'))
+                $cart->delete();
+            return ApiResponse::makeResponse(true, $cart, ApiResponse::SUCCESS_CODE);
+        } else
+            return ApiResponse::makeResponse(false, "参数不足", ApiResponse::MISSING_PARAM);
+    }
+
+    public static function footprint()
+    {
+        $footprints = FootPrint::where('user_id', Auth::user()->id)->paginate();
+        foreach ($footprints as $footprint) {
+            $footprint->spu;
+            $footprint->spu = GoodsSPUManager::getDetailsForApp($footprint->spu);
+        }
+        return $footprints;
+    }
 }
