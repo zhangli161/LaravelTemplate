@@ -160,12 +160,14 @@ class OrderController extends Controller
         }
     }
 
-    public static function notify()
+    public static function notify(Request $request)
     {
         $pay_c = new PayController();
         $data = $pay_c->getNotifyData();
         Log::info("支付回调信息：" . json_encode($data));
 
+        $data1=$request->all();
+        Log::info("【 $data1 】");
         $pay_c->replyNotify();
     }
 

@@ -13,7 +13,7 @@ class PayController
 		'miniapp_id' => 'wxda6df008e0971806',             // 小程序APPID
 		'mch_id' => '1498279392',             // 微信商户号
 		'key' => 'ElectroCirkel91330500MA28C69G8NC',                // 微信支付签名秘钥
-		'notify_url' => 'localhost',
+		'notify_url' => '',
 //			'cert_client' => './apiclient_cert.pem',        // 客户端证书路径，退款时需要用到
 //			'cert_key' => './apiclient_key.pem',            // 客户端秘钥路径，退款时需要用到
 	];
@@ -58,7 +58,7 @@ class PayController
 	{
 		$this->appid = env("WX_APP_ID");
 		$this->mch_id =env("WX_MCH_ID");;
-		$this->notify_url = $this->config['notify_url'];
+		$this->notify_url = env('APP_URL')."/api/payment/notify";
 		$this->key = env("WX_API_KEY");;
 	}
 	
