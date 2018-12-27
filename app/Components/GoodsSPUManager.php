@@ -35,7 +35,7 @@ class GoodsSPUManager extends Manager
             $spu->haopinglv = ($comments_good_count / $comments_count * 100) . "%";
         }
         $spu->is_favorite = $spu->favorites()->where('user_id', Auth::user()->id)->exists();
-
+        $spu->thumb = getRealImageUrl($spu->thumb);
         $spec_matrix = array();
         $spec_ids = $spu->specs->pluck('id');
         foreach ($spec_ids as $spec_id) {

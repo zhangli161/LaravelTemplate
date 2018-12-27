@@ -80,7 +80,8 @@ Route::group(['middleware' => 'auth:api', 'namespace' => 'Api'], function () {
     Route::get('/order/my', 'OrderController@my');//我的订单
     Route::get('/order/getById', 'OrderController@getById');//根据id获取订单
     Route::any('/order/pay', 'OrderController@pay');//微信统一下单订单
-    Route::any('/order/refund', 'OrderController@refund');//微信统一下单订单
+
+    Route::post('/order/refund', 'OrderController@refund');//申请退款
 
     Route::post('/order/comment', 'OrderController@comment');//微信统一下单订单
 
