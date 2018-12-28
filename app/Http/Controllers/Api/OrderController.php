@@ -104,9 +104,11 @@ class OrderController extends Controller
 
     public static function getById(Request $request)
     {
-        $order = Auth::user()->orders()->with(["skus","coupon", "wuliu", "xcx_pay"])->findOrFail($request->get('id'));
-        $order->region_str=NativePalceReagionManager::getFullAddress($order->receiver_region_id);
-//        $order->region_str=NativePalceReagionManager::getFullAddress($order->receiver_region_id);
+        $order = Auth::user()->orders()->with(["skus", "coupon", "wuliu", "xcx_pay"])->findOrFail($request->get('id'));
+        $order->region_str = NativePalceReagionManager::getFullAddress($order->receiver_region_id);
+        $order->skus_total_price = $order->skus->sum(function ($sku) {
+            return $sku->amount * $sku->price;
+        });
 
         return ApiResponse::makeResponse(true, $order, ApiResponse::SUCCESS_CODE);
     }
