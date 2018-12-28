@@ -99,9 +99,9 @@ Route::group(['middleware' => 'auth:api', 'namespace' => 'Api'], function () {
 
     Route::post('/user/info', 'UserController@editInfo');//更改用户信息
 
-    Route::get('/category/getByParentid', 'CategoryController@getByParentid');//用户地址
+    Route::get('/category/getByParentid', 'CategoryController@getByParentid');//根据父分类获得子分类
 
-
+    Route::get('/module/all', 'ModuleController@getList');//首页模块
 });
 Route::any('payment/notify', 'OrderController@notify');//微信支付回调
 

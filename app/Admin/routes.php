@@ -49,11 +49,12 @@ Route::group([
 
     $router->any('statistic/refund', "OrderRefundController@getGrid");
 
-
     $router->get('agent', "AgentController@index");
     $router->any('agent/chart/order', "AgentController@orderChart");
     $router->any('agent/chart/fans', "AgentController@funsChart");
 
     $router->resource('refund/order', OrderRefundController::class);
+
+    $router->resource('module', ModuleController::class);
 
 });
