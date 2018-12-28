@@ -113,6 +113,13 @@ class OrderController extends Controller
         return ApiResponse::makeResponse(true, $order, ApiResponse::SUCCESS_CODE);
     }
 
+    public static function cancle(Request $request)
+    {
+        $order = Auth::user()->orders()->findOrFail($request->get('id'));
+        OrderManager::cancle($order);
+
+        return ApiResponse::makeResponse(true, $order, ApiResponse::SUCCESS_CODE);
+    }
     public static function pay(Request $request)
     {
         $data = new PayController();

@@ -58,7 +58,7 @@ Route::group(['middleware' => 'auth:api', 'namespace' => 'Api'], function () {
     Route::get('/goods/search', 'GoodsController@search');//搜索
     Route::post('/goods/addtocart', 'GoodsController@addToCart');//添加至购物车
     Route::get('/cart', 'CartController@myCart');//我的购物车
-    Route::post('/cart/cancle', 'CartController@myCart');//我的购物车
+    Route::post('/cart/cancle', 'CartController@cancle');//批量取消
 
     Route::get('/coupon', 'CouponController@getList');//所有优惠券
     Route::post('/coupon/buy', 'CouponController@buy');//购买
@@ -66,6 +66,8 @@ Route::group(['middleware' => 'auth:api', 'namespace' => 'Api'], function () {
 
     Route::get('/favorite/my/goods', 'FavoriteController@myFavoriteSPU');//我的收藏
     Route::post('/favorite/add', 'FavoriteController@add');//收藏
+    Route::post('/favorite/cancle', 'FavoriteController@cancle');//批量取消
+
 
     Route::get('/footprint', 'GoodsController@footprint');//足迹
 

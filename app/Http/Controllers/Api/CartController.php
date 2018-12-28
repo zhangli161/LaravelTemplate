@@ -52,7 +52,9 @@ class CartController extends Controller
     public static function cancle(Request $request)
     {
         if (gettype($request->filled('ids') == "array")) {
-            foreach ($request->get('ids') as $id){
+            $ids=array($request->get('ids'));
+
+            foreach ($ids as $id){
                 $cart=Cart::find($id);
                 $cart->delete();
             }
