@@ -91,7 +91,11 @@ class OrderController extends Controller
 
     public static function my(Request $request)
     {
-        $datas = Auth::user()->orders;
+        $query = Auth::user()->orders()->orderBy("created_at", 'desc')->with(["skus", "wuliu", "xcx_pay"]);
+        if ($request->filled('status')) {
+            $query->where("status", $request->get('status'));
+        }
+        $datas = $query->get();
 
         return ApiResponse::makeResponse(true, $datas, ApiResponse::SUCCESS_CODE);
 
