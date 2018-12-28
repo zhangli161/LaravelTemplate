@@ -47,7 +47,15 @@ Route::group([
     $router->any('chart/goods/count', "StatisticGoodsController@count_chart");
     $router->any('chart/goods/payment', "StatisticGoodsController@payment_chart");
 
+    //退款统计
     $router->any('statistic/refund', "OrderRefundController@getGrid");
+
+    //财务统计
+    $router->any('statistic/finance', "StatisticFinanceController@index");
+
+    //用户统计
+    $router->any('statistic/user', "StatisticUserController@index");
+
 
     $router->get('agent', "AgentController@index");
     $router->any('agent/chart/order', "AgentController@orderChart");

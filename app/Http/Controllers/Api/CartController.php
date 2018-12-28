@@ -52,13 +52,13 @@ class CartController extends Controller
     public static function cancle(Request $request)
     {
         if (gettype($request->filled('ids') == "array")) {
-            $ids=array($request->get('ids'));
+            $ids = $request->get('ids');
 
-            foreach ($ids as $id){
-                $cart=Cart::find($id);
+            foreach ($ids as $id) {
+                $cart = Cart::find($id);
                 $cart->delete();
             }
-            return ApiResponse::makeResponse(true,"删除成功", ApiResponse::SUCCESS_CODE);
+            return ApiResponse::makeResponse(true, "删除成功", ApiResponse::SUCCESS_CODE);
 
         } else
             return ApiResponse::makeResponse(false, "缺少参数或格式不正确", ApiResponse::MISSING_PARAM);

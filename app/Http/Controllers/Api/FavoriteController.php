@@ -55,7 +55,7 @@ class FavoriteController extends Controller
     
     public static function cancle(Request $request){
         if (gettype($request->filled('ids') == "array")) {
-            $ids=array($request->get('ids'));
+            $ids=$request->get('ids');
             foreach ($ids as $id){
                 $favorite=Favorite::find($id);
                 $favorite->delete();
