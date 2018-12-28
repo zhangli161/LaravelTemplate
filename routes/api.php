@@ -58,6 +58,7 @@ Route::group(['middleware' => 'auth:api', 'namespace' => 'Api'], function () {
     Route::get('/goods/search', 'GoodsController@search');//搜索
     Route::post('/goods/addtocart', 'GoodsController@addToCart');//添加至购物车
     Route::get('/cart', 'CartController@myCart');//我的购物车
+    Route::post('/cart/cancle', 'CartController@myCart');//我的购物车
 
     Route::get('/coupon', 'CouponController@getList');//所有优惠券
     Route::post('/coupon/buy', 'CouponController@buy');//购买
@@ -82,7 +83,6 @@ Route::group(['middleware' => 'auth:api', 'namespace' => 'Api'], function () {
     Route::any('/order/pay', 'OrderController@pay');//微信统一下单订单
     Route::any('/order/checkPay', 'OrderController@checkPayment');//确认付款情况
     Route::post('/order/confirm', 'OrderController@confirm');//确认收货
-
 
     Route::post('/order/refund', 'OrderController@refund');//申请退款
 

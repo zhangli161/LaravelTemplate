@@ -16,7 +16,7 @@ use App\Http\Helpers\ApiResponse;
 use App\Models\Cart;
 use App\Models\GoodsSPU;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
@@ -25,7 +25,7 @@ class CartController extends Controller
         $carts = Auth::user()->carts;
         foreach ($carts as $cart) {
             $cart->spu = GoodsSPUManager::getDetailsForApp($cart->spu, $cart->sku_id);
-            $cart->sku=GoodsSKUManager::getDetailsForApp($cart->sku);
+            $cart->sku = GoodsSKUManager::getDetailsForApp($cart->sku);
         }
         return ApiResponse::makeResponse(true, $carts, ApiResponse::SUCCESS_CODE);
     }
@@ -46,6 +46,20 @@ class CartController extends Controller
             $ret = '移出购物车成功';
         }
         return ApiResponse::makeResponse(true, $ret, ApiResponse::SUCCESS_CODE);
+
+    }
+
+    public static function cancle(Request $request)
+    {
+        if (gettype($request->filled('ids') == "array")) {
+            foreach ($request->get('ids') as $id){
+                $cart=Cart::find($id);
+                $cart->delete();
+            }
+            return ApiResponse::makeResponse(true,"删除成功", ApiResponse::SUCCESS_CODE);
+
+        } else
+            return ApiResponse::makeResponse(false, "缺少参数或格式不正确", ApiResponse::MISSING_PARAM);
 
     }
 }

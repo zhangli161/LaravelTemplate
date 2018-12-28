@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api;
 
 
+use App\Components\NativePalceReagionManager;
 use App\Components\OrderManager;
 use App\Components\UserCouponManager;
 use App\Http\Controllers\Controller;
@@ -103,7 +104,10 @@ class OrderController extends Controller
 
     public static function getById(Request $request)
     {
-        $order = Auth::user()->orders()->with(["skus", "wuliu", "xcx_pay"])->findOrFail($request->get('id'));
+        $order = Auth::user()->orders()->with(["skus","coupon", "wuliu", "xcx_pay"])->findOrFail($request->get('id'));
+        $order->region_str=NativePalceReagionManager::getFullAddress($order->receiver_region_id);
+//        $order->region_str=NativePalceReagionManager::getFullAddress($order->receiver_region_id);
+
         return ApiResponse::makeResponse(true, $order, ApiResponse::SUCCESS_CODE);
     }
 
