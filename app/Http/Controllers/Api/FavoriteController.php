@@ -51,6 +51,18 @@ class FavoriteController extends Controller
             return ApiResponse::makeResponse(true, $ret, ApiResponse::SUCCESS_CODE);
         } else
             return ApiResponse::makeResponse(false, "缺少参数", ApiResponse::MISSING_PARAM);
+    }
+    
+    public static function cancle(Request $request){
+        if (gettype($request->filled('ids') == "array")) {
+            foreach ($request->get('ids') as $id){
+                $favorite=Favorite::find($id);
+                $favorite->delete();
+            }
+            return ApiResponse::makeResponse(true,"删除成功", ApiResponse::SUCCESS_CODE);
+
+        } else
+            return ApiResponse::makeResponse(false, "缺少参数或格式不正确", ApiResponse::MISSING_PARAM);
 
     }
 }
