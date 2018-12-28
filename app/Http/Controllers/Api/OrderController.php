@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api;
 
 
+use App\Components\GoodsSKUManager;
 use App\Components\NativePalceReagionManager;
 use App\Components\OrderManager;
 use App\Components\UserCouponManager;
@@ -82,10 +83,14 @@ class OrderController extends Controller
     {
         $datas = Auth::user()->orders();
 
-        $status_1_count = $datas->where('status', 1)->count();
-        $status_2_3_4_count = $datas->whereIn('status', [2, 3, 4])->count();
-        $status_5_ids = $datas->where('status', 1)->pluck("id");
-        $commentable_count = OrderSKU::whereIn('order_id', $status_5_ids)->where("is_buyer_rated", 0)->count();
+        $status_1_count = Auth::user()->orders()->where('status', 1)->count();
+        $status_2_3_4_count = Auth::user()->orders()->whereIn('status', [2, 3, 4])->count();
+        $status_5_ids = Auth::user()->orders()->where('status', 1)->pluck("id");
+        $orders = Auth::user()->orders;
+        $commentable_count = OrderSKU::whereIn("order_id", $orders->pluck("id")->toArray())
+            ->doesntHave("comment")->count();
+
+//            OrderSKU::whereIn('order_id', $status_5_ids)->where("is_buyer_rated", 0)->count();
         $refund_count = OrderRefund::whereIn('order_id', $status_5_ids)->count();
         return ApiResponse::makeResponse(true, [$status_1_count, $status_2_3_4_count, $commentable_count, $refund_count], ApiResponse::SUCCESS_CODE);
     }
@@ -94,13 +99,16 @@ class OrderController extends Controller
     {
         $query = Auth::user()->orders()->orderBy("created_at", 'desc')->with(["skus", "wuliu", "xcx_pay"]);
         if ($request->filled('status')) {
-            $query->where("status", $request->get('status'));
+            if ($request->get('status') == "not_pay")
+                $query->where("status", 1);
+            if ($request->get('status') == "paid")
+                $query->whereIn("status", [2, 3, 4]);
         }
         $datas = $query->get();
 
         return ApiResponse::makeResponse(true, $datas, ApiResponse::SUCCESS_CODE);
-
     }
+
 
     public static function getById(Request $request)
     {
@@ -120,6 +128,7 @@ class OrderController extends Controller
 
         return ApiResponse::makeResponse(true, $order, ApiResponse::SUCCESS_CODE);
     }
+
     public static function pay(Request $request)
     {
         $data = new PayController();
@@ -220,6 +229,18 @@ class OrderController extends Controller
         }
 
     }
+
+    public static function getCommentableSKUS(Request $request)
+    {
+        $orders = Auth::user()->orders;
+        $order_skus = OrderSKU::whereIn("order_id", $orders->pluck("id")->toArray())
+            ->doesntHave("comment")->order_by("created_at",'desc')->get();
+        foreach ($order_skus as $order_sku) {
+            $order_sku->sku = GoodsSKUManager::getDetailsForApp($order_sku->sku, true);
+        }
+        return ApiResponse::makeResponse(true, $order_skus, ApiResponse::SUCCESS_CODE);
+    }
+
 
     public static function comment(Request $request)
     {
