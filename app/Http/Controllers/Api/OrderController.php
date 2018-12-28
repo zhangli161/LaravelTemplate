@@ -232,7 +232,7 @@ class OrderController extends Controller
 
     public static function getCommentableSKUS(Request $request)
     {
-        $orders = Auth::user()->orders;
+        $orders = Auth::user()->orders()->where('status',5);
         $order_skus = OrderSKU::whereIn("order_id", $orders->pluck("id")->toArray())
             ->doesntHave("comment")->orderBy("created_at", 'desc')->get();
         foreach ($order_skus as $order_sku) {

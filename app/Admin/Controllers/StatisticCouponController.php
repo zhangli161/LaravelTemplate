@@ -9,6 +9,7 @@ use App\Models\GoodsSKU;
 use App\Models\GoodsSPU;
 use App\Models\NativePlaceRegion;
 use App\Models\Order;
+use App\Models\OrderCoupon;
 use App\Models\OrderRefund;
 use App\Models\OrderSKU;
 use App\Models\StatisticOrder;
@@ -55,14 +56,15 @@ class StatisticCouponController extends Controller
 
         $coupons = Coupon::with(["user_coupons"])->get();
         foreach ($coupons as $coupon) {
-            $order_coupons=$coupon->user_coupons->order_coupon;
-//            $refunds = OrderRefund::whereIn("order_id", $coupon->orders->pluck("id")->toArray())->get();
+            $user_coupon_ids=$coupon->user_coupons->pluck("id")->toArray();
+            $order_coupons=OrderCoupon::whereIn("user_coupon_id",$user_coupon_ids);
+
             array_push($rows, [
                 $coupon->id,
                 $coupon->name,
-                $coupon->user_coupons()->trashed()->count(),//领取数量
-                $coupon->order_coupons->count(),//使用数量
-                $coupon->user_coupons()->trashed()->sum("payment"),//总优惠金额
+                $coupon->user_coupons()->withTrashed()->count(),//领取数量
+                $order_coupons->count(),//使用数量
+                $coupon->user_coupons()->withTrashed()->sum("payment"),//总优惠金额
             ]);
         }
 
