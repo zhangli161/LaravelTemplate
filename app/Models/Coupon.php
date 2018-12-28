@@ -13,4 +13,8 @@ class Coupon extends Model
     public function distribute_methods(){
     	return $this->hasMany(CouponDistributeMethod::class,'coupon_id');
     }
+    public function user_coupons(){
+        return $this->hasMany(UserCoupon::class,"coupon_id");
+    }
+
 }

@@ -234,7 +234,7 @@ class OrderController extends Controller
     {
         $orders = Auth::user()->orders;
         $order_skus = OrderSKU::whereIn("order_id", $orders->pluck("id")->toArray())
-            ->doesntHave("comment")->order_by("created_at",'desc')->get();
+            ->doesntHave("comment")->orderBy("created_at", 'desc')->get();
         foreach ($order_skus as $order_sku) {
             $order_sku->sku = GoodsSKUManager::getDetailsForApp($order_sku->sku, true);
         }

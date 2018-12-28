@@ -52,9 +52,12 @@ Route::group([
 
     //财务统计
     $router->any('statistic/finance', "StatisticFinanceController@index");
+    $router->any('chart/finance/income', "StatisticFinanceController@income_chart");
 
     //用户统计
     $router->any('statistic/user', "StatisticUserController@index");
+
+    $router->any('statistic/coupon', "StatisticCouponController@index");
 
 
     $router->get('agent', "AgentController@index");

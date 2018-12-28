@@ -118,7 +118,7 @@ class StatisticOrderController extends Controller
                 ->header('订单数量折线图')
 //			->description('折线图')
                 ->row("未找到对应数据！")
-                ->row($this->chartform("/admin/chart/order/payment"));
+                ->row($this->chartform("/admin/chart/order/count"));
 
 
         $description = "";
