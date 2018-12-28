@@ -123,7 +123,7 @@ class OrderController extends Controller
 
     public static function cancle(Request $request)
     {
-        $order = Auth::user()->orders()->findOrFail($request->get('id'));
+        $order = Auth::user()->orders()->findOrFail($request->get('order_id'));
         OrderManager::cancle($order);
 
         return ApiResponse::makeResponse(true, $order, ApiResponse::SUCCESS_CODE);
