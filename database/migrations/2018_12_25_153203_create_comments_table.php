@@ -20,8 +20,8 @@ class CreateCommentsTable extends Migration
             $table->tinyInteger('star_1')->comment("星级 0-5");
             $table->tinyInteger('star_2')->comment("星级 0-5");
             $table->tinyInteger('star_3')->comment("星级 0-5");
-            $table->longText('content')->comment("内容");
-            $table->text('albums')->comment("图片");
+            $table->longText('content')->comment("内容")->nullable();
+            $table->text('albums')->comment("图片")->nullable();
             $table->integer('spu_id', false, true);
             $table->integer('sku_id', false, true);
             $table->integer('order_sku_id', false, true);

@@ -19,6 +19,7 @@ use App\Components\QRManager;
 use App\Components\StatisticManager;
 use App\Components\TemplateManager;
 use App\Components\UserCreditManager;
+use App\Components\WXPayManager;
 use App\Http\Helpers\ApiResponse;
 use App\Http\Helpers\SnowFlakeIDWorker;
 use App\Models\Agent;
@@ -39,13 +40,13 @@ class DemoController extends Controller
 //	static $worker=SnowFlakeIDWorker(1);
     public static function test()
     {
-//        dd(getDatesBetween('2018-12-1','2018-12-31',0));
-//        dd(getDatesBetween('2018-12-1','2018-12-31',1));
-//        dd(getDatesBetween('2018-1-1','2018-12-31',2));
-//        dd(getDatesBetween('2016-11-1','2018-11-31',3));
-//        dd(getDatesBetween('2016-1-1','2018-12-31',4));
-        dd(date('Y-m-d',strtotime('last Monday')));
-//        return json_encode(count(AgentManager::getOrders(Agent::find(1))));
+        $mchid = env("WX_MCH_ID");
+        $appid = env("WX_APP_ID");
+        $apiKey = env("WX_API_KEY");
+        $wxPay = new WXPayManager();
+        //4200000214201812297536195648
+        $result = $wxPay->refund(1, 1, "3", "4200000214201812297536195648", "XCX_3007");
+        dd($result);
     }
 
     //Manager的用法

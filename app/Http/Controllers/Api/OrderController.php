@@ -220,7 +220,7 @@ class OrderController extends Controller
                 return ApiResponse::makeResponse(false, "订单中不存在该商品", ApiResponse::UNKNOW_ERROR);
             if ($order_sku->refund_amount + $request->get("amount") > $order_sku->amount)
                 return ApiResponse::makeResponse(false, "商品超过最大退换货次数", ApiResponse::UNKNOW_ERROR);
-            $return = OrderManager::refund($order, $order_sku, $request->get("amount"));
+            $return = OrderManager::refund($order, $order_sku, $request->get("amount"),$request->get("reason"),$request->get("albums"));
 
 //            $return = [$order, $order_sku];
             return ApiResponse::makeResponse(true, $return, ApiResponse::SUCCESS_CODE);

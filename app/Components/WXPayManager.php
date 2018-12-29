@@ -11,171 +11,175 @@ namespace App\Components;
 
 class WXPayManager
 {
-	
-	
-//	private static $mchid ;          //微信支付商户号 PartnerID 通过微信支付商户资料审核后邮件发送
-//	private static $appid = 'xxxxx';  //微信支付申请对应的公众号的APPID
-//	private static $apiKey = 'xxxxx';   //https://pay.weixin.qq.com 帐户设置-安全设置-API安全-API密钥-设置API密钥
-//	private static $orderNo = '';                      //商户订单号（商户订单号与微信订单号二选一，至少填一个）
-//	private static $wxOrderNo = '';                     //微信订单号（商户订单号与微信订单号二选一，至少填一个）
-//	private static $totalFee = 0.01;                   //订单金额，单位:元
-//	private static $refundFee = 0.01;                  //退款金额，单位:元
-//	private static $refundNo = 'refund_'.uniqid();        //退款订单号(可随机生成)
-//	private static $wxPay = new WxpayService($mchid,$appid,$apiKey);
-//	private static $result = $wxPay->doRefund($totalFee, $refundFee, $refundNo, $wxOrderNo,$orderNo);
-//	if($result===true){
-//		echo 'refund success';exit();
-//	}
-//
-//	protected $mchid;
-//	protected $appid;
-//	protected $apiKey;
-	public $data = null;
-	
-	public function __construct($mchid, $appid, $key)
-	{
-		$this->mchid =env('WX_MCH_ID'); //https://pay.weixin.qq.com 产品中心-开发配置-商户号
-		$this->appid = env('WX_APP_ID'); //微信支付申请对应的公众号的APPID
-		$this->apiKey =env('WX_API_KEY');   //https://pay.weixin.qq.com 帐户设置-安全设置-API安全-API密钥-设置API密钥
-	}
-	
-	/**
-	 * 退款
-	 * @param float $totalFee 订单金额 单位元
-	 * @param float $refundFee 退款金额 单位元
-	 * @param string $refundNo 退款单号
-	 * @param string $wxOrderNo 微信订单号
-	 * @param string $orderNo 商户订单号
-	 * @return string
-	 */
-	public function doRefund(float $totalFee, float $refundFee, string $refundNo, string $wxOrderNo = '', string $orderNo = '')
-	{
-		$config = array(
-			'mch_id' => $this->mchid,
-			'appid' => $this->appid,
-			'key' => $this->apiKey,
-		);
-		$unified = array(
-			'appid' => $config['appid'],
-			'mch_id' => $config['mch_id'],
-			'nonce_str' => self::createNonceStr(),
-			'total_fee' => intval($totalFee * 100),       //订单金额     单位 转为分
-			'refund_fee' => intval($refundFee * 100),       //退款金额 单位 转为分
-			'sign_type' => 'MD5',           //签名类型 支持HMAC-SHA256和MD5，默认为MD5
-			'transaction_id' => $wxOrderNo,               //微信订单号
-			'out_trade_no' => $orderNo,        //商户订单号
-			'out_refund_no' => $refundNo,        //商户退款单号
-			'refund_desc' => '商品已售完',     //退款原因（选填）
-		);
-		$unified['sign'] = self::getSign($unified, $config['key']);
-		$responseXml = $this->curlPost('https://api.mch.weixin.qq.com/secapi/pay/refund', self::arrayToXml($unified));
-		$unifiedOrder = simplexml_load_string($responseXml, 'SimpleXMLElement', LIBXML_NOCDATA);
-		if ($unifiedOrder === false) {
-			die('parse xml error');
-		}
-		if ($unifiedOrder->return_code != 'SUCCESS') {
-			die($unifiedOrder->return_msg);
-		}
-		if ($unifiedOrder->result_code != 'SUCCESS') {
-			die($unifiedOrder->err_code);
-		}
-		return true;
-	}
-	
-	public static function curlGet($url = '', $options = array())
-	{
-		$ch = curl_init($url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-		if (!empty($options)) {
-			curl_setopt_array($ch, $options);
-		}
-		//https请求 不验证证书和host
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-		$data = curl_exec($ch);
-		curl_close($ch);
-		return $data;
-	}
-	
-	public function curlPost($url = '', $postData = '', $options = array())
-	{
-		if (is_array($postData)) {
-			$postData = http_build_query($postData);
-		}
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_POST, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-		curl_setopt($ch, CURLOPT_TIMEOUT, 30); //设置cURL允许执行的最长秒数
-		if (!empty($options)) {
-			curl_setopt_array($ch, $options);
-		}
-		//https请求 不验证证书和host
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-		//第一种方法，cert 与 key 分别属于两个.pem文件
-		//默认格式为PEM，可以注释
-		curl_setopt($ch, CURLOPT_SSLCERTTYPE, 'PEM');
-		curl_setopt($ch, CURLOPT_SSLCERT, getcwd() . '/cert/apiclient_cert.pem');
-		//默认格式为PEM，可以注释
-		curl_setopt($ch, CURLOPT_SSLKEYTYPE, 'PEM');
-		curl_setopt($ch, CURLOPT_SSLKEY, getcwd() . '/cert/apiclient_key.pem');
-		//第二种方式，两个文件合成一个.pem文件
-//        curl_setopt($ch,CURLOPT_SSLCERT,getcwd().'/all.pem');
-		$data = curl_exec($ch);
-		curl_close($ch);
-		return $data;
-	}
-	
-	public static function createNonceStr($length = 16)
-	{
-		$chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-		$str = '';
-		for ($i = 0; $i < $length; $i++) {
-			$str .= substr($chars, mt_rand(0, strlen($chars) - 1), 1);
-		}
-		return $str;
-	}
-	
-	public static function arrayToXml($arr)
-	{
-		$xml = "<xml>";
-		foreach ($arr as $key => $val) {
-			if (is_numeric($val)) {
-				$xml .= "<" . $key . ">" . $val . "</" . $key . ">";
-			} else
-				$xml .= "<" . $key . "><![CDATA[" . $val . "]]></" . $key . ">";
-		}
-		$xml .= "</xml>";
-		return $xml;
-	}
-	
-	public static function getSign($params, $key)
-	{
-		ksort($params, SORT_STRING);
-		$unSignParaString = self::formatQueryParaMap($params, false);
-		$signStr = strtoupper(md5($unSignParaString . "&key=" . $key));
-		return $signStr;
-	}
-	
-	protected static function formatQueryParaMap($paraMap, $urlEncode = false)
-	{
-		$buff = "";
-		ksort($paraMap);
-		foreach ($paraMap as $k => $v) {
-			if (null != $v && "null" != $v) {
-				if ($urlEncode) {
-					$v = urlencode($v);
-				}
-				$buff .= $k . "=" . $v . "&";
-			}
-		}
-		$reqPar = '';
-		if (strlen($buff) > 0) {
-			$reqPar = substr($buff, 0, strlen($buff) - 1);
-		}
-		return $reqPar;
-	}
+    public function refund(float $totalFee, float $refundFee, string $refundNo, string $wxOrderNo = '', string $orderNo = '', $refund_desc = "测试退款")
+    {
+        $this->APPID=env("WX_APP_ID");
+        $this->MCHID=env("WX_MCH_ID");
+        $this->KEY=env("WX_API_KEY");
+        $this->SSLCERT_PATH=env("APP_PATH")."\storage\cert\apiclient_cert.pem ";
+        $this->SSLKEY_PATH=env("APP_PATH")."\storage\cert\apiclient_key.pem ";
+
+        $this->outRefundNo=$refundNo;
+        $this->transactionId=$wxOrderNo;
+        $this->totalFee=(int)$totalFee;
+        $this->refundFee=(int)$refundFee;
+
+        $result = $this->weChatrefund();
+        return $result;
+        /*
+        * <xml>
+              <return_code><![CDATA[SUCCESS]]></return_code>
+              <return_msg><![CDATA[OK]]></return_msg>
+              <appid><![CDATA[wx2421b1c4370ec43b]]></appid>
+              <mch_id><![CDATA[10000100]]></mch_id>
+              <nonce_str><![CDATA[NfsMFbUFpdbEhPXP]]></nonce_str>
+              <sign><![CDATA[B7274EB9F8925EB93100DD2085FA56C0]]></sign>
+              <result_code><![CDATA[SUCCESS]]></result_code>
+              <transaction_id><![CDATA[1008450740201411110005820873]]></transaction_id>
+              <out_trade_no><![CDATA[1415757673]]></out_trade_no>
+              <out_refund_no><![CDATA[1415701182]]></out_refund_no>
+              <refund_id><![CDATA[2008450740201411110000174436]]></refund_id>
+              <refund_channel><![CDATA[]]></refund_channel>
+              <refund_fee>1</refund_fee>
+           </xml>
+           */
+        if ($result['return_code'] == 'SUCCESS') {
+            //退款申请成功
+        }
+    }
+
+    private function weChatrefund()
+    {
+        $param = array(
+            'appid' => $this->APPID,
+            'mch_id' => $this->MCHID,
+            'nonce_str' => $this->createNoncestr(),
+            'out_refund_no' => $this->outRefundNo,
+            'transaction_id' => $this->transactionId,//微信订单号
+            'total_fee' => $this->totalFee,
+            'refund_fee' => $this->refundFee,
+        );
+        $param['sign'] = $this->getSign($param);
+
+        $xmldata = $this->arrayToXml($param);
+//        dd($param);
+        $xmlresult = $this->postXmlSSLCurl($xmldata, 'https://api.mch.weixin.qq.com/secapi/pay/refund');
+        $result = $this->xmlToArray($xmlresult);
+        return $result;
+    }
+
+    /*
+     * 对要发送到微信统一下单接口的数据进行签名
+     */
+    protected function getSign($Obj)
+    {
+        foreach ($Obj as $k => $v) {
+            $Parameters[$k] = $v;
+        }
+        //签名步骤一：按字典序排序参数
+        ksort($Parameters);
+        $String = $this->formatBizQueryParaMap($Parameters, false);
+        //签名步骤二：在string后加入KEY
+        $String = $String . "&key=" . $this->KEY;
+        //签名步骤三：MD5加密
+        $String = md5($String);
+        //签名步骤四：所有字符转为大写
+        $result_ = strtoupper($String);
+        return $result_;
+    }
+
+    /*
+     *排序并格式化参数方法，签名时需要使用
+     */
+    protected function formatBizQueryParaMap($paraMap, $urlencode)
+    {
+        $buff = "";
+        ksort($paraMap);
+        foreach ($paraMap as $k => $v) {
+            if ($urlencode) {
+                $v = urlencode($v);
+            }
+            //$buff .= strtolower($k) . "=" . $v . "&";
+            $buff .= $k . "=" . $v . "&";
+        }
+        $reqPar = "";
+        if (strlen($buff) > 0) {
+            $reqPar = substr($buff, 0, strlen($buff) - 1);
+        }
+        return $reqPar;
+    }
+
+    /*
+     * 生成随机字符串方法
+     */
+    protected function createNoncestr($length = 32)
+    {
+        $chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+        $str = "";
+        for ($i = 0; $i < $length; $i++) {
+            $str .= substr($chars, mt_rand(0, strlen($chars) - 1), 1);
+        }
+        return $str;
+    }
+
+//数组转字符串方法
+    protected function arrayToXml($arr)
+    {
+        $xml = "<xml>";
+        foreach ($arr as $key => $val) {
+            if (is_numeric($val)) {
+                $xml .= "<" . $key . ">" . $val . "</" . $key . ">";
+            } else {
+                $xml .= "<" . $key . "><![CDATA[" . $val . "]]></" . $key . ">";
+            }
+        }
+        $xml .= "</xml>";
+        return $xml;
+    }
+
+    protected static function xmlToArray($xml)
+    {
+        $array_data = json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
+        return $array_data;
+    }
+
+//需要使用证书的请求
+    private function postXmlSSLCurl($xml, $url, $second = 30)
+    {
+        $ch = curl_init();
+        //超时时间
+        curl_setopt($ch, CURLOPT_TIMEOUT, $second);
+        //这里设置代理，如果有的话
+        //curl_setopt($ch,CURLOPT_PROXY, '8.8.8.8');
+        //curl_setopt($ch,CURLOPT_PROXYPORT, 8080);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        //设置header
+        curl_setopt($ch, CURLOPT_HEADER, FALSE);
+        //要求结果为字符串且输出到屏幕上
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        //设置证书
+        //使用证书：cert 与 key 分别属于两个.pem文件
+        //默认格式为PEM，可以注释
+        curl_setopt($ch, CURLOPT_SSLCERTTYPE, 'PEM');
+        curl_setopt($ch, CURLOPT_SSLCERT, $this->SSLCERT_PATH);
+        //默认格式为PEM，可以注释
+        curl_setopt($ch, CURLOPT_SSLKEYTYPE, 'PEM');
+        curl_setopt($ch, CURLOPT_SSLKEY, $this->SSLKEY_PATH);
+        //post提交方式
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
+        $data = curl_exec($ch);
+        //返回结果
+        if ($data) {
+            curl_close($ch);
+            return $data;
+        } else {
+            $error = curl_errno($ch);
+            echo "curl出错，错误码:$error" . "<br>";
+            curl_close($ch);
+            return false;
+        }
+    }
 }

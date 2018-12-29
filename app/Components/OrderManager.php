@@ -286,6 +286,7 @@ class OrderManager extends Manager
             'openid' => array_get($ret, "openid"),
             'trade_state' => array_get($ret, "trade_state"),
             'trade_state_desc' => array_get($ret, "trade_state_desc"),
+            "transaction_id" => array_get($ret, "transaction_id"),
         ];
         $result = array_key_exists('trade_state', $ret) or array_get($ret, 'trade_state') == "SUCCESS";
         if ($result) {
@@ -398,7 +399,7 @@ class OrderManager extends Manager
         return;
     }
 
-    public static function refund(Order $order, OrderSKU $order_sku, int $amount, $reason = null)
+    public static function refund(Order $order, OrderSKU $order_sku, int $amount, $reason = null, $albums)
     {
 
         $refund = $order->refund()->create([
@@ -407,6 +408,7 @@ class OrderManager extends Manager
             'reason' => $reason ? $reason : request('reason'),
             'status' => 0,
             'payment' => $amount * $order_sku->average_price,
+            'albums' => $albums,
             'note']);
         if ($refund) {
             $order_sku->increment('refund_amount', $amount);

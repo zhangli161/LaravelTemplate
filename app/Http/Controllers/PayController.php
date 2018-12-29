@@ -126,6 +126,7 @@ class PayController
 		if (!empty($result['result_code']) && !empty($result['err_code'])) {
 			$result['err_msg'] = $this->error_code($result['err_code']);
 		}
+		\Illuminate\Support\Facades\Log::info("查询订单[$out_trade_no ]结果:".json_encode($result));
 		return $result;
 	}
 	
@@ -451,7 +452,9 @@ class PayController
             'refund_desc' => $refund_desc,     //退款原因（选填）
         );
         $unified['sign'] = self::getSign($unified, $config['key']);
-        $responseXml = $this->curlPost('https://api.mch.weixin.qq.com/secapi/pay/refund', self::arrayToXml($unified));
+        $xml = $this->data_to_xml($unified);
+        $responseXml = $this->postXmlCurl($xml,'https://api.mch.weixin.qq.com/secapi/pay/refund');
+        dd($unified,$xml,$responseXml);
         $unifiedOrder = simplexml_load_string($responseXml, 'SimpleXMLElement', LIBXML_NOCDATA);
         if ($unifiedOrder === false) {
             die('parse xml error');

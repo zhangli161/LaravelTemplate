@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderRefund extends Model
 {
-    protected $fillable=['order_sku_id','amount','reason','status','payment','note'];
+    protected $fillable=['order_sku_id','amount','reason','status','payment','note','albums'];
+    protected $casts = ['albums' => 'array',];//内嵌字段
+
     public function order(){
         return $this->belongsTo(Order::class,'order_id');
     }
