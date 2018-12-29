@@ -19,6 +19,8 @@ class ArticleController
     {
         if ($request->filled('cate_id')) {
             $ret = Article::query()->where("cate_id", $request->get("cate_id"))->orderBy("order", 'desc')->paginate();
+            foreach ($ret as $item)
+                $item->thumb=getRealImageUrl($item->thumb);
             return ApiResponse::makeResponse(true, $ret, ApiResponse::SUCCESS_CODE);
         } else
             return ApiResponse::makeResponse(false, "缺少参数", ApiResponse::MISSING_PARAM);
@@ -32,6 +34,7 @@ class ArticleController
                 $query->skip($request->get("skip"));
             }
             $ret = $query->first();
+            $ret->thumb=getRealImageUrl($ret->thumb);
             return ApiResponse::makeResponse(true, $ret, ApiResponse::SUCCESS_CODE);
         } else
             return ApiResponse::makeResponse(false, "缺少参数", ApiResponse::MISSING_PARAM);
@@ -41,6 +44,8 @@ class ArticleController
     {
         if ($request->filled(['id'])) {
             $ret = Article::findOrFail($request->get("id"));
+            $ret->thumb=getRealImageUrl($ret->thumb);
+
             return ApiResponse::makeResponse(true, $ret, ApiResponse::SUCCESS_CODE);
         } else
             return ApiResponse::makeResponse(false, "缺少参数", ApiResponse::MISSING_PARAM);
