@@ -88,6 +88,7 @@ Route::group(['middleware' => 'auth:api', 'namespace' => 'Api'], function () {
     Route::post('/order/confirm', 'OrderController@confirm');//确认收货
 
     Route::post('/order/refund', 'OrderController@refund');//申请退款
+    Route::get('/order/refund/my', 'OrderController@refund');//申请退款
 
     Route::post('/order/comment', 'OrderController@comment');//评论商品
     Route::get('/order/commentahle_skus', 'OrderController@getCommentableSKUS');//可评论订单商品

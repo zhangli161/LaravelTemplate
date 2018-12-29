@@ -94,7 +94,7 @@ class ArticleController extends Controller
 //        $grid->content('内容');
         $grid->author('作者');
         $grid->hits('点击量')->sortable();
-        $grid->on_top('置顶')->sortable();
+//        $grid->on_top('置顶')->sortable();
         $grid->thumb('封面图片');
         $grid->created_at('Created at');
         $grid->updated_at('Updated at');
@@ -122,7 +122,7 @@ class ArticleController extends Controller
         $show->content('内容')->unescape();
         $show->author('作者');
         $show->hits('点击量');
-        $show->on_top('置顶')->using(['0'=>"否","1"=>"是"]);
+//        $show->on_top('置顶')->using(['0'=>"否","1"=>"是"]);
         $show->thumb('封面图片');
         $show->created_at('Created at');
         $show->updated_at('Updated at');
@@ -147,7 +147,7 @@ class ArticleController extends Controller
         $form->editor('content.content', '内容');
         $form->text('author', '作者');
         $form->number('hits', '点击量');
-        $form->switch('on_top', '置顶');
+//        $form->switch('on_top', '置顶');
         $form->image('thumb', '封面图片');
 
         return $form;

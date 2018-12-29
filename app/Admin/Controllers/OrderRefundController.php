@@ -3,6 +3,7 @@
 namespace App\Admin\Controllers;
 
 use App\Components\NativePalceReagionManager;
+use App\Components\OrderManager;
 use App\Models\OrderRefund;
 use App\Http\Controllers\Controller;
 use App\Models\StatisticOrder;
@@ -116,6 +117,9 @@ class OrderRefundController extends Controller
         $show->reason('退款原因');
         $show->status('状态');
         $show->payment('退款金额');
+        $show->albums("图片", function ($albums) {
+            return $albums;
+        });
         $show->note('备注');
         $show->created_at('Created at');
         $show->updated_at('Updated at');
@@ -133,13 +137,25 @@ class OrderRefundController extends Controller
         $form = new Form(new OrderRefund);
 
         $form->text('order_id', '关联订单id')->readOnly();
-        $form->number('order_sku_id', '关联订单商品id');
-        $form->number('amount', '退款商品数量');
-        $form->text('reason', '退款原因');
-        $form->number('status', '状态');
+        $form->text('order_sku_id', '关联订单商品id')->readOnly();
+        $form->text('amount', '退款商品数量')->readOnly();
+        $form->text('reason', '退款原因')->readOnly();
+        $form->select('status', '状态')->options([
+//            0 => "未处理 ",
+            1 => " 通过",
+//            2 => "退款中",
+//            3 => " 退款完成",
+            4 => "驳回"
+        ]);
         $form->decimal('payment', '退款金额');
         $form->text('note', '备注');
 
+        $form->saved(function (Form $form) {
+            if ($form->model()->status == 1) {
+                //执行退款
+                OrderManager::doRefund($form->model());
+            };
+        });
         return $form;
     }
 
