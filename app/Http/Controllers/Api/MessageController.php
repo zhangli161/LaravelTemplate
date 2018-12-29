@@ -36,4 +36,17 @@ class MessageController extends Controller
 		}
 		return ApiResponse::makeResponse(true, $messages,ApiResponse::SUCCESS_CODE);
 	}
+
+	public function getById(Request $request){
+        MessageManager::getGroupMessages(Auth::user());
+
+        $user=$request->user();
+        $message=Message::query()->where('to_user_id',$user->id)
+            ->orderBy('status','asc')
+            ->orderBy('created_at','desc')
+            ->with(['content','content.content'])
+            ->find($request->get('message_id'));
+        return ApiResponse::makeResponse(true, $message,ApiResponse::SUCCESS_CODE);
+
+    }
 }

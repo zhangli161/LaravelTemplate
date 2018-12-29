@@ -51,7 +51,7 @@ Route::group(['middleware' => 'auth:api', 'namespace' => 'Api'], function () {
     Route::post('/sendVertifyCode', 'UserController@sendVertifyCode');//发送验证码
 
     Route::get('/message', 'MessageController@getList');//消息
-//	Route::post('/message', 'MessageController@getList');//消息
+	Route::get('/message/getById', 'MessageController@getById');//消息
 
     Route::get('/goods', 'GoodsController@getList');//全部商品
     Route::get('/goods/getById', 'GoodsController@getById');//商品详情
