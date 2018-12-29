@@ -43,7 +43,7 @@ class ArticleController
     public static function getById(Request $request)
     {
         if ($request->filled(['id'])) {
-            $ret = Article::findOrFail($request->get("id"));
+            $ret = Article::with("content")->findOrFail($request->get("id"));
             $ret->thumb=getRealImageUrl($ret->thumb);
 
             return ApiResponse::makeResponse(true, $ret, ApiResponse::SUCCESS_CODE);
