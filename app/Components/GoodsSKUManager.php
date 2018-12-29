@@ -10,6 +10,7 @@ namespace App\Components;
 
 
 use App\Models\GoodsSKU;
+use App\Models\OrderSKU;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -33,6 +34,7 @@ class GoodsSKUManager extends Manager
         $sku->favorites_count = $sku->favorites()->count();
         $sku->is_favorite = $sku->favorites()->where('user_id', Auth::user()->id)->exists();
 
+        $sku->sell=OrderSKU::where("sku_id",$sku->id)->sum("amount");
         $pattern = array('/http:\/\//', '/https:\/\//');
         foreach ($sku->albums as $album) {
             $result = preg_match_all($pattern[0], $album->url, $m) || preg_match_all($pattern[1], $album->url, $m);

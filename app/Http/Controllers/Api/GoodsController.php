@@ -25,13 +25,15 @@ class GoodsController extends Controller
 {
     public static function getList(Request $request)
     {
-        $query = GoodsSPU::query()->orderby("id", 'desc');
+        $query = GoodsSPU::query();
         if (gettype($request->get('orderby')) == 'array') {
             $orderby = $request->get('orderby');
             for ($i = 0; $i < (count($orderby) - 1); $i += 2) {
                 $query
                     ->orderby($orderby[$i], $orderby[$i + 1]);
             }
+        } else {
+            $query->orderby("id", 'desc');
         }
 //        $goods = GoodsSPUManager::getList(true, $request->get('orderby'));
 //		else
@@ -81,10 +83,41 @@ class GoodsController extends Controller
         if ($request->filled('search_words')) {
             $searchwords = explode(' ', $request->get('search_words'));
             $query = GoodsSKUSearchWord::query();
+
             foreach ($searchwords as $searchword) {
                 $query->where('search_words', 'like', "%$searchword%");
             }
-            $results = $query->paginate();
+//            if (gettype($request->get('orderby')) == 'array') {
+//                $orderby = $request->get('orderby');
+//                for ($i = 0; $i < (count($orderby) - 1); $i += 2) {
+//                    $query
+//                        ->orderby($orderby[$i], $orderby[$i + 1]);
+//                }
+//            } else {
+//                $query->orderby("id", 'desc');
+//            }
+//        $goods = GoodsSPUManager::getList(true, $request->get('orderby'));
+//		else
+//			$goods = GoodsSPUManager::getList(true,'price', 'asc', 'id', 'desc');
+//            $results = $query->with("sku")->get();
+            if ($request->filled('cate_id')) {
+                $spus = GoodsSPU::where("cate_id", $request->get('cate_id'))->with("skus")->get();
+                $sku_ids = array();
+                $spus->each(function ($spu) use ($sku_ids) {
+                    array_push($sku_ids, $spu->skus->pluck('id'));
+                });
+                $query->whereIn('',$sku_ids);
+            }
+            if ($request->filled('sence_cate_id')) {
+                $spus = GoodsSPU::where("sence_cate_id", $request->get('sence_cate_id'))->with("skus")->get();
+                $sku_ids = array();
+                $spus->each(function ($spu) use ($sku_ids) {
+                    array_push($sku_ids, $spu->skus->pluck('id'));
+                });
+                $query->whereIn('',$sku_ids);
+            }
+
+            $results = $query->with("sku")->paginate();
             foreach ($results as $result) {
                 $result->spu = GoodsSPUManager::getDetailsForApp($result->sku->spu, $result->sku_id);
             }

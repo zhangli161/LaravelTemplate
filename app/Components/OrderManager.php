@@ -399,9 +399,8 @@ class OrderManager extends Manager
         return;
     }
 
-    public static function refund(Order $order, OrderSKU $order_sku, int $amount, $reason = null, $albums=[])
+    public static function refund(Order $order, OrderSKU $order_sku, int $amount, $reason = null, $albums = [])
     {
-
         $refund = $order->refund()->create([
             'order_sku_id' => $order_sku->id,
             'amount' => $amount,
@@ -414,5 +413,24 @@ class OrderManager extends Manager
             $order_sku->increment('refund_amount', $amount);
         }
         return $refund;
+    }
+
+    public static function doRefund($refund)
+    {
+
+        $order = Order::with("xcx_pay")->find($refund->order_id);
+        if (!$order)
+            return "订单不存在";
+
+        $wxPay = new WXPayManager();
+        //4200000214201812297536195648
+        $result = $wxPay->refund(
+            $order->xcx_pay->total_fee,
+//            (int)($refund->payment * 100),
+            1,
+            $refund->id,
+            $order->xcx_pay->transaction_id,
+            "XCX_$order->id "
+        );
     }
 }
