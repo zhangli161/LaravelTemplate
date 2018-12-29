@@ -220,7 +220,7 @@ class OrderController extends Controller
                 return ApiResponse::makeResponse(false, "订单中不存在该商品", ApiResponse::UNKNOW_ERROR);
             if ($order_sku->refund_amount + $request->get("amount") > $order_sku->amount)
                 return ApiResponse::makeResponse(false, "商品超过最大退换货次数", ApiResponse::UNKNOW_ERROR);
-            $return = OrderManager::refund($order, $order_sku, $request->get("amount"),$request->get("reason"),$request->get("albums"));
+            $return = OrderManager::refund($order, $order_sku, $request->get("amount"), $request->get("reason"), $request->get("albums"));
 
 //            $return = [$order, $order_sku];
             return ApiResponse::makeResponse(true, $return, ApiResponse::SUCCESS_CODE);
@@ -229,13 +229,18 @@ class OrderController extends Controller
         }
     }
 
-    public static function myRefund(){
-        $user=Auth::user();
+    public static function myRefund()
+    {
+        $user = Auth::user();
+        $order_ids = $user->orders->pluck('id')->toArray();
+        $refunds = OrderRefund::whereIn("order_id", $order_ids)->orderBy("created_at", "desc")
+            ->with("order_skus")->get();
+        return ApiResponse::makeResponse(true, $refunds, ApiResponse::SUCCESS_CODE);
     }
 
     public static function getCommentableSKUS(Request $request)
     {
-        $orders = Auth::user()->orders()->where('status',5);
+        $orders = Auth::user()->orders()->where('status', 5);
         $order_skus = OrderSKU::whereIn("order_id", $orders->pluck("id")->toArray())
             ->doesntHave("comment")->orderBy("created_at", 'desc')->get();
         foreach ($order_skus as $order_sku) {
