@@ -14,8 +14,8 @@ class PayController
 		'mch_id' => '1498279392',             // 微信商户号
 		'key' => 'ElectroCirkel91330500MA28C69G8NC',                // 微信支付签名秘钥
 		'notify_url' => '',
-//			'cert_client' => './apiclient_cert.pem',        // 客户端证书路径，退款时需要用到
-//			'cert_key' => './apiclient_key.pem',            // 客户端秘钥路径，退款时需要用到
+			'cert_client' => './apiclient_cert.pem',        // 客户端证书路径，退款时需要用到
+			'cert_key' => './apiclient_key.pem',            // 客户端秘钥路径，退款时需要用到
 	];
 	
 	//接口API URL前缀
@@ -430,4 +430,64 @@ class PayController
 //		return $pay->success()->send();// laravel 框架中请直接 `return $pay->success()`
 		return $pay->success();
 	}
+
+    public function doRefund(float $totalFee, float $refundFee, string $refundNo, string $wxOrderNo = '', string $orderNo = '',$refund_desc="测试退款")
+    {
+        $config = array(
+            'mch_id' => $this->mch_id,
+            'appid' => $this->appid,
+            'key' => $this->key,
+        );
+        $unified = array(
+            'appid' => $config['appid'],
+            'mch_id' => $config['mch_id'],
+            'nonce_str' => self::genRandomString(),
+            'total_fee' => intval($totalFee * 100),       //订单金额     单位 转为分
+            'refund_fee' => intval($refundFee * 100),       //退款金额 单位 转为分
+            'sign_type' => 'MD5',           //签名类型 支持HMAC-SHA256和MD5，默认为MD5
+            'transaction_id' => $wxOrderNo,               //微信订单号
+            'out_trade_no' => $orderNo,        //商户订单号
+            'out_refund_no' => $refundNo,        //商户退款单号
+            'refund_desc' => $refund_desc,     //退款原因（选填）
+        );
+        $unified['sign'] = self::getSign($unified, $config['key']);
+        $responseXml = $this->curlPost('https://api.mch.weixin.qq.com/secapi/pay/refund', self::arrayToXml($unified));
+        $unifiedOrder = simplexml_load_string($responseXml, 'SimpleXMLElement', LIBXML_NOCDATA);
+        if ($unifiedOrder === false) {
+            die('parse xml error');
+        }
+        if ($unifiedOrder->return_code != 'SUCCESS') {
+            die($unifiedOrder->return_msg);
+        }
+        if ($unifiedOrder->result_code != 'SUCCESS') {
+            die($unifiedOrder->err_code);
+        }
+        return true;
+    }
+    public static function getSign($params, $key)
+    {
+        ksort($params, SORT_STRING);
+        $unSignParaString = self::formatQueryParaMap($params, false);
+        $signStr = strtoupper(md5($unSignParaString . "&key=" . $key));
+        return $signStr;
+    }
+
+    protected static function formatQueryParaMap($paraMap, $urlEncode = false)
+    {
+        $buff = "";
+        ksort($paraMap);
+        foreach ($paraMap as $k => $v) {
+            if (null != $v && "null" != $v) {
+                if ($urlEncode) {
+                    $v = urlencode($v);
+                }
+                $buff .= $k . "=" . $v . "&";
+            }
+        }
+        $reqPar = '';
+        if (strlen($buff) > 0) {
+            $reqPar = substr($buff, 0, strlen($buff) - 1);
+        }
+        return $reqPar;
+    }
 }

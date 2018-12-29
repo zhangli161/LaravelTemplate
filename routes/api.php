@@ -106,6 +106,18 @@ Route::group(['middleware' => 'auth:api', 'namespace' => 'Api'], function () {
     Route::get('/category/getByParentid', 'CategoryController@getByParentid');//根据父分类获得子分类
 
     Route::get('/module/all', 'ModuleController@getList');//首页模块
+
+    Route::post('/upload/image', function (Request $request) {
+        $file = $request->file("image");
+//        dd($file);
+
+        $file_path = \Illuminate\Support\Facades\Storage::disk("public")->putFile("uploads", $file);
+        if ($file_path) {
+            return \App\Http\Helpers\ApiResponse::makeResponse(true,  \Illuminate\Support\Facades\Storage::disk("public")->url($file_path), \App\Http\Helpers\ApiResponse::SUCCESS_CODE);
+        }
+        return \App\Http\Helpers\ApiResponse::makeResponse(false, "存储失败", \App\Http\Helpers\ApiResponse::UNKNOW_ERROR);
+
+    });//上传图片
 });
 Route::any('payment/notify', 'OrderController@notify');//微信支付回调
 
