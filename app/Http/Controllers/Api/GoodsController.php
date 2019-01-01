@@ -32,6 +32,7 @@ class GoodsController extends Controller
                 $query
                     ->orderby($orderby[$i], $orderby[$i + 1]);
             }
+            dd($orderby);
         } else {
             $query->orderby("id", 'desc');
         }
@@ -106,6 +107,7 @@ class GoodsController extends Controller
                 $spus->each(function ($spu) use ($sku_ids) {
                     array_push($sku_ids, $spu->skus->pluck('id'));
                 });
+                
                 $query->whereIn('',$sku_ids);
             }
             if ($request->filled('sence_cate_id')) {

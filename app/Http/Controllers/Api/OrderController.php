@@ -238,6 +238,15 @@ class OrderController extends Controller
         return ApiResponse::makeResponse(true, $refunds, ApiResponse::SUCCESS_CODE);
     }
 
+    public static function getRefund(Request $request)
+    {
+        $user = Auth::user();
+        $order_ids = $user->orders->pluck('id')->toArray();
+        $refunds = OrderRefund::whereIn("order_id", $order_ids)
+            ->with("order_skus")->find($request->get("refund_id"));
+        return ApiResponse::makeResponse(true, $refunds, ApiResponse::SUCCESS_CODE);
+    }
+
     public static function getCommentableSKUS(Request $request)
     {
         $orders = Auth::user()->orders()->where('status', 5);
