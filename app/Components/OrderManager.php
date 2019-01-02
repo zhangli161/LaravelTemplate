@@ -421,6 +421,12 @@ class OrderManager extends Manager
         $order = Order::with("xcx_pay")->find($refund->order_id);
         if (!$order)
             return "订单不存在";
+        Log::info("订单退款:", $order->xcx_pay->total_fee,
+//            (int)($refund->payment * 100),
+            1,
+            $refund->id,
+            $order->xcx_pay->transaction_id,
+            "XCX_$order->id ");
 
         $wxPay = new WXPayManager();
         //4200000214201812297536195648
