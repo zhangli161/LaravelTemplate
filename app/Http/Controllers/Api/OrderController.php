@@ -310,6 +310,7 @@ class OrderController extends Controller
     //确认收货
     public static function confirm(Request $request)
     {
+//        return Auth::user()->orders;
         $order = Auth::user()->orders()
             ->whereIn('status', [2, 3, 4])
             ->findOrFail($request->get('order_id'));

@@ -48,6 +48,7 @@ class CouponController
 	{
 		if ($request->orderBy)
 			$coupons = Auth::user()->coupons()
+                ->with('coupon')
 				->orderby($request->orderBy)
 				->paginate();
 		else

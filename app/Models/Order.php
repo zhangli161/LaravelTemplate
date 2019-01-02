@@ -35,4 +35,8 @@ class Order extends Model
 	public function refund(){
 	    return $this->hasMany(OrderRefund::class,'order_id');
     }
+
+    public function order_agent(){
+	    return $this->hasOne(OrderAgent::class,"order_id");
+    }
 }

@@ -312,7 +312,7 @@ class OrderManager extends Manager
             $order->status = 2;//已付款
             if (array_key_exists("total_fee", $ret))
                 $pay_update['total_fee'] = array_get($ret, "total_fee");
-            $order->paid_at=Carbon::now();
+            $order->paid_at = Carbon::now();
             $order->save();
             $order->xcx_pay()->update($pay_update);
             self::afterPaid($order);
@@ -364,7 +364,21 @@ class OrderManager extends Manager
             }
         }
 
-        //结算佣金  待完成
+        //结算佣金
+        if ($order->order_agent()->exists()) {
+            $order_agent=$order->order_agent;
+            $order->order_agent()->update(['status' => 1]);//可提现
+            AgentManager::makeFinance($order_agent->agent, $order->order_agent->payment,0,
+                "订单完成获得佣金:order_id $order->id |order_angent_id $order_agent->id");
+        }
+
+        //结算积分
+        UserCreditManager::changeCredit($order->user, [
+            'amount' => (int)$order->payment,
+            'reason' => "消费 $order->payment 元，赠送积分",
+            'note' => '订单号:' . $order->id,
+            'editor' => 'system'
+        ]);
 
         return $order;
     }

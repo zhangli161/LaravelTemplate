@@ -15,6 +15,7 @@ class CreateAgentFinancesTable extends Migration
     {
         Schema::create('agent_finances', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer("agent_id",false,true);
             $table->decimal("income")->comment("收入 默认0")->default(0);
             $table->decimal("expenditure")->comment("提现 默认0")->default(0);
             $table->decimal("balance")->comment("余额");
