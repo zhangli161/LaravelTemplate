@@ -181,6 +181,7 @@ class OrderManager extends Manager
 
             //下单计算销量
             $sku->sell += $amount;
+//            $sku->storage-=$amount;
 
             array_push($order_skus, [
                 'sku_id' => $sku->id,
@@ -213,7 +214,7 @@ class OrderManager extends Manager
             if ($sku->stock_type == 1)//下单减库存
             {
                 if ($sku->stock > 0) {
-                    $sku->stock--;
+                    $sku->stock -= $amount;
                     $sku->save();
                     $order->status = 2;
                     $order->save();
@@ -415,16 +416,32 @@ class OrderManager extends Manager
         return $refund;
     }
 
+    public static function editRefund($refund_id, Order $order, OrderSKU $order_sku, int $amount, $reason = null, $albums = [])
+    {
+        $refund = $order->refund()->findOrFail($refund_id)->update([
+            'order_sku_id' => $order_sku->id,
+            'amount' => $amount,
+            'reason' => $reason ? $reason : request('reason'),
+            'status' => 0,
+            'payment' => $amount * $order_sku->average_price,
+            'albums' => $albums,
+            'note']);
+        if ($refund) {
+            $order_sku->increment('refund_amount', $amount);
+        }
+        return $refund;
+    }
+
     public static function doRefund($refund)
     {
 
         $order = Order::with("xcx_pay")->find($refund->order_id);
         if (!$order)
             return "订单不存在";
-        Log::info("订单退款:"."|". $order->xcx_pay->total_fee."|".
-            (int)($refund->payment * 100)."|".
-            $refund->id."|".
-            $order->xcx_pay->transaction_id."|".
+        Log::info("订单退款:" . "|" . $order->xcx_pay->total_fee . "|" .
+            (int)($refund->payment * 100) . "|" .
+            $refund->id . "|" .
+            $order->xcx_pay->transaction_id . "|" .
             "XCX_$order->id ");
 
         $wxPay = new WXPayManager();
@@ -437,6 +454,6 @@ class OrderManager extends Manager
             $order->xcx_pay->transaction_id,
             "XCX_$order->id "
         );
-        Log::info("退款结果".json_encode($result));
+        Log::info("退款结果" . json_encode($result));
     }
 }
