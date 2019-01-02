@@ -88,7 +88,8 @@ Route::group(['middleware' => 'auth:api', 'namespace' => 'Api'], function () {
     Route::post('/order/confirm', 'OrderController@confirm');//确认收货
 
     Route::post('/order/refund', 'OrderController@refund');//申请退款
-    Route::get('/order/refund/my', 'OrderController@myRefund');//申请退款
+    Route::post('/order/refund/cancle', 'OrderController@cancleRefund');//申请退款
+    Route::get('/order/refund/my', 'OrderController@myRefund');//我的申请退款
     Route::get('/order/refund/getById', 'OrderController@getRefund');//申请退款
 
 

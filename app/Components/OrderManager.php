@@ -280,7 +280,7 @@ class OrderManager extends Manager
             $order_agent->agent = $agent->id;
             $order_agent->percent = 5;//固定5个点的分成
             $order_agent->payment = $order->payment * 5 / 100.0;
-            
+
             $order_agent->save();
         }
         return [];

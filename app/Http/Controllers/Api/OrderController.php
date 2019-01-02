@@ -241,6 +241,12 @@ class OrderController extends Controller
         return ApiResponse::makeResponse(true, $refunds, ApiResponse::SUCCESS_CODE);
     }
 
+    public static function cancleRefund(Request $request){
+        $refund=OrderRefund::findOrFail($request->get("id"));
+        $refund->delete();
+        return ApiResponse::makeResponse(true, "删除成功", ApiResponse::SUCCESS_CODE);
+    }
+
     public static function getRefund(Request $request)
     {
         $user = Auth::user();
