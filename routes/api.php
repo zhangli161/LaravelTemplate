@@ -76,7 +76,7 @@ Route::group(['middleware' => 'auth:api', 'namespace' => 'Api'], function () {
     Route::post('/apply/agent', 'AgentController@apply');//申请代理
     Route::post('/apply/create_admin', 'AgentController@create_admin');//提交管理员信息
 
-    Route::post('/bind/agent', 'UserController@bindAgent');//申请代理
+    Route::any('/bind/agent', 'UserController@bindAgent');//申请代理
 
     Route::post('/order/settlement', 'OrderController@settlement');//订单结算
     Route::post('/order/create', 'OrderController@create');//生成订单
