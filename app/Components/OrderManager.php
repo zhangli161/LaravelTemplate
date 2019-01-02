@@ -309,7 +309,8 @@ class OrderManager extends Manager
         $result = array_key_exists('trade_state', $ret) or array_get($ret, 'trade_state') == "SUCCESS";
         if ($result) {
             $order->status = 2;//已付款
-            $pay_update['total_fee'] = array_get($ret, "total_fee");
+            if (array_key_exists("total_fee", $ret))
+                $pay_update['total_fee'] = array_get($ret, "total_fee");
             $order->save();
             $order->xcx_pay()->update($pay_update);
             self::afterPaid($order);
