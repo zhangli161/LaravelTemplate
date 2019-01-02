@@ -255,6 +255,7 @@ class OrderManager extends Manager
 
     public static function afterPaid(Order $order)
     {
+        Log::info("$order->id 支付完成，进行后续流程");
         foreach ($order->skus as $order_sku) {
             $sku = GoodsSKU::find($order_sku->sku_id);
             if ($sku->stock_type == 0) {//付款减库存
@@ -275,6 +276,8 @@ class OrderManager extends Manager
         //有分销商则进行分销程序
         if ($order->user()->has("agent")->exists()) {
             $agent = $order->user->agent;
+            Log::info("$order->id 分销人为 $agent->id ,$agent->name");
+
             $order_agent = new OrderAgent();
             $order_agent->order_id = $order->id;
             $order_agent->agent = $agent->id;
