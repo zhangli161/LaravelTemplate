@@ -29,7 +29,7 @@ class UserCouponManager
         )
             if ($user_coupons->count() == 0  //未领取该类型优惠券
                 or (
-                    ($limit_per_user == -1 or $user_coupons->count < $limit_per_user)//校验领取上限
+                    ($limit_per_user == -1 or $user_coupons->count()< $limit_per_user)//校验领取上限
                     and
                     (date(strtotime("$lasttime   +$cooldown   hour")) < time())//校验领取间隔
                 )

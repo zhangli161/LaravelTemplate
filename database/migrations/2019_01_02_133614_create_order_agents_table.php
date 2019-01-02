@@ -19,7 +19,7 @@ class CreateOrderAgentsTable extends Migration
             $table->integer("agent_id",false,true);
             $table->tinyInteger("percent",false,true)->comment("分成比例 1-100");
             $table->decimal("payment")->comment("分成金额");
-            $table->tinyInteger("status",false,true)->comment("状态 0不可提现 1可提现 2冻结（预留）");
+            $table->tinyInteger("status",false,true)->comment("状态 0不可提现 1可提现 2冻结（预留）")->default(0);
 
             $table->timestamps();
         });

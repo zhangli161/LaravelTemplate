@@ -20,6 +20,7 @@ use App\Models\OrderRefund;
 use App\Models\OrderSKU;
 use App\Models\UserCoupon;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class OrderManager extends Manager
@@ -311,6 +312,7 @@ class OrderManager extends Manager
             $order->status = 2;//已付款
             if (array_key_exists("total_fee", $ret))
                 $pay_update['total_fee'] = array_get($ret, "total_fee");
+            $order->paid_at=Carbon::now();
             $order->save();
             $order->xcx_pay()->update($pay_update);
             self::afterPaid($order);
