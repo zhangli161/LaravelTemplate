@@ -430,7 +430,7 @@ class OrderManager extends Manager
         $wxPay = new WXPayManager();
         //4200000214201812297536195648
         $result = $wxPay->refund(
-            $order->xcx_pay->total_fee,
+            (int)$order->xcx_pay->total_fee,
 //            (int)($refund->payment * 100),
             1,
             $refund->id,
