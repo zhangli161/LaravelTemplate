@@ -14,6 +14,7 @@ use App\Models\CouponDistributeMethod;
 use App\Models\UserCoupon;
 use App\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class UserCouponManager
 {
@@ -24,6 +25,8 @@ class UserCouponManager
         $user_coupons = $user->coupons()->withTrashed()
             ->where('coupon_id', $coupon_DM->coupon_id)->get();
         $lasttime = $user_coupons->max('created_at');
+
+        Log::info("领取优惠券方式：$coupon_DM ，已领取".$user_coupons->count()."领取上限:$limit_per_user ");
         if ($coupon_DM->method == 1 //校验能否购买
             and $coupon_DM->stock != 0 //校验库存
         )
@@ -31,15 +34,15 @@ class UserCouponManager
                 or (
                     ($limit_per_user == -1 or $user_coupons->count()< $limit_per_user)//校验领取上限
                     and
-                    (date(strtotime("$lasttime   +$cooldown   hour")) < time())//校验领取间隔
+                    (date(strtotime("   +$cooldown   hour",$lasttime)) < time())//校验领取间隔
                 )
             ) {
                 return true;
             } else {
-                return '第二步校验';
+                return false;
             }
         else {
-            return json_encode($coupon_DM);
+            return false;
         }
         return false;
     }
