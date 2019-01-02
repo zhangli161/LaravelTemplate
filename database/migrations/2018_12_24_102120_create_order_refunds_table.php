@@ -22,6 +22,7 @@ class CreateOrderRefundsTable extends Migration
             $table->integer('status',false,true)->comment("处理状态 0 未处理 1 已通过 2 退款中 3 退款完成 4驳回")->default(0);
             $table->decimal('payment')->comment("退款金额");
             $table->string('note',255)->comment("备注")->nullable();
+            $table->string('result',255)->comment("退款结果")->nullable();
 
             $table->timestamps();
         });

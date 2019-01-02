@@ -10,9 +10,11 @@ namespace App\Components;
 
 
 use App\Http\Controllers\PayController;
+use App\Models\Agent;
 use App\Models\GoodsSKU;
 use App\Models\Order;
 use App\Http\Helpers\SnowFlakeIDWorker;
+use App\Models\OrderAgent;
 use App\Models\OrderCoupon;
 use App\Models\OrderRefund;
 use App\Models\OrderSKU;
@@ -269,6 +271,18 @@ class OrderManager extends Manager
                 }
             }
         }
+
+        //有分销商则进行分销程序
+        if ($order->user()->has("agent")->exists()) {
+            $agent = $order->user->agent;
+            $order_agent = new OrderAgent();
+            $order_agent->order_id = $order->id;
+            $order_agent->agent = $agent->id;
+            $order_agent->percent = 5;//固定5个点的分成
+            $order_agent->payment = $order->payment * 5 / 100.0;
+            
+            $order_agent->save();
+        }
         return [];
     }
 
@@ -454,6 +468,7 @@ class OrderManager extends Manager
             $order->xcx_pay->transaction_id,
             "XCX_$order->id "
         );
+        $order->update(['result' => json_encode($result)]);
         Log::info("退款结果" . json_encode($result));
     }
 }

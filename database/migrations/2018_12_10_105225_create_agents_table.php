@@ -27,6 +27,7 @@ class CreateAgentsTable extends Migration
 			$table->string("business", 100)->collation('utf8mb4_unicode_ci')->comment("行业")->nullable();
 			$table->text("store")->collation('utf8mb4_unicode_ci')->comment("门店信息，json")->nullable();
 			$table->string("xcx_qr", 255)->collation('utf8mb4_unicode_ci')->comment("微信小程序二维码地址")->nullable();
+			$table->decimal("balance")->comment("分销收益")->default(0);
 			$table->tinyInteger('status',false,true)->comment("0封禁 1正常使用")->default(0);
 			
 			$table->timestamps();
