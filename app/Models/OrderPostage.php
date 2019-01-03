@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class OrderPostage extends Model
 {
 	protected $primaryKey='order_id';
+	protected $fillable=["data","status"];
+	protected $casts=["data"=>"json"];
     public function order(){
     	return $this->belongsTo(Order::class,'order_id');
     }

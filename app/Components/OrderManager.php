@@ -339,9 +339,11 @@ class OrderManager extends Manager
      */
     public static function check_postage(Order $order)
     {
-        $postage = PostalInquiriesManager::inquire($order->wuliu);
+        if ($order->wuliu()->doesntExist())
+            return false;
+        $postage = PostageMananger::query($order->wuliu);
 
-        $result = $postage->status == "2" //已收货
+        $result = $postage->status == "3" //已收货
             && (strtotime($order->updated_at) - time()) > 7 * 24 * 3600;//收货时间超过一星期
         if ($result) {
             $order = self::complete($order);

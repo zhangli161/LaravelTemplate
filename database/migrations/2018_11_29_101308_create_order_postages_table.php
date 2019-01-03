@@ -18,7 +18,7 @@ class CreateOrderPostagesTable extends Migration
 	        $table->string('postage_name',20)->comment("快递名称")->nullable();
 	        $table->string('postage_code',50)->comment("快递单号")->nullable();
             $table->text('data')->comment("快递查询返回")->nullable();
-	        $table->tinyInteger('status')->comment("状态 0无信息 1运输中 2已收货");
+	        $table->tinyInteger('status')->comment("状态 0无信息 2运输中 3已收货 4坏件")->default("0");
 
 	        //	        $table->integer('postage_id',false,true);
 	        
