@@ -25,7 +25,7 @@ class GoodsController extends Controller
 {
     public static function getList(Request $request)
     {
-        $query = GoodsSPU::query();
+        $query = GoodsSPU::query()->where('status',1);
         if (gettype($request->get('orderby')) == 'array') {
             $orderby = $request->get('orderby');
             for ($i = 0; $i < (count($orderby) - 1); $i += 2) {
@@ -55,7 +55,7 @@ class GoodsController extends Controller
     public static function getById(Request $request)
     {
         if ($request->filled('spu_id')) {
-            $spu = GoodsSPU::findOrFail($request->spu_id);
+            $spu = GoodsSPU::where('status',1)->findOrFail($request->spu_id);
             $foot_print = FootPrint::query()->firstOrCreate([
                 'user_id' => Auth::user()->id,
                 'spu_id' => $spu->id
@@ -102,7 +102,7 @@ class GoodsController extends Controller
 //			$goods = GoodsSPUManager::getList(true,'price', 'asc', 'id', 'desc');
 //            $results = $query->with("sku")->get();
             if ($request->filled('cate_id')) {
-                $spus = GoodsSPU::where("cate_id", $request->get('cate_id'))->with("skus")->get();
+                $spus = GoodsSPU::where("cate_id", $request->get('cate_id'))->where('status',1)->with("skus")->get();
                 $sku_ids = array();
                 $spus->each(function ($spu) use ($sku_ids) {
                     array_push($sku_ids, $spu->skus->pluck('id'));
@@ -111,7 +111,7 @@ class GoodsController extends Controller
                 $query->whereIn('',$sku_ids);
             }
             if ($request->filled('sence_cate_id')) {
-                $spus = GoodsSPU::where("sence_cate_id", $request->get('sence_cate_id'))->with("skus")->get();
+                $spus = GoodsSPU::where("sence_cate_id", $request->where('status',1)->get('sence_cate_id'))->with("skus")->get();
                 $sku_ids = array();
                 $spus->each(function ($spu) use ($sku_ids) {
                     array_push($sku_ids, $spu->skus->pluck('id'));

@@ -182,10 +182,6 @@ class OrderManager extends Manager
             $total_price = $amount * $sku->price;
             $payment += $total_price;
 
-            //下单计算销量
-            $sku->sell += $amount;
-//            $sku->storage-=$amount;
-
             array_push($order_skus, [
                 'sku_id' => $sku->id,
                 'sku_name' => $sku->name,
@@ -214,9 +210,12 @@ class OrderManager extends Manager
                 'average_price' => $sku->price
             ]);
 
-            if ($sku->stock_type == 1)//下单减库存
-            {
-                if ($sku->stock > 0) {
+            if ($sku->stock_type == 1) {
+                //有库存且商品上架
+                if ($sku->stock > 0 && $sku->spu->status == "1") {
+                    //下单计算销量
+                    $sku->sell += $amount;
+                    //下单减库存
                     $sku->stock -= $amount;
                     $sku->save();
                     $order->status = 2;
@@ -278,7 +277,7 @@ class OrderManager extends Manager
         if ($order->user()->has("agent")->exists()) {
             $agent = $order->user->agent;
             Log::info("$order->id 分销人为 $agent->id ,$agent->name");
-            $percent=AgentManager::getRebateRate($agent);
+            $percent = AgentManager::getRebateRate($agent);
 
             $order_agent = new OrderAgent();
             $order_agent->order_id = $order->id;
@@ -367,11 +366,11 @@ class OrderManager extends Manager
 
         //结算佣金
         if ($order->order_agent()->exists()) {
-            $order_agent=$order->order_agent;
+            $order_agent = $order->order_agent;
             $order->order_agent()->update(['status' => 1]);//可提现
             AgentManager::makeFinance(
                 $order_agent->agent,
-                $order->order_agent->payment,0,
+                $order->order_agent->payment, 0,
                 "订单完成获得佣金:order_id $order->id |order_angent_id $order_agent->id");
         }
 
