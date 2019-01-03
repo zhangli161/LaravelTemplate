@@ -65,7 +65,7 @@ class AgentController extends Controller
 
                         //粉丝图表
                         $model1 = self::getFans($request);
-                        $box1 = new Box("近七日粉丝订单量", $this->funsChartView($model1, $request));
+                        $box1 = new Box("近七日粉丝增长数", $this->funsChartView($model1, $request));
                         $box1->collapsable();
                         $box1->removable();
                         $row->column(6, $box1);
@@ -92,13 +92,16 @@ class AgentController extends Controller
     {
         $orders = AgentManager::getOrders($agent);
         $orders_finish = $orders->where("status", 5);
+
+        $user_ids=$agent->users->pluck("id");
         $rows = [
             ["name" => "代理商id", "value" => $agent->id],
             ["name" => "真实姓名", "value" => $agent->real_name],
             ["name" => "代理地区", "value" => NativePalceReagionManager::getFullAddress($agent->region->region_id)],
             ["name" => "粉丝人数", "value" => $agent->users->count()],
-            ["name" => "返利订单数量", "value" => $agent->order_agent()->count()],
-            ["name" => "返利订单金额", "value" => $agent->order_agent()->sum("payment")],
+            ["name" => "累计粉丝订单数量", "value" => $agent->order_agent()->count()],
+            ["name" => "累计销售额", "value" => $orders->sum("payment")],
+            ["name" => "返利", "value" => $agent->order_agent()->sum("payment")],
             ["name" => "本日新增粉丝数量", "value" => $agent->users()->whereDate('bind_agent_time', Carbon::today())->count()],
             ["name" => "本周新增粉丝数量", "value" => $agent->users()->whereDate('bind_agent_time', '>=', date('Y-m-d', strtotime('last Monday')))->count()],
             ["name" => "本月新增粉丝数量", "value" => $agent->users()->whereDate('bind_agent_time', date('Y-m-d', strtotime('this month')))->count()],

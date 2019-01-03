@@ -36,6 +36,8 @@ Route::group([
     $router->resource('agents', AgentsController::class);
     $router->resource('apply/agent', AgentApplyController::class);
     $router->any('agent/getQR/{id}', "AgentsController@getQR");
+    //***********//
+    $router->resource("rebate/agent",AgentRebateController::class );
 
     //订单统计
     $router->any('statistic/order', "StatisticOrderController@index");

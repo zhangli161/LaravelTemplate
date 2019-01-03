@@ -278,12 +278,13 @@ class OrderManager extends Manager
         if ($order->user()->has("agent")->exists()) {
             $agent = $order->user->agent;
             Log::info("$order->id 分销人为 $agent->id ,$agent->name");
+            $percent=AgentManager::getRebateRate($agent);
 
             $order_agent = new OrderAgent();
             $order_agent->order_id = $order->id;
             $order_agent->agent_id = $agent->id;
-            $order_agent->percent = 5;//固定5个点的分成
-            $order_agent->payment = $order->payment * 5 / 100.0;
+            $order_agent->percent = $percent;//固定5个点的分成
+            $order_agent->payment = $order->payment * $percent / 100.0;
 
             $order_agent->save();
         }
@@ -368,7 +369,9 @@ class OrderManager extends Manager
         if ($order->order_agent()->exists()) {
             $order_agent=$order->order_agent;
             $order->order_agent()->update(['status' => 1]);//可提现
-            AgentManager::makeFinance($order_agent->agent, $order->order_agent->payment,0,
+            AgentManager::makeFinance(
+                $order_agent->agent,
+                $order->order_agent->payment,0,
                 "订单完成获得佣金:order_id $order->id |order_angent_id $order_agent->id");
         }
 

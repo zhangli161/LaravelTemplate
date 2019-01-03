@@ -11,15 +11,20 @@ namespace App\Components;
 
 use App\Models\Agent;
 use App\Models\AgentFinance;
+use App\Models\AgentRebate;
 
 class AgentManager
 {
     public static function getOrders(Agent $agent)
     {
-        $users = $agent->users;
+//        $users = $agent->users;
+        $order_agent = $agent->order_agent()->with("order")->get();
 //        return $users;
-        $orders = $users->mapWithKeys(function ($item) {
-            return $item->orders;
+//        $orders = $users->mapWithKeys(function ($item) {
+//            return $item->orders;
+//        });
+        $orders = $order_agent->map(function ($item) {
+            return $item->order;
         });
         return $orders;
     }
@@ -37,5 +42,18 @@ class AgentManager
         $agent->save();
         $agent_finance->save();
         return $agent_finance;
+    }
+
+    public static function getRebateRate(Agent $agent){
+        $percent=0;
+        $orders=self::getOrders($agent);
+        $s=$orders->sum("payment");//总销售额
+        $rebates=AgentRebate::orderBy("step","asc")->get();
+        foreach ($rebates as $rebate){
+            if ($s>=$rebate->step)
+                $percent=$rebate->percent;
+        }
+        return $percent;
+
     }
 }

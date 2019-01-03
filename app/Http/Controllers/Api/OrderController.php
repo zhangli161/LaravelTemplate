@@ -86,14 +86,17 @@ class OrderController extends Controller
 
         $status_1_count = Auth::user()->orders()->where('status', 1)->count();
         $status_2_3_4_count = Auth::user()->orders()->whereIn('status', [2, 3, 4])->count();
-        $status_5_ids = Auth::user()->orders()->where('status', 1)->pluck("id");
-        $orders = Auth::user()->orders;
-        $commentable_count = OrderSKU::whereIn("order_id", $orders->pluck("id")->toArray())
-            ->doesntHave("comment")->count();
+        $status_5_ids = Auth::user()->orders()->where('status', 5)->pluck("id")->toArray();
+
+
+        $commentable_count = OrderSKU::whereIn("order_id", $status_5_ids)
+            ->doesntHave("comment")->orderBy("created_at", 'desc')->count();
 
 //            OrderSKU::whereIn('order_id', $status_5_ids)->where("is_buyer_rated", 0)->count();
         $refund_count = OrderRefund::whereIn('order_id', $status_5_ids)->count();
-        return ApiResponse::makeResponse(true, [$status_1_count, $status_2_3_4_count, $commentable_count, $refund_count], ApiResponse::SUCCESS_CODE);
+        return ApiResponse::makeResponse(true, [$status_1_count, $status_2_3_4_count, $commentable_count, $refund_count
+        ,Auth::user()->orders()->count(),Auth::user()
+        ], ApiResponse::SUCCESS_CODE);
     }
 
     public static function my(Request $request)
