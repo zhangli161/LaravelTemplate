@@ -60,7 +60,7 @@ class PostageMananger
 //            dd($result);
             $order_postage->update([
                 "status" => $result->State,
-                "data" => json_encode($result)
+                "data" => $result
             ]);
         }
     }
@@ -73,7 +73,7 @@ class PostageMananger
         if ($result->Success == "true")
             $order_postage->update([
                 "status" => $result->State,
-                "data" => json_encode($result)
+                "data" => $result
             ]);
         return $order_postage;
     }
