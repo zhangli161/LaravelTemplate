@@ -283,11 +283,15 @@ class MenuSeeder extends Seeder
 
         ]);
         for ($i = 2; $i <= 39; $i++) {
-            DB::table('goods_spu')->insert([
-                "admin_role_menu" => 1,
+            DB::table('admin_role_menu')->insert([
+                "role_id" => 1,
                 "menu_id" => $i
             ]);
         }
+        DB::table('admin_roles')->insert([
+            "name" => "代理商",
+            "slug" => "agent"
+        ]);
 
 
     }

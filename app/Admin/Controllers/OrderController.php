@@ -141,7 +141,7 @@ class OrderController extends Controller
 				6 => "交易关闭	",
 			]);
 			// 关联关系查询
-			$filter->scope('is_posted', "付款未发货订单")->where('status', 2)->doesntHave('postage');
+			$filter->scope('is_posted', "付款未发货订单")->where('status', 2)->doesntHave('wuliu');
 		});
 
 //		$grid->disableFilter();//筛选
@@ -229,8 +229,8 @@ class OrderController extends Controller
 //        $form->text('buyer_message', 'Buyer message');
 //        $form->text('buyer_nick', 'Buyer nick');
 		
-		$form->text("postage.postage_name", '快递名称');
-		$form->text("postage.postage_code", '快递单号');
+		$form->text("wuliu.postage_name", '快递名称');
+		$form->text("wuliu.postage_code", '快递单号');
 		
 		return $form;
 	}
