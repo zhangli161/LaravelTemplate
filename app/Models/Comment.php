@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
-    protected $fillable=['star','star_1','star_2','star_3','content','albums'];
+    protected $fillable=['star','star_1','star_2','star_3','content','albums',"user_id"];
     protected $casts = ['albums' => 'array',];//内嵌字段
 
     public function spu()
@@ -20,5 +21,9 @@ class Comment extends Model
     public function order_sku()
     {
         return $this->belongsTo(OrderSKU::class,'order_sku_id');
+    }
+    public function user(){
+        return $this->belongsTo(User::class,'user_id');
+
     }
 }

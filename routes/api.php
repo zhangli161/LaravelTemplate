@@ -95,6 +95,7 @@ Route::group(['middleware' => 'auth:api', 'namespace' => 'Api'], function () {
 
     Route::post('/order/comment', 'OrderController@comment');//评论商品
     Route::get('/order/commentahle_skus', 'OrderController@getCommentableSKUS');//可评论订单商品
+    Route::get('/order/comment/getBySPUId', 'OrderController@getCommentsBySPUId');//可评论订单商品
 
     Route::get('/article/getByCategory', 'ArticleController@getByCategory');//根据分类获取列表
     Route::get('/article/getOneByCategory', 'ArticleController@getOneByCategory');//根据分类获取单个

@@ -18,6 +18,7 @@ use App\Http\Controllers\PayController;
 use App\Http\Helpers\ApiResponse;
 use App\Models\Comment;
 use App\Models\GoodsSKU;
+use App\Models\GoodsSPU;
 use App\Models\Order;
 use App\Models\OrderRefund;
 use App\Models\OrderSKU;
@@ -291,12 +292,15 @@ class OrderController extends Controller
                     'star_3' => $request->get('star_3'),
                     'content' => $request->get('content'),
                     'albums' => $request->filled('albums') ? $request->get('albums') : [],
-                ]);
+
+                    ]);
 //            return $order_sku;
             $comment->star = ($request->get('star_1') + $request->get('star_2') + $request->get('star_3')) / 3.0;
             $comment->sku_id = $order_sku->sku_id;
             $comment->spu_id = $order_sku->sku->spu_id;
             $comment->order_sku_id = $order_sku->id;
+            $comment->user_id = Auth::user()->id;
+
             $comment->save();
             $order_sku->is_buyer_rated = 1;
             $order_sku->save();
@@ -305,6 +309,12 @@ class OrderController extends Controller
         } else {
             return ApiResponse::MissingParam();
         }
+    }
+
+    public static function getCommentsBySPUId(Request $request){
+        $spu=GoodsSPU::findOrFail($request->get("spu_id"));
+        return ApiResponse::makeResponse(true, $spu->comments()->with("user")->get(), ApiResponse::SUCCESS_CODE);
+
     }
 
     //确认收货

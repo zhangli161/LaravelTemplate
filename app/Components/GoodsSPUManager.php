@@ -25,7 +25,8 @@ class GoodsSPUManager extends Manager
     public static function getDetailsForApp(GoodsSPU $spu, $skuid = null)
     {
         $spu->detail;
-        $spu->comment = $spu->comments()->orderBy('created_at', 'desc')->first();
+        $spu->comment = $spu->comments()->with("user")
+            ->orderBy('created_at', 'desc')->first();
         $spu->comment_count = $spu->comments()->count();
         $spu->haopinglv = "0";
         $comments_count = $spu->comments()->count();

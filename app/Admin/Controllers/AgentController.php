@@ -97,8 +97,8 @@ class AgentController extends Controller
             ["name" => "真实姓名", "value" => $agent->real_name],
             ["name" => "代理地区", "value" => NativePalceReagionManager::getFullAddress($agent->region->region_id)],
             ["name" => "粉丝人数", "value" => $agent->users->count()],
-            ["name" => "返利订单数量", "value" => $orders_finish->count()],
-            ["name" => "返利订单金额", "value" => $orders_finish->sum("payment")],
+            ["name" => "返利订单数量", "value" => $agent->order_agent()->count()],
+            ["name" => "返利订单金额", "value" => $agent->order_agent()->sum("payment")],
             ["name" => "本日新增粉丝数量", "value" => $agent->users()->whereDate('bind_agent_time', Carbon::today())->count()],
             ["name" => "本周新增粉丝数量", "value" => $agent->users()->whereDate('bind_agent_time', '>=', date('Y-m-d', strtotime('last Monday')))->count()],
             ["name" => "本月新增粉丝数量", "value" => $agent->users()->whereDate('bind_agent_time', date('Y-m-d', strtotime('this month')))->count()],
@@ -130,6 +130,9 @@ class AgentController extends Controller
         $description = "";
         $datas = array();
         $type = $request->filled("type") ? $request->get("type") : 2;
+        if ($model->count()==0){
+            return $chart = "没有数据";
+        }
         if ($type == "0") {
             $model_group = $model->groupBy(function ($item) {
                 return date("Y-m-d", strtotime($item->bind_agent_time));

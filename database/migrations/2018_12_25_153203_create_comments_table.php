@@ -24,6 +24,7 @@ class CreateCommentsTable extends Migration
             $table->text('albums')->comment("图片")->nullable();
             $table->integer('spu_id', false, true);
             $table->integer('sku_id', false, true);
+            $table->integer('user_id', false, true)->nullable();
             $table->integer('order_sku_id', false, true);
 
             $table->timestamps();
