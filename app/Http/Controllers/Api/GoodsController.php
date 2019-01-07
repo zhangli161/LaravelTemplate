@@ -30,11 +30,11 @@ class GoodsController extends Controller
             $orderby = $request->get('orderby');
             for ($i = 0; $i < (count($orderby) - 1); $i += 2) {
                 $query
-                    ->orderby($orderby[$i], $orderby[$i + 1]);
+                    ->orderBy($orderby[$i], $orderby[$i + 1]);
             }
             dd($orderby);
         } else {
-            $query->orderby("id", 'desc');
+            $query->orderBy("id", 'desc');
         }
 //        $goods = GoodsSPUManager::getList(true, $request->get('orderby'));
 //		else
