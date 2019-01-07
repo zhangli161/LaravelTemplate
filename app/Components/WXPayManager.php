@@ -38,12 +38,10 @@ class WXPayManager
             "spbill_create_ip" => get_server_ip()//服务端ip
         );
         $param['sign'] = $this->getSign($param);
-        dd($param);
         $xmldata = $this->arrayToXml($param);
-//        dd($param);
         $xmlresult = $this->postXmlSSLCurl($xmldata, 'https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers');
         $result = $this->xmlToArray($xmlresult);
-        Log::info("企业付款：".json_encode($result));
+        Log::info("企业付款：param:".json_encode($param)."ret:".json_encode($result));
         return $result;
     }
 
