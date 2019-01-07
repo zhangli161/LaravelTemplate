@@ -76,3 +76,22 @@ function getRealImageUrl($url)
     }
     return $url;
 }
+
+
+function get_server_ip()
+{
+    if (isset($_SERVER['SERVER_NAME'])) {
+        return gethostbyname($_SERVER['SERVER_NAME']);
+    } else {
+        if (isset($_SERVER)) {
+            if (isset($_SERVER['SERVER_ADDR'])) {
+                $server_ip = $_SERVER['SERVER_ADDR'];
+            } elseif (isset($_SERVER['LOCAL_ADDR'])) {
+                $server_ip = $_SERVER['LOCAL_ADDR'];
+            }
+        } else {
+            $server_ip = getenv('SERVER_ADDR');
+        }
+        return $server_ip ? $server_ip : '获取不到服务器IP';
+    }
+}

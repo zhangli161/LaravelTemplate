@@ -9,6 +9,8 @@
 namespace App\Components;
 
 
+use Illuminate\Support\Facades\Log;
+
 class WXPayManager
 {
 
@@ -33,9 +35,7 @@ class WXPayManager
             "re_user_name" => $re_user_name,//收款人姓名
             'amount' => $amount,
             "desc" => $desc,
-            "spbill_create_ip" => isset($_SERVER['HTTP_X_FORWARDED_HOST']) ?
-                $_SERVER['HTTP_X_FORWARDED_HOST'] :
-                (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '')//服务端ip
+            "spbill_create_ip" => get_server_ip()//服务端ip
         );
         $param['sign'] = $this->getSign($param);
         dd($param);
@@ -43,6 +43,7 @@ class WXPayManager
 //        dd($param);
         $xmlresult = $this->postXmlSSLCurl($xmldata, 'https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers');
         $result = $this->xmlToArray($xmlresult);
+        Log::info("企业付款：".json_encode($result));
         return $result;
     }
 
