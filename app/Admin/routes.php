@@ -65,6 +65,8 @@ Route::group([
     $router->get('agent', "AgentController@index");
     $router->any('agent/chart/order', "AgentController@orderChart");
     $router->any('agent/chart/fans', "AgentController@funsChart");
+    $router->get('agent/cash', "AgentController@cash");
+    $router->post('agent/cash', "AgentController@cash_post");
 
     $router->resource('refund/order', OrderRefundController::class);
 

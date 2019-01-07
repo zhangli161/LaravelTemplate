@@ -29,6 +29,13 @@ class UserAddressController
 
         $address = $user->addresses()->findOrNew($request->get('id'));
 
+        //删除
+        if ($request->filled("delete")){
+            $address->delete();
+            return ApiResponse::makeResponse(true, $address, ApiResponse::SUCCESS_CODE);
+        }
+
+
 //        UserAddress::
         $address->fill($request->all());
         $address->save();

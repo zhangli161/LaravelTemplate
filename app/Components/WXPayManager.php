@@ -28,6 +28,16 @@ class WXPayManager
 //            env("APP_PATH") . "\storage\cert\apiclient_cert.pem ");
     }
 
+    /**
+     * 向个人付款
+     * @param $amount
+     * @param $partner_trade_no
+     * @param $openid
+     * @param string $desc
+     * @param bool $check_name
+     * @param string $re_user_name
+     * @return mixed
+     */
     public function transfer($amount, $partner_trade_no, $openid, $desc = "", $check_name = false, $re_user_name = "收款人")
     {
         $param = array(
@@ -50,6 +60,20 @@ class WXPayManager
         return $result;
     }
 
+    public function gettransferinfo($partner_trade_no){
+        $param = array(
+            'appid' => $this->APPID,
+            'mch_id' => $this->MCHID,
+            'nonce_str' => $this->createNoncestr(),
+            'partner_trade_no' => $partner_trade_no,//商户付款订单号
+        );
+        $param['sign'] = $this->getSign($param);
+        $xmldata = $this->arrayToXml($param);
+        $xmlresult = $this->postXmlSSLCurl($xmldata, 'https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers');
+        $result = $this->xmlToArray($xmlresult);
+        Log::info("企业付款查询结果：param:".json_encode($param)."ret:".json_encode($result));
+        return $result;
+    }
     /**
      * 退款
      *

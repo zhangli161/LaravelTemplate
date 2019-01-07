@@ -12,8 +12,11 @@ use App\Components\AdminManager;
 use App\Components\AgentManager;
 use App\Components\ChartManager;
 use App\Components\NativePalceReagionManager;
+use App\Components\WXPayManager;
 use App\Http\Controllers\Controller;
+use App\Models\AgentFinance;
 use App\Models\NativePlaceRegion;
+use App\User;
 use Carbon\Carbon;
 use Encore\Admin\Facades\Admin;
 use Encore\Admin\Controllers\HasResourceActions;
@@ -42,7 +45,7 @@ class AgentController extends Controller
     public function index(Content $content)
     {
         $admin = Admin::user();
-        $agent = Agent::where("admin_id", $admin->id)->with(["region", "users"])->first();
+        $agent = Agent::where("admin_id", $admin->id)->with(["region", "users", "finances"])->first();
         $request = new Request([
             'date_from' => Carbon::createFromTimestamp(time() - 86400 * 7),
             "date_to" => Carbon::now(),
@@ -73,7 +76,23 @@ class AgentController extends Controller
                 });
 
                 $row->column(4, function (Column $column) use ($agent, $request) {
-                    $box=new Box('操作','aaaaa');
+                    $datas = new Collection([
+                        [
+//                        "color" => "green",
+                            "icon" => "fa-cny",
+                            "text" => "可提现金额",
+                            "number" => $agent->balance,
+                            "url" => "agent/cash"
+                        ],
+//                        [
+////                        "color" => "green",
+//                            "icon" => "fa-cny",
+//                            "text" => "可提现金额",
+//                            "number" => $agent->balance,
+//                            "url" => "rebate/agent"
+//                        ],
+                    ]);
+                    $box = new Box('操作', view("admin.agent.operate", ["datas" => $datas]));
                     $box->collapsable();
                     $box->removable();
                     $column->row($box);
@@ -82,7 +101,7 @@ class AgentController extends Controller
                     $html = ($agent->xcx_qr ?
                         "<image src='$agent->xcx_qr' style='width: 100%'/>" :
                         "<div style='width:100%;height:0;padding-bottom: 100%;font-size: large'>您还没有二维码，点击<a href='/admin/agent/getQR/$agent->id'>生成二维码</a></div>");
-                    $column->row(new Box('推广二维码',$html));
+                    $column->row(new Box('推广二维码', $html));
 
                 });
             });
@@ -93,7 +112,7 @@ class AgentController extends Controller
         $orders = AgentManager::getOrders($agent);
         $orders_finish = $orders->where("status", 5);
 
-        $user_ids=$agent->users->pluck("id");
+        $user_ids = $agent->users->pluck("id");
         $rows = [
             ["name" => "代理商id", "value" => $agent->id],
             ["name" => "真实姓名", "value" => $agent->real_name],
@@ -133,7 +152,7 @@ class AgentController extends Controller
         $description = "";
         $datas = array();
         $type = $request->filled("type") ? $request->get("type") : 2;
-        if ($model->count()==0){
+        if ($model->count() == 0) {
             return $chart = "没有数据";
         }
         if ($type == "0") {
@@ -311,8 +330,95 @@ class AgentController extends Controller
         return $form;
     }
 
-    private function fansForm()
+    public function cash(Content $content)
     {
+        return $content
+            ->header('Index')
+            ->description('description')
+//            ->body($this->cashGrid())
+            ->row(function (Row $row) {
 
+                $row->column(6, $this->cashGrid()->setTitle("财务流水"));
+
+                $row->column(6, (new AgentCashController())->grid_mine()->setTitle("提现记录"));
+
+                $row->column(12, function (Column $column) {
+                    $column->row(new Box("申请提现", view("admin.agent.cash_form")));
+//                    $column->row(new Box("提现记录","bbb"));
+                });
+
+//                $row->column(3, new Box("aaa","bbb"));
+            });
+    }
+
+    private function cashGrid()
+    {
+        $admin = Admin::user();
+        $agent = Agent::where("admin_id", $admin->id)->first();
+
+        $grid = new Grid(new AgentFinance());
+        $grid->model()->where('agent_id', $agent->id);
+
+        $grid->id('Id');
+        $grid->income('收入')->display(function ($text) {
+            return $text == 0 ? $text : "<i class='label-primary label'>$text</i>";
+        });
+        $grid->expenditure('提现')->display(function ($text) {
+            return $text == 0 ? $text : "<i class='label-danger label'>$text</i>";
+        });
+        $grid->balance("余额")->display(function ($text) {
+            return "<i class='label-success label'>$text</i>";
+        });;
+        $grid->note("备注");
+
+
+        $grid->created_at('时间')->sortable();
+//        $grid->updated_at('Updated at');
+//
+        $grid->tools(function ($tools) {
+            $tools->batch(function ($batch) {
+                $batch->disableDelete();
+            });
+        });
+        $grid->filter(function ($filter) {
+
+            // 设置created_at字段的范围查询
+            $filter->between('created_at', '时间')->datetime();
+        });
+
+//        $grid->disableTools();
+        $grid->disableActions();
+        $grid->disableCreateButton();
+        $grid->disableExport();
+        $grid->disableRowSelector();
+        $grid->actions(function ($actions) {
+            $actions->disableDelete();
+            $actions->disableEdit();
+            $actions->disableView();
+        });
+
+        return $grid;
+    }
+
+    public function cash_post(Request $request)
+    {
+        if (!$request->filled(['payment', "user_id"])) {
+            return $this->cash(new Content())
+                ->withError("参数丢失", "请将表单完整填写");
+        }
+        $user = User::findOrFail($request->get("user_id"));
+        $admin = Admin::user();
+        $agent = Agent::where("admin_id", $admin->id)
+            ->with(["region", "users", "finances"])->first();
+
+        $result = AgentManager::cash($agent, $user, $request->get("payment"));
+
+        if ($result["result"]) {
+            return $this->cash(new Content())
+                ->withSuccess("成功", $result["message"]);
+        } else {
+            return $this->cash(new Content())
+                ->withError("失败", $result["message"]);
+        }
     }
 }

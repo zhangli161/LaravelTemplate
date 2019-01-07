@@ -10,8 +10,10 @@ namespace App\Components;
 
 
 use App\Models\Agent;
+use App\Models\AgentCash;
 use App\Models\AgentFinance;
 use App\Models\AgentRebate;
+use App\User;
 
 class AgentManager
 {
@@ -44,16 +46,48 @@ class AgentManager
         return $agent_finance;
     }
 
-    public static function getRebateRate(Agent $agent){
-        $percent=0;
-        $orders=self::getOrders($agent);
-        $s=$orders->sum("payment");//总销售额
-        $rebates=AgentRebate::orderBy("step","asc")->get();
-        foreach ($rebates as $rebate){
-            if ($s>=$rebate->step)
-                $percent=$rebate->percent;
+    public static function getRebateRate(Agent $agent)
+    {
+        $percent = 0;
+        $orders = self::getOrders($agent);
+        $s = $orders->sum("payment");//总销售额
+        $rebates = AgentRebate::orderBy("step", "asc")->get();
+        foreach ($rebates as $rebate) {
+            if ($s >= $rebate->step)
+                $percent = $rebate->percent;
         }
         return $percent;
 
     }
+
+    public static function cash(Agent $agent, User $user, $amount)
+    {
+        if ($agent->balance < $amount)//提现金额不足
+        {
+            return ["result" => false, "message" => "可提现金额不足"];
+        } else {
+            $agent->cashes()->create(["user_id" => $user->id, "amount" => (int)($amount * 100)]);
+            return ["result" => true, "message" => "提现申请已经提交，您可以在一小时内修改或撤销您的申请"];
+        }
+
+    }
+
+    public static function doCash(AgentCash $agentcash)
+    {
+        $pay = new WXPayManager();
+        $ret = $pay->transfer($agentcash->amount, $agentcash->id, $agentcash->user->WX->openId, "申请提现");
+        $agentcash->return = $ret;
+        $result = $ret['result_code'] == "SUCCESS";
+        if ($result) {
+            $agentcash->status = 1;
+            $agentcash->note="转账成功";
+        } else{
+            $agentcash->status = 2;
+            $agentcash->note=$ret['return_msg'];
+        }
+
+        $agentcash->save();
+    }
+
+
 }

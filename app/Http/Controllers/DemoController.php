@@ -24,6 +24,7 @@ use App\Components\WXPayManager;
 use App\Http\Helpers\ApiResponse;
 use App\Http\Helpers\SnowFlakeIDWorker;
 use App\Models\Agent;
+use App\Models\AgentCash;
 use App\Models\GoodsSKU;
 use App\Models\Message;
 use App\Models\MessageContent;
@@ -42,9 +43,13 @@ class DemoController extends Controller
 //	static $worker=SnowFlakeIDWorker(1);
     public static function test()
     {
-        $pay = new WXPayManager();
-        $ret = $pay->transfer(1, "test0", "oHK0P5ROsBac0PvlbOu_teyFTdjY", "测试付款");
-        dd($ret);
+//        $pay = new WXPayManager();
+//        $ret = $pay->transfer(1, "test0", "oHK0P5ROsBac0PvlbOu_teyFTdjY", "测试付款");
+//        dd($ret);
+        $acs=AgentCash::where("status",0)->get();
+        foreach ($acs as $ac)
+        AgentManager::doCash($ac);
+        dd($acs);
     }
 
     //Manager的用法
