@@ -22,8 +22,8 @@ class WXPayManager
         $this->KEY = env("WX_API_KEY");
 //        $this->SSLCERT_PATH = env("APP_PATH") . "\storage\cert\apiclient_cert.pem ";
 //        $this->SSLKEY_PATH = env("APP_PATH") . "\storage\cert\apiclient_key.pem ";
-        $this->SSLCERT_PATH = storage_path('cert\apiclient_cert.pem');
-        $this->SSLKEY_PATH = storage_path('cert\apiclient_key.pem');
+        $this->SSLCERT_PATH = storage_path('cert/apiclient_cert.pem');
+        $this->SSLKEY_PATH = storage_path('cert/apiclient_key.pem');
 //        dd(storage_path('cert\apiclient_cert.pem'),
 //            env("APP_PATH") . "\storage\cert\apiclient_cert.pem ");
     }
