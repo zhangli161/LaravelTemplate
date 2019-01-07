@@ -12,7 +12,7 @@ class GoodsSKUSpecValue extends Model
 	use SoftDeletes;    //使用软删除
 	protected $table = 'goods_sku_spec_value';  //表名
 	protected $dates = ['deleted_at'];  //软删除
-	protected $fillable=['spec_value_id','sku_id'];
+	protected $fillable=['spec_value_id','sku_id',"spec_id"];
 	
 	public function spec()
 	{

@@ -8,6 +8,7 @@ use App\Models\GoodsSKU;
 use App\Http\Controllers\Controller;
 use App\Models\GoodsSpec;
 use App\Models\GoodsSpecValue;
+use App\Models\GoodsSPU;
 use App\Models\Postage;
 use Encore\Admin\Controllers\HasResourceActions;
 use Encore\Admin\Form;
@@ -277,7 +278,12 @@ class GoodsSKUController extends Controller
 			$form->decimal('price', '价格')->default(0.00);
 			$form->number('stock', '库存');
 //        $form->number('shop_id', 'Shop id');
-			$form->number('spu_id', '商品Spu id')->default(request('spu_id'));
+            $spus=GoodsSPU::all();
+            $options=$spus->mapWithKeys(function ($item) {
+                return [$item['id'] => $item['spu_name']];
+            });
+
+            $form->select('spu_id', '商品Spu id')->options($options)->default(request('spu_id'));
 			$form->radio('stock_type', '减库存时间')
 				->options([0 => '付款减库存', 1 => '下单减库存']);
 //			$form->switch('postage', '是否包邮')->default(1)->value(1);
@@ -322,20 +328,35 @@ class GoodsSKUController extends Controller
 						$options[$sku->id] = $sku->sku_name;
 					}
 				}
-//				$form->select('sku_id', '关联子商品')
-//					->options($options)
-//					->help('非必填。用户选择该子商品时此图片会优先显示。
-//					只能选择已保存的子商品。
-//					可以勾选继续编辑后提交再进行关联。');
 			});
-//		})->tab('商品活动',function ($form){
-//			$form->text('benefit.title', '活动标题');
-//			$form->text('benefit.desc', '活动描述');
-//			$form->decimal('benefit.price', '活动价');
-//			$form->decimal('benefit.origin_price', '原价');
-//			$form->datetimeRange('benefit.time_form', 'time_to', '活动时间')->rules('after:now');
-//			$form->switch('benefit.reset', '结束时恢复原价')->default(1);
-		});
+
+		})->tab('相似产品', function ($Form) {
+            $Form->hasMany('similar_sku_throughs', '相似产品', function (Form\NestedForm $form) use ($Form) {
+
+
+                $options = array();
+                if ($Form->model()) {
+                    $skus = GoodsSKU::query()->get();
+                    foreach ($skus as $sku) {
+                        $options[$sku->id] = $sku->sku_name;
+                    }
+                }
+                $form->select('similar_sku_id', '关联商品')->options($options);
+            });
+        })->tab('配套商品', function ($Form) {
+            $Form->hasMany('matched_sku_throughs', '配套商品', function (Form\NestedForm $form) use ($Form) {
+
+
+                $options = array();
+                if ($Form->model()) {
+                    $skus = GoodsSKU::query()->get();
+                    foreach ($skus as $sku) {
+                        $options[$sku->id] = $sku->sku_name;
+                    }
+                }
+                $form->select('matched_sku_id', '关联商品')->options($options);
+            });
+        });
 //		$form->ignore(['spec_id']);
 		$form->saving(function (Form $form) {
 
@@ -414,7 +435,5 @@ class GoodsSKUController extends Controller
 			}
 		}
 		return redirect()->to('/admin/benefit');
-		
-		
 	}
 }

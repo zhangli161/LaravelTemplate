@@ -46,10 +46,11 @@ class DemoController extends Controller
 //        $pay = new WXPayManager();
 //        $ret = $pay->transfer(1, "test0", "oHK0P5ROsBac0PvlbOu_teyFTdjY", "测试付款");
 //        dd($ret);
-        $acs=AgentCash::where("status",0)->get();
-        foreach ($acs as $ac)
-        AgentManager::doCash($ac);
-        dd($acs);
+//        $acs=AgentCash::where("status",0)->get();
+//        foreach ($acs as $ac)
+//        AgentManager::doCash($ac);
+//        dd($acs);
+        return (GoodsSKU::with(["similar_skus","matched_skus"])->find(1)->toArray());
     }
 
     //Manager的用法

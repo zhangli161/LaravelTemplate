@@ -27,6 +27,9 @@ class GoodsSKUManager extends Manager
         if ($getSPU) {
             $sku->spu = GoodsSPUManager::getDetailsForApp($sku->spu);
         }
+        $sku->similar_skus;
+        $sku->matched_skus;
+
         $sku->benefits;
         $sku->benefit = $sku->benefits
             ->where('status', '>', 0)->first();
