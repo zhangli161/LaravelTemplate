@@ -10,6 +10,7 @@ namespace App\Components;
 
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class WXPayManager
 {
@@ -19,8 +20,12 @@ class WXPayManager
         $this->APPID = env("WX_APP_ID");
         $this->MCHID = env("WX_MCH_ID");
         $this->KEY = env("WX_API_KEY");
-        $this->SSLCERT_PATH = env("APP_PATH") . "\storage\cert\apiclient_cert.pem ";
-        $this->SSLKEY_PATH = env("APP_PATH") . "\storage\cert\apiclient_key.pem ";
+//        $this->SSLCERT_PATH = env("APP_PATH") . "\storage\cert\apiclient_cert.pem ";
+//        $this->SSLKEY_PATH = env("APP_PATH") . "\storage\cert\apiclient_key.pem ";
+        $this->SSLCERT_PATH = storage_path('cert\apiclient_cert.pem');
+        $this->SSLKEY_PATH = storage_path('cert\apiclient_key.pem');
+//        dd(storage_path('cert\apiclient_cert.pem'),
+//            env("APP_PATH") . "\storage\cert\apiclient_cert.pem ");
     }
 
     public function transfer($amount, $partner_trade_no, $openid, $desc = "", $check_name = false, $re_user_name = "收款人")

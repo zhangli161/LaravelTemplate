@@ -69,6 +69,11 @@ return [
 			'url' =>  env('APP_URL') . '/storage/admin',
 			'visibility' => 'public',
 		],
+        'cert' => [
+            'driver' => 'local',
+            'root' => storage_path('cert'),
+            'visibility' => 'public',
+        ],
 		//七牛上传，参照http://laravel-admin.org/docs/#/zh/model-form-upload?id=%e4%bf%ae%e6%94%b9%e5%ad%98%e5%82%a8%e8%b7%af%e5%be%84%e6%88%96%e6%96%87%e4%bb%b6%e5%90%8d
 		'qiniu' => [
 			'driver'  => 'qiniu',
