@@ -214,7 +214,7 @@ class OrderController extends Controller
     {
         $form = new Form(new Order);
 
-//	    $form->decimal('payment', 'Payment');
+	    $form->decimal('payment', '实际支付金额');
 //        $form->switch('payment_type', 'Payment type')->default(1);
 //        $form->decimal('post_fee', 'Post fee');
         $form->select('status', '订单状态')->default(4)->options([4 => '已发货']);

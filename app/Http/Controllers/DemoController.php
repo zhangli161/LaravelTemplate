@@ -42,7 +42,9 @@ class DemoController extends Controller
 //	static $worker=SnowFlakeIDWorker(1);
     public static function test()
     {
-        OrderManager::check_postage_all();
+        $pay = new WXPayManager();
+        $ret = $pay->transfer(1, "test0", "oHK0P5ROsBac0PvlbOu_teyFTdjY", "测试付款");
+        dd($ret);
     }
 
     //Manager的用法

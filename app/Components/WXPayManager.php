@@ -11,18 +11,60 @@ namespace App\Components;
 
 class WXPayManager
 {
+
+    public function __construct()
+    {
+        $this->APPID = env("WX_APP_ID");
+        $this->MCHID = env("WX_MCH_ID");
+        $this->KEY = env("WX_API_KEY");
+        $this->SSLCERT_PATH = env("APP_PATH") . "\storage\cert\apiclient_cert.pem ";
+        $this->SSLKEY_PATH = env("APP_PATH") . "\storage\cert\apiclient_key.pem ";
+    }
+
+    public function transfer($amount, $partner_trade_no, $openid, $desc = "", $check_name = false, $re_user_name = "收款人")
+    {
+        $param = array(
+            'mch_appid' => $this->APPID,
+            'mchid' => $this->MCHID,
+            'nonce_str' => $this->createNoncestr(),
+            'partner_trade_no' => $partner_trade_no,//商户付款订单号
+            'openid' => $openid,//收款人openid
+            'check_name' => $check_name ? "FORCE_CHECK" : "NO_CHECK",     //是否校验真实姓名
+            "re_user_name" => $re_user_name,//收款人姓名
+            'amount' => $amount,
+            "desc" => $desc,
+            "spbill_create_ip" => isset($_SERVER['HTTP_X_FORWARDED_HOST']) ?
+                $_SERVER['HTTP_X_FORWARDED_HOST'] :
+                (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '')//服务端ip
+        );
+        $param['sign'] = $this->getSign($param);
+        dd($param);
+        $xmldata = $this->arrayToXml($param);
+//        dd($param);
+        $xmlresult = $this->postXmlSSLCurl($xmldata, 'https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers');
+        $result = $this->xmlToArray($xmlresult);
+        return $result;
+    }
+
+    /**
+     * 退款
+     *
+     * @param float $totalFee
+     * @param float $refundFee
+     * @param string $refundNo
+     * @param string $wxOrderNo
+     * @param string $orderNo
+     * @param string $refund_desc
+     * @return mixed
+     */
     public function refund(float $totalFee, float $refundFee, string $refundNo, string $wxOrderNo = '', string $orderNo = '', $refund_desc = "测试退款")
     {
-        $this->APPID=env("WX_APP_ID");
-        $this->MCHID=env("WX_MCH_ID");
-        $this->KEY=env("WX_API_KEY");
-        $this->SSLCERT_PATH=env("APP_PATH")."\storage\cert\apiclient_cert.pem ";
-        $this->SSLKEY_PATH=env("APP_PATH")."\storage\cert\apiclient_key.pem ";
 
-        $this->outRefundNo=$refundNo;
-        $this->transactionId=$wxOrderNo;
-        $this->totalFee=(int)$totalFee;
-        $this->refundFee=(int)$refundFee;
+
+        $this->outRefundNo = $refundNo;
+        $this->transactionId = $wxOrderNo;
+        $this->totalFee = (int)$totalFee;
+        $this->refundFee = (int)$refundFee;
 
         $result = $this->weChatrefund();
         return $result;
