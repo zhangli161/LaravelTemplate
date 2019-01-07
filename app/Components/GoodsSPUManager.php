@@ -45,7 +45,7 @@ class GoodsSPUManager extends Manager
 //        }
 
         foreach ($spu->skus as $sku) {
-            $sku = GoodsSKUManager::getDetailsForApp($sku);
+            $sku = GoodsSKUManager::getDetailsForApp($sku,false,true);
             if (!$skuid) {
                 if (!$spu->main_sku or $spu->main_sku->price > $sku->price) {
                     $spu->main_sku = $sku;

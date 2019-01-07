@@ -16,7 +16,7 @@ class CreateGoodsSKUMatchedsTable extends Migration
         Schema::create('goods_sku_matched', function (Blueprint $table) {
             $table->integer('sku_id',false,true);
             $table->integer('matched_sku_id',false,true);
-            $table->primary("sku_id");
+
             $table->timestamps();
         });
     }

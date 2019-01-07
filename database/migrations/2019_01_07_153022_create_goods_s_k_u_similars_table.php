@@ -16,7 +16,7 @@ class CreateGoodsSKUSimilarsTable extends Migration
         Schema::create('goods_sku_similars', function (Blueprint $table) {
             $table->integer('sku_id',false,true);
             $table->integer('similar_sku_id',false,true);
-            $table->primary("sku_id");
+
             $table->timestamps();
         });
     }

@@ -18,6 +18,7 @@ use App\Http\Controllers\PayController;
 use App\Http\Helpers\ApiResponse;
 use App\Models\Comment;
 use App\Models\GoodsSKU;
+use App\Models\GoodsSKUSimilar;
 use App\Models\GoodsSPU;
 use App\Models\Order;
 use App\Models\OrderRefund;
@@ -330,5 +331,22 @@ class OrderController extends Controller
         $order = OrderManager::complete($order);
 
         return ApiResponse::makeResponse(true, $order, ApiResponse::SUCCESS_CODE);
+    }
+
+    public static function similar_skus(Request $request)
+    {
+        $order=Order::with("skus")->findOrFail($request->get("order_id"));
+        $sku_ids=$order->skus->pluck("sku_id")->toArray();
+//        return $sku_ids;
+        $similar_sku_ids=GoodsSKUSimilar::query()->whereIn("sku_id",$sku_ids)
+            ->pluck("similar_sku_id")->toArray();
+        $return = GoodsSKU::query()->whereIn("id",$similar_sku_ids)->inRandomOrder()->get();
+        if ($request->filled("take")){
+            $return=$return->take((int)$request->get("take"));
+        }
+        foreach ($return as $item){
+            $item=GoodsSKUManager::getDetailsForApp($item,false,true);
+        }
+        return ApiResponse::makeResponse(true, $return, ApiResponse::SUCCESS_CODE);
     }
 }

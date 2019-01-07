@@ -22,13 +22,26 @@ class GoodsSKUManager extends Manager
 
     protected static $Modle = GoodsSKU::class;
 
-    public static function getDetailsForApp(GoodsSKU $sku, $getSPU = false)
+    public static function getDetailsForApp(GoodsSKU $sku, $getSPU = false, $getOtherSKUs = false)
     {
         if ($getSPU) {
             $sku->spu = GoodsSPUManager::getDetailsForApp($sku->spu);
         }
-        $sku->similar_skus;
-        $sku->matched_skus;
+        if ($getOtherSKUs) {
+            $similar_skus=$sku->similar_skus;
+            foreach ($similar_skus as $similar_sku){
+                $similar_sku=self::getDetailsForApp($similar_sku);
+            }
+            $sku->similar_skus=$similar_skus;
+
+            $matched_skus=$sku->matched_skus;
+            foreach ($matched_skus as $matched_sku){
+                $matched_sku=self::getDetailsForApp($matched_sku);
+            }
+            $sku->matched_skus=$matched_skus;
+
+//            $sku->matched_skus=self::getDetailsForApp($sku->matched_skus);
+        }
 
         $sku->benefits;
         $sku->benefit = $sku->benefits
@@ -37,7 +50,7 @@ class GoodsSKUManager extends Manager
         $sku->favorites_count = $sku->favorites()->count();
         $sku->is_favorite = $sku->favorites()->where('user_id', Auth::user()->id)->exists();
 
-        $sku->sell=OrderSKU::where("sku_id",$sku->id)->sum("amount");
+        $sku->sell = OrderSKU::where("sku_id", $sku->id)->sum("amount");
         $pattern = array('/http:\/\//', '/https:\/\//');
         foreach ($sku->albums as $album) {
             $result = preg_match_all($pattern[0], $album->url, $m) || preg_match_all($pattern[1], $album->url, $m);
