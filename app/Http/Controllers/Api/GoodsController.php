@@ -77,7 +77,7 @@ class GoodsController extends Controller
     public static function getById(Request $request)
     {
         if ($request->filled('spu_id')) {
-            $spu = GoodsSPU::where('status', 1)->findOrFail($request->spu_id);
+            $spu = GoodsSPU::findOrFail($request->spu_id);
             $foot_print = FootPrint::query()->firstOrCreate([
                 'user_id' => Auth::user()->id,
                 'spu_id' => $spu->id

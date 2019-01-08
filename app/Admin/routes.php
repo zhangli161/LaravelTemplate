@@ -59,8 +59,13 @@ Route::group([
     //用户统计
     $router->any('statistic/user', "StatisticUserController@index");
 
+    //优惠券统计
     $router->any('statistic/coupon', "StatisticCouponController@index");
 
+    //供应商统计、
+    $router->any('statistic/agent', "StatisticAgentController@index");
+//    $router->any('chart/agent/fans', "StatisticFinanceController@income_chart");
+//    $router->any('chart/agent/fans_cost', "StatisticFinanceController@income_chart");
 
     $router->get('agent', "AgentController@index");
     $router->any('agent/chart/order', "AgentController@orderChart");

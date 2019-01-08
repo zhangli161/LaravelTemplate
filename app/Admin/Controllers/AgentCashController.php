@@ -152,17 +152,17 @@ class AgentCashController extends Controller
 
         $admin = Admin::user();
         $agent = Agent::where("admin_id", $admin->id)->with(["region", "users", "finances"])->first();
-        $grid->model()->where("agent_id",$agent->id);
+        $grid->model()->where("agent_id", $agent->id);
 
         $grid->id('Id');
-        $grid->agent_id('Agent id');
-        $grid->user_id('User id');
-        $grid->amount('Amount');
-        $grid->status('Status');
-        $grid->return('Return');
-        $grid->note('Note');
-        $grid->created_at('Created at');
-        $grid->updated_at('Updated at');
+        $grid->agent_id('代理商id');
+        $grid->user_id('关联小程序用户id');
+        $grid->amount('金额');
+        $grid->status('状态')->using(['0' => "未执行", "1" => "成功", "2" => "失败"]);
+//        $grid->return('Return');
+        $grid->note('备注');
+        $grid->created_at('申请时间');
+//        $grid->updated_at('Updated at');
 
         $grid->disableActions();
         $grid->disableCreateButton();
