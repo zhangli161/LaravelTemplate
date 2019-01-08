@@ -23,7 +23,8 @@
                 <tr>
                     @foreach($row as $title=>$value)
                         <td>
-                            {{$value}}
+                            {{--{{$value}}--}}
+                            {!! $value !!}
                         </td>
                     @endforeach
                 </tr>

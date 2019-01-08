@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers;
 
+use App\Components\AgentManager;
 use App\Components\ChartManager;
 use App\Components\NativePalceReagionManager;
 use App\Models\Agent;
@@ -39,7 +40,7 @@ class StatisticAgentController extends Controller
             ->header('Index')
             ->description('description')
             ->row($this->grid($request))
-            ->row($this->chartform("/admin/statistic/agent"));
+            ->row($this->gridForm("/admin/statistic/agent"));
     }
 
 
@@ -56,7 +57,7 @@ class StatisticAgentController extends Controller
             return "未找到数据";
         }
 
-        $titles = ['代理商id', '粉丝总数', "粉丝增长数量", "粉丝消费额", "粉丝退货单数"];
+        $titles = ['代理商id', '粉丝总数', "粉丝增长数量", "粉丝消费额", "粉丝退货单数", "查看粉丝增长图表", "查看粉丝消费图表"];
 
         $rows = array();
         foreach ($model as $agent) {
@@ -66,7 +67,8 @@ class StatisticAgentController extends Controller
                 $agent->increase_users->count(),
                 $agent->order_agent->sum("order_payment"),
                 $agent->user_refunds->count(),
-
+                "<a href='/admin/chart/agent/fans?agent_id=$agent->id'>查看</a>",
+                "<a href='/admin/chart/agent/fans_cost?agent_id=$agent->id'>查看</a>"
             ]);
         }
 //        dd($rows);
@@ -111,30 +113,40 @@ class StatisticAgentController extends Controller
         return $agents;
     }
 
-    public function count_chart(Content $content, Request $request)
+    public function fans_chart(Content $content, Request $request)
     {
-        $model = self::getModel($request);
+        $agent = Agent::with("users")
+            ->findOrFail($request->get("agent_id"));
+        if ($request->filled("date_from") && $request->filled("date_to")) {
+            $model = $agent->users()
+                ->where("bind_agent_time", ">=", $request->get("date_from"))
+                ->where("bind_agent_time", "<=", $request->get("date_to"))
+                ->get();
+
+        } else {
+            $model = $agent->users;
+        }
+//        dd($agent->toArray());
         //如果未获取的数据
         if ($model->count() < 1)
             return $content
-                ->header('订单数量折线图')
+                ->header('粉丝增长量折线图')
 //			->description('折线图')
                 ->row("未找到对应数据！")
-                ->row($this->chartform("/admin/chart/agent/payment"));
+                ->row($this->chartform("/admin/chart/agent/fans"));
 
 
         $description = "";
-        $dates = array();
         $datas = array();
         $type = $request->filled("type") ? $request->get("type") : 2;
         if ($type == "0") {
             $model_group = $model->groupBy(function ($item) {
                 return date("Y-m-d", strtotime($item->created_at));
             });
-            $lables = getDatesBetween($model->min('created_at'), $model->max('created_at'));
+            $lables = getDatesBetween($model->min('bind_agent_time'), $model->max('bind_agent_time'));
 //            $lables=$model->keys()->toArray();
             foreach ($lables as $key => $lable) {
-                $datas[$key] = $model_group->get($lable, new Collection())->sum('amount');
+                $datas[$key] = $model_group->get($lable, new Collection())->count();
             }
 
             $description = "日统计";
@@ -143,9 +155,9 @@ class StatisticAgentController extends Controller
                 return date("Y-m", strtotime($item->created_at));
             });
 //            $lables=$model_group->keys()->toArray();
-            $lables = getDatesBetween($model->min('created_at'), $model->max('created_at'), 2);
+            $lables = getDatesBetween($model->min('bind_agent_time'), $model->max('bind_agent_time'), 2);
             foreach ($lables as $key => $lable) {
-                $datas[$key] = $model_group->get($lable, new Collection())->sum('amount');
+                $datas[$key] = $model_group->get($lable, new Collection())->count();
             }
 
             $description = "月统计";
@@ -153,34 +165,43 @@ class StatisticAgentController extends Controller
             $model_group = $model->groupBy(function ($item) {
                 return date("Y", strtotime($item->created_at));
             });
-            $lables = getDatesBetween($model->min('created_at'), $model->max('created_at'), 4);
+            $lables = getDatesBetween($model->min('bind_agent_time'), $model->max('bind_agent_time'), 4);
             foreach ($lables as $key => $lable) {
-                $datas[$key] = $model_group->get($lable, new Collection())->sum('amount');
+                $datas[$key] = $model_group->get($lable, new Collection())->count();
             }
 
             $description = "年统计";
         }
         return $content
-            ->header('订单数量折线图')
+            ->header('粉丝增长量折线图')
             ->description($description)
             ->row(ChartManager::line($lables, '订单数量', $datas))
-            ->row($this->chartform("/admin/chart/agent/count"));
+            ->row($this->chartform("/admin/chart/agent/fans"));
     }
 
-    public function payment_chart(Content $content, Request $request)
+    public function fans_cost(Content $content, Request $request)
     {
-        $model = self::getModel($request);
+        $agent = Agent::with("order_agent")
+            ->findOrFail($request->get("agent_id"));
+        if ($request->filled("date_from") && $request->filled("date_to")) {
+            $model = $agent->order_agent()
+                ->where("created_at", ">=", $request->get("date_from"))
+                ->where("created_at", "<=", $request->get("date_to"))
+                ->get();
+
+        } else {
+            $model = $agent->order_agent;
+        }
+//        dd($agent->toArray());
         //如果未获取的数据
         if ($model->count() < 1)
             return $content
-                ->header('订单金额折线图')
+                ->header('粉丝增长量折线图')
 //			->description('折线图')
                 ->row("未找到对应数据！")
-                ->row($this->chartform("/admin/chart/agent/payment"));
-
+                ->row($this->chartform("/admin/chart/agent/fans"));
 
         $description = "";
-        $lables = array();
         $datas = array();
         $type = $request->filled("type") ? $request->get("type") : 2;
         if ($type == "0") {
@@ -190,7 +211,7 @@ class StatisticAgentController extends Controller
             $lables = getDatesBetween($model->min('created_at'), $model->max('created_at'));
 //            $lables=$model->keys()->toArray();
             foreach ($lables as $key => $lable) {
-                $datas[$key] = round($model_group->get($lable, new Collection())->sum('total_price'), 2);
+                $datas[$key] = $model_group->get($lable, new Collection())->sum("order_payment");
             }
 
             $description = "日统计";
@@ -201,7 +222,7 @@ class StatisticAgentController extends Controller
 //            $lables=$model_group->keys()->toArray();
             $lables = getDatesBetween($model->min('created_at'), $model->max('created_at'), 2);
             foreach ($lables as $key => $lable) {
-                $datas[$key] = round($model_group->get($lable, new Collection())->sum('total_price'), 2);
+                $datas[$key] = $model_group->get($lable, new Collection())->sum("order_payment");
             }
 
             $description = "月统计";
@@ -211,17 +232,51 @@ class StatisticAgentController extends Controller
             });
             $lables = getDatesBetween($model->min('created_at'), $model->max('created_at'), 4);
             foreach ($lables as $key => $lable) {
-                $datas[$key] = round($model_group->get($lable, new Collection())->sum('total_price'));
+                $datas[$key] = $model_group->get($lable, new Collection())->sum("order_payment");
             }
 
             $description = "年统计";
         }
-
         return $content
-            ->header('订单金额折线图')
-//			->description('折线图')
-            ->row(ChartManager::line($lables, '订单金额', $datas))
-            ->row($this->chartform("/admin/chart/agent/payment"));
+            ->header('粉丝增长量折线图')
+            ->description($description)
+            ->row(ChartManager::line($lables, '订单数量', $datas))
+            ->row($this->chartform("/admin/chart/agent/fans"));
+    }
+
+    protected function gridForm($action)
+    {
+        $form = new Form(new StatisticOrder);
+        $form->setTitle("过滤");
+        $form->tools(function (Form\Tools $tools) {
+
+            // 去掉`列表`按钮
+            $tools->disableList();
+        });
+        $form->footer(function ($footer) {
+
+            // 去掉`重置`按钮
+            $footer->disableReset();
+
+            // 去掉`查看`checkbox
+            $footer->disableViewCheck();
+
+            // 去掉`继续编辑`checkbox
+            $footer->disableEditingCheck();
+
+            // 去掉`继续创建`checkbox
+            $footer->disableCreatingCheck();
+
+        });
+        $form->setAction($action);
+//        $form->select('type', '类型')
+//            ->options([0 => "每日统计", 2 => "每月统计", 4 => "每年统计"])
+//            ->default(\request('type') | 2);
+
+        $form->date('date_from', "开始时间")->default(\request('date_from'));
+        $form->date('date_to', "结束时间")->default(\request('date_to'));
+
+        return $form;
     }
 
     protected function chartform($action)
@@ -249,6 +304,7 @@ class StatisticAgentController extends Controller
 
         });
         $form->setAction($action);
+        $form->number("agent_id", "分销商id")->default(\request("agent_id"));
         $form->select('type', '类型')
             ->options([0 => "每日统计", 2 => "每月统计", 4 => "每年统计"])
             ->default(\request('type') | 2);

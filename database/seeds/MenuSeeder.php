@@ -344,24 +344,8 @@ class MenuSeeder extends Seeder
                 'icon' => 'fa-wpforms',
                 'uri' => 'statistic/agent',
             ],
-            [
-                'id' => 48,
-                'parent_id' => 46,
-                'order' => 48,
-                'title' => '粉丝增长-时间统计图',
-                'icon' => 'fa-align-left',
-                'uri' => 'chart/agent/fans',
-            ],
-            [
-                'id' => 49,
-                'parent_id' => 46,
-                'order' => 49,
-                'title' => '粉丝消费额-时间统计图',
-                'icon' => 'fa-align-left',
-                'uri' => 'chart/agent/fans_cost',
-            ],
         ]);
-        for ($i = 8; $i <= 49; $i++) {
+        for ($i = 8; $i <= 47; $i++) {
             DB::table('admin_role_menu')->insert([
                 "role_id" => 1,
                 "menu_id" => $i
