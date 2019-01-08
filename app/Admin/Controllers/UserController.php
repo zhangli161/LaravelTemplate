@@ -107,8 +107,8 @@ class UserController extends Controller
 		$grid->avatar("头像")->lightbox();
 		// 设置text、color、和存储值
 		$states = [
-			'on' => ['value' => 1, 'text' => '生效', 'color' => 'success'],
-			'off' => ['value' => 2, 'text' => '封禁', 'color' => 'default'],
+			'on' => ['value' => "1", 'text' => '生效', 'color' => 'success'],
+			'off' => ['value' => "2", 'text' => '封禁', 'color' => 'default'],
 		];
 		$grid->status('状态')->switch($states);
 		$grid->latest_login_time('最后登录时间');
@@ -185,6 +185,11 @@ class UserController extends Controller
 		$form->text('name', '名称')
 			->placeholder('请输入。。。')
 			->help('help...');
+        $states = [
+            'on' => ['value' => "1", 'text' => '生效', 'color' => 'success'],
+            'off' => ['value' => "2", 'text' => '封禁', 'color' => 'default'],
+        ];
+		$form->switch("status","状态")->states($states);
 //		$form->password('password', 'Password');
 //		$form->text('remember_token', 'Remember token');
 		//使用随机生成文件名 (md5(uniqid()).extension)
