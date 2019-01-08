@@ -17,6 +17,7 @@ use App\Models\GoodsSKU;
 use App\Models\GoodsSKUSearchWord;
 use App\Models\GoodsSPU;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -109,42 +110,67 @@ class GoodsController extends Controller
             foreach ($searchwords as $searchword) {
                 $query->where('search_words', 'like', "%$searchword%");
             }
-//            if (gettype($request->get('orderby')) == 'array') {
-//                $orderby = $request->get('orderby');
-//                for ($i = 0; $i < (count($orderby) - 1); $i += 2) {
-//                    $query
-//                        ->orderby($orderby[$i], $orderby[$i + 1]);
-//                }
-//            } else {
-//                $query->orderby("id", 'desc');
-//            }
-//        $goods = GoodsSPUManager::getList(true, $request->get('orderby'));
-//		else
-//			$goods = GoodsSPUManager::getList(true,'price', 'asc', 'id', 'desc');
-//            $results = $query->with("sku")->get();
+
             if ($request->filled('cate_id')) {
-                $spus = GoodsSPU::where("cate_id", $request->get('cate_id'))->where('status', 1)->with("skus")->get();
+                $spus = GoodsSPU::where("cate_id", $request->get('cate_id'))
+                    ->where('status', 1)
+                    ->with("skus")->get();
                 $sku_ids = array();
-                $spus->each(function ($spu) use ($sku_ids) {
+                $spus->transform(function ($spu) use ($sku_ids) {
                     array_push($sku_ids, $spu->skus->pluck('id'));
                 });
 
-                $query->whereIn('', $sku_ids);
+                $query->whereIn('sku_id', $sku_ids);
             }
             if ($request->filled('sence_cate_id')) {
-                $spus = GoodsSPU::where("sence_cate_id", $query->where('status', 1)->get('sence_cate_id'))->with("skus")->get();
-                $sku_ids = array();
-                $spus->each(function ($spu) use ($sku_ids) {
-                    array_push($sku_ids, $spu->skus->pluck('id'));
-                });
-                $query->whereIn('', $sku_ids);
+                $spus = GoodsSPU::query()
+                ->where("sence_cate_id", $request->get('sence_cate_id'))
+//                    ->where('status', 1)
+//                    ->with("skus")
+                    ->get();
+                $spu_ids =
+                $spus->pluck("id")->toArray();
+                $sku_ids=GoodsSKU::whereIn("spu_id",$spu_ids)->pluck("id")->toArray();
+
+                $query->whereIn('sku_id', $sku_ids);
+//                dd($query->get());
             }
 
-            $results = $query->with("sku")->paginate();
+            $goods=new Collection();
+            $results = $query->with("sku")->get();
             foreach ($results as $result) {
-                $result->spu = GoodsSPUManager::getDetailsForApp($result->sku->spu, $result->sku_id);
+                $spu = GoodsSPUManager::getDetailsForApp($result->sku->spu, $result->sku_id);
+                $goods->push($spu);
             }
-            return ApiResponse::makeResponse(true, $results, ApiResponse::SUCCESS_CODE);
+
+//            dd($goods);
+            //排序
+            if (gettype($request->get('orderby')) == 'array') {
+                $orderby = $request->get('orderby');
+                for ($i = 0; $i < (count($orderby) - 1); $i += 2) {
+                    if ($orderby[$i + 1] != "desc")
+                        $goods=$goods->sortBy(function ($item, $key) use ($orderby, $i) {
+                            Log::info("正排序："
+                                .$item->main_sku."
+                            ".$orderby[$i].
+                                $item->main_sku->getAttributeValue("$orderby[$i]"));
+                            return (int)$item->main_sku->getAttributeValue($orderby[$i]);
+                        });
+                    else
+                        $goods=$goods->sortByDesc(function ($item, $key) use ($orderby, $i) {
+                            Log::info("倒叙排序："
+                                .$item->main_sku."
+                            ".$orderby[$i].
+                                $item->main_sku->getAttributeValue("$orderby[$i]"));
+                            return (int)$item->main_sku->getAttributeValue($orderby[$i]);
+                        });
+                }
+//            dd($goods->pluck("main_sku.price"),$orderby,$goods->values()->all());
+            } else {
+                $goods->sortBy("id");
+            }
+
+            return ApiResponse::makeResponse(true, $goods, ApiResponse::SUCCESS_CODE);
         } else
             return ApiResponse::makeResponse(false, "参数不足", ApiResponse::MISSING_PARAM);
     }
