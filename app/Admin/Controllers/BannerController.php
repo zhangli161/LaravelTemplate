@@ -136,12 +136,13 @@ class BannerController extends Controller
 
 // 自定义标题
 		$form->embeds('attr', '附加信息', function ($form) {
-			$form->number('info_id', '关联信息id')->rules('required');
+		    $form->text("url","跳转链接");
+//			$form->number('info_id', '关联信息id')->rules('required');
 //		    $form->email('extra2')->rules('required');
 //		    $form->mobile('extra3');
 //		    $form->datetime('extra4');
 			
-			$form->dateRange('time_from', 'time_to', '生效时间')->help('不填写则永久有效');;
+//			$form->dateRange('time_from', 'time_to', '生效时间')->help('不填写则永久有效');;
 		});
 		return $form;
 	}
