@@ -53,9 +53,9 @@ Route::group(['middleware' => 'auth:api', 'namespace' => 'Api'], function () {
     Route::get('/message', 'MessageController@getList');//消息
 	Route::get('/message/getById', 'MessageController@getById');//消息
 
-    Route::get('/goods', 'GoodsController@getList');//全部商品
+    Route::any('/goods', 'GoodsController@getList');//全部商品
     Route::get('/goods/getById', 'GoodsController@getById');//商品详情
-    Route::get('/goods/search', 'GoodsController@search');//搜索
+    Route::any('/goods/search', 'GoodsController@search');//搜索
     Route::post('/goods/addtocart', 'GoodsController@addToCart');//添加至购物车
     Route::get('/cart', 'CartController@myCart');//我的购物车
     Route::post('/cart/cancle', 'CartController@cancle');//批量取消

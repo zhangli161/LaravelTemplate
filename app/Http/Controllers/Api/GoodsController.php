@@ -20,22 +20,14 @@ use Carbon\Carbon;
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class GoodsController extends Controller
 {
     public static function getList(Request $request)
     {
-        $query = GoodsSPU::query()->where('status',1);
-        if (gettype($request->get('orderby')) == 'array') {
-            $orderby = $request->get('orderby');
-            for ($i = 0; $i < (count($orderby) - 1); $i += 2) {
-                $query
-                    ->orderBy($orderby[$i], $orderby[$i + 1]);
-            }
-            dd($orderby);
-        } else {
-            $query->orderBy("id", 'desc');
-        }
+        $query = GoodsSPU::query()->where('status', 1);
+
 //        $goods = GoodsSPUManager::getList(true, $request->get('orderby'));
 //		else
 //			$goods = GoodsSPUManager::getList(true,'price', 'asc', 'id', 'desc');
@@ -48,14 +40,43 @@ class GoodsController extends Controller
         $goods = $query->get();
         foreach ($goods as $good) {
             $good = GoodsSPUManager::getDetailsForApp($good);
+
         }
-        return ApiResponse::makeResponse(true, $goods, ApiResponse::SUCCESS_CODE);
+
+//        dd($goods);
+
+        if (gettype($request->get('orderby')) == 'array') {
+            $orderby = $request->get('orderby');
+            for ($i = 0; $i < (count($orderby) - 1); $i += 2) {
+                if ($orderby[$i + 1] != "desc")
+                    $goods=$goods->sortBy(function ($item, $key) use ($orderby, $i) {
+                        Log::info("正排序："
+                            .$item->main_sku."
+                            ".$orderby[$i].
+                            $item->main_sku->getAttributeValue("$orderby[$i]"));
+                        return (int)$item->main_sku->getAttributeValue($orderby[$i]);
+                    });
+                else
+                    $goods=$goods->sortByDesc(function ($item, $key) use ($orderby, $i) {
+                        Log::info("倒叙排序："
+                            .$item->main_sku."
+                            ".$orderby[$i].
+                            $item->main_sku->getAttributeValue("$orderby[$i]"));
+                        return (int)$item->main_sku->getAttributeValue($orderby[$i]);
+                    });
+            }
+//            dd($goods->pluck("main_sku.price"),$orderby,$goods->values()->all());
+        } else {
+            $goods->sortBy("id");
+        }
+
+        return ApiResponse::makeResponse(true, $goods->values()->all(), ApiResponse::SUCCESS_CODE);
     }
 
     public static function getById(Request $request)
     {
         if ($request->filled('spu_id')) {
-            $spu = GoodsSPU::where('status',1)->findOrFail($request->spu_id);
+            $spu = GoodsSPU::where('status', 1)->findOrFail($request->spu_id);
             $foot_print = FootPrint::query()->firstOrCreate([
                 'user_id' => Auth::user()->id,
                 'spu_id' => $spu->id
@@ -102,21 +123,21 @@ class GoodsController extends Controller
 //			$goods = GoodsSPUManager::getList(true,'price', 'asc', 'id', 'desc');
 //            $results = $query->with("sku")->get();
             if ($request->filled('cate_id')) {
-                $spus = GoodsSPU::where("cate_id", $request->get('cate_id'))->where('status',1)->with("skus")->get();
+                $spus = GoodsSPU::where("cate_id", $request->get('cate_id'))->where('status', 1)->with("skus")->get();
                 $sku_ids = array();
                 $spus->each(function ($spu) use ($sku_ids) {
                     array_push($sku_ids, $spu->skus->pluck('id'));
                 });
-                
-                $query->whereIn('',$sku_ids);
+
+                $query->whereIn('', $sku_ids);
             }
             if ($request->filled('sence_cate_id')) {
-                $spus = GoodsSPU::where("sence_cate_id", $request->where('status',1)->get('sence_cate_id'))->with("skus")->get();
+                $spus = GoodsSPU::where("sence_cate_id", $query->where('status', 1)->get('sence_cate_id'))->with("skus")->get();
                 $sku_ids = array();
                 $spus->each(function ($spu) use ($sku_ids) {
                     array_push($sku_ids, $spu->skus->pluck('id'));
                 });
-                $query->whereIn('',$sku_ids);
+                $query->whereIn('', $sku_ids);
             }
 
             $results = $query->with("sku")->paginate();
