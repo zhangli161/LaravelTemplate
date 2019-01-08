@@ -212,12 +212,13 @@ class OrderManager extends Manager
 
             //从购物车中移除对应产品
             $cart = $user->carts()->where("sku_id", $sku->id)->first();
-            if ($cart->amount <= $amount) {
-                $cart->delete();
-            } else {
-                $cart->amount -= $amount;
-                $cart->save();
-            }
+            if ($cart)
+                if ($cart->amount <= $amount) {
+                    $cart->delete();
+                } else {
+                    $cart->amount -= $amount;
+                    $cart->save();
+                }
 
             if ($sku->stock_type == 1) {
                 //有库存且商品上架
@@ -291,7 +292,7 @@ class OrderManager extends Manager
             $order_agent = new OrderAgent();
             $order_agent->order_id = $order->id;
             $order_agent->agent_id = $agent->id;
-            $order_agent->order_payment=$order->payment;
+            $order_agent->order_payment = $order->payment;
             $order_agent->percent = $percent;//固定5个点的分成
             $order_agent->payment = $order->payment * $percent / 100.0;
 
