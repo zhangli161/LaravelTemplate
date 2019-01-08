@@ -32,7 +32,7 @@ class GoodsSPUManager extends Manager
         $comments_count = $spu->comments()->count();
         $comments_good_count = $spu->comments()->where('star', '>', 4)->count();
         if ($comments_count > 0) {
-            $spu->haopinglv = ($comments_good_count / $comments_count * 100) . "%";
+            $spu->haopinglv = number_format(($comments_good_count / $comments_count * 100), 2) . "%";
         }
 //        $spu->is_favorite = $spu->favorites()->where('user_id', Auth::user()->id)->exists();
         $spu->thumb = getRealImageUrl($spu->thumb);
@@ -45,7 +45,7 @@ class GoodsSPUManager extends Manager
 //        }
 
         foreach ($spu->skus as $sku) {
-            $sku = GoodsSKUManager::getDetailsForApp($sku,false,true);
+            $sku = GoodsSKUManager::getDetailsForApp($sku, false, true);
             if (!$skuid) {
                 if (!$spu->main_sku or $spu->main_sku->price > $sku->price) {
                     $spu->main_sku = $sku;

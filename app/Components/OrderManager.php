@@ -210,6 +210,15 @@ class OrderManager extends Manager
                 'average_price' => $sku->price
             ]);
 
+            //从购物车中移除对应产品
+            $cart = $user->carts()->where("sku_id", $sku->id)->first();
+            if ($cart->amount <= $amount) {
+                $cart->delete();
+            } else {
+                $cart->amount -= $amount;
+                $cart->save();
+            }
+
             if ($sku->stock_type == 1) {
                 //有库存且商品上架
                 if ($sku->stock > 0 && $sku->spu->status == "1") {
