@@ -318,7 +318,7 @@ class OrderManager extends Manager
             'trade_state_desc' => array_get($ret, "trade_state_desc"),
             "transaction_id" => array_get($ret, "transaction_id"),
         ];
-        $result = array_key_exists('trade_state', $ret) and array_get($ret, 'trade_state') == "SUCCESS";
+        $result = array_get($ret, 'trade_state') == "SUCCESS";
         if ($result) {
             $order->status = 2;//已付款
             if (array_key_exists("total_fee", $ret))
