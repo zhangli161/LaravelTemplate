@@ -49,7 +49,7 @@ class CreateTemplateTables extends Migration
 				->charset('utf8mb4')->collation('utf8mb4_unicode_ci')
 				->comment("属性");;
 			$table->tinyInteger('status')
-				->default(0)->comment('状态：1生效 0失效');
+				->default(0)->comment('状态：1已读 0未读');
 			$table->integer('form_user_id')
 				->default(0)->comment("发送人id，0为系统消息");;
 			$table->integer('to_user_id')->comment("收信人user_id");

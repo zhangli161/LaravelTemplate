@@ -95,6 +95,7 @@ class UserController extends Controller
         MessageManager::getGroupMessages($user);
         $user->credit or UserCredit::query()->create(['user_id' => $user->id, 'credit' => 0]);
         $user->messages;
+        $user->new_messages=$user->messages()->where("is_read","0")->count();
 //		$user->coupons;
         return ApiResponse::makeResponse(true, $user, ApiResponse::SUCCESS_CODE);
     }

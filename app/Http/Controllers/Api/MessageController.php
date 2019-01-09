@@ -25,13 +25,11 @@ class MessageController extends Controller
 		$messages=Message::query()->where('to_user_id',$user->id)
 			->orderBy('status','asc')
 			->orderBy('created_at','desc')
+            ->with(["content","content.content"])
 			->get();
 		foreach ($messages as $message){
             $message->content;
             $message->content->content;
-//			$message->content()->with('content')->get();
-//                =$message->content()->first()
-//				->content->content;
 			$message->sender=MessageManager::getSender($message);
 		}
 		return ApiResponse::makeResponse(true, $messages,ApiResponse::SUCCESS_CODE);
@@ -46,6 +44,8 @@ class MessageController extends Controller
             ->orderBy('created_at','desc')
             ->with(['content','content.content'])
             ->find($request->get('message_id'));
+        $message->status=1;
+        $message->save();
         return ApiResponse::makeResponse(true, $message,ApiResponse::SUCCESS_CODE);
 
     }
