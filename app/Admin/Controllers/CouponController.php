@@ -94,7 +94,8 @@ class CouponController extends Controller
 		$grid->expriy_days('动态有效期');
 		$grid->created_at('Created at');
 		$grid->updated_at('Updated at');
-		
+
+		$grid->disableExport();
 		return $grid;
 	}
 	
@@ -146,15 +147,15 @@ class CouponController extends Controller
 		$form = new Form(new Coupon);
 		
 		$form->tab('基本信息', function ($form) {
-			$form->text('name', '优惠券名称');
+			$form->text('name', '优惠券名称')->rules('required');
 			$types = [
 				1 => '打折券',
 				2 => '代金券',
 			];
-			$form->select('type', '类型')->options($types);
+			$form->select('type', '类型')->options($types)->rules('required');
 			$form->decimal('value', '打折比例/代金券金额')
-				->help('打折券请填写0-1之间的小数，代金券请填写代金券金额');
-			$form->decimal('min_cost', '门槛金额');
+				->help('打折券请填写0-1之间的小数，代金券请填写代金券金额')->rules('required');
+			$form->decimal('min_cost', '门槛金额')->rules('required');
 			$form->date('expiry_date', '固定有效期')
 //	        ->default(date('Y-m-d'))
 				->help('非必填。优惠券在该日的23:59后失效。最终有效期会取最小值');

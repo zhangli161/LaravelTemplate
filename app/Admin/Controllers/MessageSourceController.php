@@ -86,6 +86,8 @@ class MessageSourceController extends Controller
 		$grid->name('名称');
 		$grid->created_at('创建于');
 		$grid->updated_at('最后编辑于');
+
+        $grid->disableExport();
 		
 		return $grid;
 	}
@@ -118,7 +120,8 @@ class MessageSourceController extends Controller
 	{
 		$form = new Form(new MessageSource);
 		
-		$form->text('code', '英文简称')->rules('required|alpha_dash')->help('只能由字母、数字、下划线构成');
+		$form->text('code', '英文简称')->rules('required|alpha_dash')
+            ->help('只能由字母、数字、下划线构成');
 		$form->text('name', '名称')->rules('required');;
 		
 		return $form;

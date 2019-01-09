@@ -168,13 +168,13 @@ class GoodsBenefitController extends Controller
 				}
 			})->ajax('/api/admin/sku/search');
 //		$form->display('sku', '子商品id');
-		$form->text('title', '活动标题');
-		$form->text('desc', '活动描述');
-		$form->decimal('price', '活动价');
-		$form->decimal('origin_price', '原价');
-		$form->decimal('show_origin_price', '显示原价');
+		$form->text('title', '活动标题')->rules('required');
+		$form->text('desc', '活动描述')->rules('required');
+		$form->decimal('price', '活动价')->rules('required');
+		$form->decimal('origin_price', '原价')->help("活动结束后会恢复到这个价格")->rules('required');
+		$form->decimal('show_origin_price', '显示原价')->rules('required');
 		$form->datetimeRange('time_form', 'time_to', '活动时间')->rules('required|after:now');
-		$form->switch('reset', '结束时恢复原价')->default(1);
+//		$form->switch('reset', '结束时恢复原价')->default(1);
 		
 		$form->saved(function (Form $form) {
 			

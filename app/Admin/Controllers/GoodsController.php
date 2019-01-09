@@ -86,7 +86,7 @@ class GoodsController extends Controller
 	{
 		$grid = new Grid(new GoodsSPU);
 		
-		$grid->id('Id');
+		$grid->id('Id')->sortable();
 		$grid->spu_no('Spu编号')->sortable();
 		$grid->spu_name('商品名称');
 		$grid->desc('描述');
@@ -119,7 +119,8 @@ class GoodsController extends Controller
             $app_url=env("APP_URL");
 			$actions->prepend("<a href=\"$app_url/admin/goods_sku?spu_id=$spu_id\" title='子商品'><i class=\"fa fa-align-left\"></i></a>");
 		});
-		
+
+		$grid->disableExport();
 		return $grid;
 	}
 	
@@ -172,20 +173,20 @@ class GoodsController extends Controller
 			$form->text('spu_name', '商品名称')->rules('required');
 			$form->textarea('desc', '描述')->rules('required');
 			$form->switch('status', '上架状态')->rules('required');
-			$form->file('thumb', '封面图片')->rules('required');
+			$form->image('thumb', '封面图片')->rules('required');
 			$options=array();
 			$categories=Category::where('parentid','1')->get();
 			foreach ($categories as $category){
 				$options[$category->id]=$category->name;
 			}
-			$form->select('cate_id', '商品分类')->options($options);
+			$form->select('cate_id', '商品分类')->options($options)->rules('required');
 
             $options1=array();
             $categories=Category::where('parentid','2')->get();
             foreach ($categories as $category){
                 $options1[$category->id]=$category->name;
             }
-            $form->select('sence_cate_id', '场景分类')->options($options1);
+            $form->select('sence_cate_id', '场景分类')->options($options1)->rules('required');
 			
 		})->tab('图文详情', function ($form) {
 			

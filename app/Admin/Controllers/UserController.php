@@ -89,15 +89,15 @@ class UserController extends Controller
 		
 		// 添加不存在的字段
 		//display()方法接收的匿名函数绑定了当前行的数据对象，可以在里面调用当前行的其它字段数据
-		
-		$grid->column('id+姓名')->display(function () {
-			return $this->id . ' ' . $this->name;
-		});
+//
+//		$grid->column('id+姓名')->display(function () {
+//			return $this->id . ' ' . $this->name;
+//		});
 		//另外还可以显示任意你需要的内容
-		$grid->password("密码")->display(function ($password) {
-			$isset = isset($password) ? "已设置" : "未设置";
-			return "<span class=''>$isset</span>";
-		})->label('primary');
+//		$grid->password("密码")->display(function ($password) {
+//			$isset = isset($password) ? "已设置" : "未设置";
+//			return "<span class=''>$isset</span>";
+//		})->label('primary');
 		////设置颜色，默认`success`,可选`danger`、`warning`、`info`、`primary`、`default`、`success`
 		
 		/*// 第六列显示released字段，通过display($callback)方法来格式化显示输出
@@ -196,6 +196,7 @@ class UserController extends Controller
 		$form->image('avatar','头像')->uniqueName();
 //		$form->tags('keywords');
 //		$form->icon('icon');
+
 		
 		//如果表单元素太多,会导致form页面太长, 这种情况下可以使用tab来分隔form:
 		/*

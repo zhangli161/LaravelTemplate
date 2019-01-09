@@ -88,6 +88,8 @@ class ModuleController extends Controller
         $grid->created_at('Created at');
         $grid->updated_at('Updated at');
 
+        $grid->disableExport();
+
         return $grid;
     }
 
@@ -119,7 +121,7 @@ class ModuleController extends Controller
     {
         $form = new Form(new Module);
 
-        $form->text('name', '模块名称');
+        $form->text('name', '模块名称')->rules("required");
         $form->number('order', '排序');
 
         $form->hasMany('module_skus', "显示的商品",function (Form\NestedForm $form) {

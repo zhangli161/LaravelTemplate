@@ -92,6 +92,8 @@ class MessageContentController extends Controller
 		return "<a class='label label-success' href='/admin/message_source/{$source['id']}'>{$source['name']}</a>";});
 		$grid->created_at('创建于');
 		$grid->updated_at('最后编辑于');
+
+		$grid->disableExport();
 		
 		return $grid;
 	}

@@ -87,7 +87,7 @@ class GoodsSpecController extends Controller
         $grid->created_at('创建时间');
         $grid->updated_at('更新时间');
 //        $grid->deleted_at('Deleted at');
-
+        $grid->disableExport();
         return $grid;
     }
 

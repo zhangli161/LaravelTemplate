@@ -99,6 +99,7 @@ class ArticleController extends Controller
         $grid->created_at('Created at');
         $grid->updated_at('Updated at');
 
+        $grid->disableExport();
         return $grid;
     }
 

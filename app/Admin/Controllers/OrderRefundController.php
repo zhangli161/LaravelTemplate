@@ -97,6 +97,8 @@ class OrderRefundController extends Controller
         $grid->created_at('Created at');
         $grid->updated_at('Updated at');
 
+        $grid->disableExport();
+        $grid->disableCreateButton();
         return $grid;
     }
 
@@ -146,8 +148,8 @@ class OrderRefundController extends Controller
 //            2 => "退款中",
 //            3 => " 退款完成",
             4 => "驳回"
-        ]);
-        $form->decimal('payment', '退款金额');
+        ])->rules('required');
+        $form->decimal('payment', '退款金额')->rules('required');
         $form->text('note', '备注');
 
         $form->saved(function (Form $form) {

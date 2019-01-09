@@ -92,6 +92,7 @@ class BannerController extends Controller
 			'off' => ['value' => 2, 'text' => '失效', 'color' => 'default'],
 		];
 		$grid->status()->switch($states);
+		$grid->disableExport();
 		
 		return $grid;
 	}
@@ -127,8 +128,8 @@ class BannerController extends Controller
 	protected function form()
 	{
 		$form = new Form(new Banner);
-		$form->textarea('desc', '简介');
-		$form->image('img_url', '图片')->uniqueName();
+		$form->textarea('desc', '简介')->rules("required");
+		$form->image('img_url', '图片')->uniqueName()->rules("required");
 		$form->number('order', '排序');
 		$form->switch('status', '状态');
 //	    $form->textarea('attr', '属性 ')->placeholder('key-value形式');

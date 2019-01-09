@@ -160,7 +160,7 @@ class MenuSeeder extends Seeder
                 'order' => 25,
                 'title' => '优惠券',
                 'icon' => 'fa-ticket',
-                'uri' => 'benefit',
+                'uri' => 'coupon',
             ],
             [
                 'id' => 26,
