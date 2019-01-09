@@ -14,6 +14,7 @@ use App\Models\AgentCash;
 use App\Models\AgentFinance;
 use App\Models\AgentRebate;
 use App\User;
+use Illuminate\Support\Facades\Log;
 
 class AgentManager
 {
@@ -35,12 +36,14 @@ class AgentManager
     public static function makeFinance(Agent $agent, $income = 0, $expenditure = 0, $note = null)
     {
         $agent->balance += $income - $expenditure;
-        $agent_finance = new AgentFinance([
+        $data = [
             "agent_id" => $agent->id,
             'income' => $income ? $income : 0,
             'expenditure' => $expenditure ? $expenditure : 0,
             'balance' => $agent->balance,
-            "note" => $note]);
+            "note" => $note];
+        Log::info(json_encode($data));
+        $agent_finance = new AgentFinance($data);
         $agent->save();
         $agent_finance->save();
         return $agent_finance;
@@ -80,10 +83,10 @@ class AgentManager
         $result = $ret['result_code'] == "SUCCESS";
         if ($result) {
             $agentcash->status = 1;
-            $agentcash->note="转账成功";
-        } else{
+            $agentcash->note = "转账成功";
+        } else {
             $agentcash->status = 2;
-            $agentcash->note=$ret['return_msg'];
+            $agentcash->note = $ret['return_msg'];
         }
 
         $agentcash->save();
