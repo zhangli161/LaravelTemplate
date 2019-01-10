@@ -176,7 +176,7 @@ class StatisticAgentController extends Controller
             ->header('粉丝增长量折线图')
             ->description($description)
             ->row(ChartManager::line($labels, '粉丝增长量', $datas))
-            ->row($this->chartform("/admin/chart/agent/fahns"));
+            ->row($this->chartform("/admin/chart/agent/fans"));
     }
 
     public function fans_cost(Content $content, Request $request)
