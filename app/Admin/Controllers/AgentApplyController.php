@@ -224,7 +224,7 @@ class AgentApplyController extends Controller
                 }
 
                 return back()->with(compact('success'));
-            } elseif ($form->model()->status == 0) {
+            } elseif ($form->model()->status == 2) {
                 $user = User::find($form->model()->user_id);
                 $message = MessageManager::sendToUser($user, "代理商申请通过",
                     "尊敬的用户:
