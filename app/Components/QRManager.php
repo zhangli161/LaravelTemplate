@@ -50,7 +50,7 @@ class QRManager
 		$err = curl_error($con);
 		curl_close($con);
 		
-		$path = storage_path('app\\public\\agentQR');
+		$path = storage_path('app\public\agentQR');
 		
 		
 		$filePath = "$path\\{$filename}.jpg";
