@@ -143,10 +143,10 @@ class StatisticAgentController extends Controller
             $model_group = $model->groupBy(function ($item) {
                 return date("Y-m-d", strtotime($item->created_at));
             });
-            $lables = getDatesBetween($model->min('bind_agent_time'), $model->max('bind_agent_time'));
-//            $lables=$model->keys()->toArray();
-            foreach ($lables as $key => $lable) {
-                $datas[$key] = $model_group->get($lable, new Collection())->count();
+            $labels = getDatesBetween($model->min('bind_agent_time'), $model->max('bind_agent_time'));
+//            $labels=$model->keys()->toArray();
+            foreach ($labels as $key => $label) {
+                $datas[$key] = $model_group->get($label, new Collection())->count();
             }
 
             $description = "日统计";
@@ -154,10 +154,10 @@ class StatisticAgentController extends Controller
             $model_group = $model->groupBy(function ($item) {
                 return date("Y-m", strtotime($item->created_at));
             });
-//            $lables=$model_group->keys()->toArray();
-            $lables = getDatesBetween($model->min('bind_agent_time'), $model->max('bind_agent_time'), 2);
-            foreach ($lables as $key => $lable) {
-                $datas[$key] = $model_group->get($lable, new Collection())->count();
+//            $labels=$model_group->keys()->toArray();
+            $labels = getDatesBetween($model->min('bind_agent_time'), $model->max('bind_agent_time'), 2);
+            foreach ($labels as $key => $label) {
+                $datas[$key] = $model_group->get($label, new Collection())->count();
             }
 
             $description = "月统计";
@@ -165,9 +165,9 @@ class StatisticAgentController extends Controller
             $model_group = $model->groupBy(function ($item) {
                 return date("Y", strtotime($item->created_at));
             });
-            $lables = getDatesBetween($model->min('bind_agent_time'), $model->max('bind_agent_time'), 4);
-            foreach ($lables as $key => $lable) {
-                $datas[$key] = $model_group->get($lable, new Collection())->count();
+            $labels = getDatesBetween($model->min('bind_agent_time'), $model->max('bind_agent_time'), 4);
+            foreach ($labels as $key => $label) {
+                $datas[$key] = $model_group->get($label, new Collection())->count();
             }
 
             $description = "年统计";
@@ -175,8 +175,8 @@ class StatisticAgentController extends Controller
         return $content
             ->header('粉丝增长量折线图')
             ->description($description)
-            ->row(ChartManager::line($lables, '粉丝增长量', $datas))
-            ->row($this->chartform("/admin/chart/agent/fans"));
+            ->row(ChartManager::line($labels, '粉丝增长量', $datas))
+            ->row($this->chartform("/admin/chart/agent/fahns"));
     }
 
     public function fans_cost(Content $content, Request $request)
@@ -208,10 +208,10 @@ class StatisticAgentController extends Controller
             $model_group = $model->groupBy(function ($item) {
                 return date("Y-m-d", strtotime($item->created_at));
             });
-            $lables = getDatesBetween($model->min('created_at'), $model->max('created_at'));
-//            $lables=$model->keys()->toArray();
-            foreach ($lables as $key => $lable) {
-                $datas[$key] = $model_group->get($lable, new Collection())->sum("order_payment");
+            $labels = getDatesBetween($model->min('created_at'), $model->max('created_at'));
+//            $labels=$model->keys()->toArray();
+            foreach ($labels as $key => $label) {
+                $datas[$key] = $model_group->get($label, new Collection())->sum("order_payment");
             }
 
             $description = "日统计";
@@ -219,10 +219,10 @@ class StatisticAgentController extends Controller
             $model_group = $model->groupBy(function ($item) {
                 return date("Y-m", strtotime($item->created_at));
             });
-//            $lables=$model_group->keys()->toArray();
-            $lables = getDatesBetween($model->min('created_at'), $model->max('created_at'), 2);
-            foreach ($lables as $key => $lable) {
-                $datas[$key] = $model_group->get($lable, new Collection())->sum("order_payment");
+//            $labels=$model_group->keys()->toArray();
+            $labels = getDatesBetween($model->min('created_at'), $model->max('created_at'), 2);
+            foreach ($labels as $key => $label) {
+                $datas[$key] = $model_group->get($label, new Collection())->sum("order_payment");
             }
 
             $description = "月统计";
@@ -230,9 +230,9 @@ class StatisticAgentController extends Controller
             $model_group = $model->groupBy(function ($item) {
                 return date("Y", strtotime($item->created_at));
             });
-            $lables = getDatesBetween($model->min('created_at'), $model->max('created_at'), 4);
-            foreach ($lables as $key => $lable) {
-                $datas[$key] = $model_group->get($lable, new Collection())->sum("order_payment");
+            $labels = getDatesBetween($model->min('created_at'), $model->max('created_at'), 4);
+            foreach ($labels as $key => $label) {
+                $datas[$key] = $model_group->get($label, new Collection())->sum("order_payment");
             }
 
             $description = "年统计";
@@ -240,7 +240,7 @@ class StatisticAgentController extends Controller
         return $content
             ->header('分销订单金额折线图')
             ->description($description)
-            ->row(ChartManager::line($lables, '订单金额', $datas))
+            ->row(ChartManager::line($labels, '订单金额', $datas))
             ->row($this->chartform("/admin/chart/agent/fans_cost"));
     }
 
