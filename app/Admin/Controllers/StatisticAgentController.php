@@ -184,13 +184,13 @@ class StatisticAgentController extends Controller
         $agent = Agent::with("order_agent")
             ->findOrFail($request->get("agent_id"));
         if ($request->filled("date_from") && $request->filled("date_to")) {
-            $model = $agent->order_agent()
+            $model = $agent->order_agent()->where("status","1")
                 ->where("created_at", ">=", $request->get("date_from"))
                 ->where("created_at", "<=", $request->get("date_to"))
                 ->get();
 
         } else {
-            $model = $agent->order_agent;
+            $model = $agent->order_agent()->where("status","1")->get();
         }
 //        dd($agent->toArray());
         //如果未获取的数据
