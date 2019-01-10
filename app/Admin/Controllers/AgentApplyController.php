@@ -111,7 +111,7 @@ class AgentApplyController extends Controller
         $grid->status('状态')->using([
             '0' => "<label class='label label-default'>未处理</label>",
             '1' => "<label class='label label-success'>已通过</label>",
-            '2' => "<label class='label label-waring'>已驳回</label>"
+            '2' => "<label class='label label-warning'>已驳回</label>"
         ])->sortable();
         $grid->created_at('Created at');
         $grid->updated_at('Updated at');
