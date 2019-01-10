@@ -141,7 +141,7 @@ class StatisticAgentController extends Controller
         $type = $request->filled("type") ? $request->get("type") : 2;
         if ($type == "0") {
             $model_group = $model->groupBy(function ($item) {
-                return date("Y-m-d", strtotime($item->created_at));
+                return date("Y-m-d", strtotime($item->bind_agent_time));
             });
             $labels = getDatesBetween($model->min('bind_agent_time'), $model->max('bind_agent_time'));
 //            $labels=$model->keys()->toArray();
@@ -152,7 +152,7 @@ class StatisticAgentController extends Controller
             $description = "日统计";
         } elseif ($type == "2") {
             $model_group = $model->groupBy(function ($item) {
-                return date("Y-m", strtotime($item->created_at));
+                return date("Y-m", strtotime($item->bind_agent_time));
             });
 //            $labels=$model_group->keys()->toArray();
             $labels = getDatesBetween($model->min('bind_agent_time'), $model->max('bind_agent_time'), 2);
@@ -163,7 +163,7 @@ class StatisticAgentController extends Controller
             $description = "月统计";
         } elseif ($type == "4") {
             $model_group = $model->groupBy(function ($item) {
-                return date("Y", strtotime($item->created_at));
+                return date("Y", strtotime($item->bind_agent_time));
             });
             $labels = getDatesBetween($model->min('bind_agent_time'), $model->max('bind_agent_time'), 4);
             foreach ($labels as $key => $label) {
