@@ -210,7 +210,7 @@ class AgentApplyController extends Controller
 
                     $user = User::find($form->model()->user_id);
                     $url = env("APP_URL") . "/admin";
-                    $message = MessageManager::sendToUser($user, "代理商申请通过",
+                    $message = MessageManager::sendToUser($user, "代理商申请结果",
                         "尊敬的用户:
 您的代理商申请已经通过，请<a herf='$token'>点击这里</a>设置代理商登录信息。
 该链接仅一次有效，请设置后牢记您的登录名和密码。
@@ -226,7 +226,7 @@ class AgentApplyController extends Controller
                 return back()->with(compact('success'));
             } elseif ($form->model()->status == 2) {
                 $user = User::find($form->model()->user_id);
-                $message = MessageManager::sendToUser($user, "代理商申请通过",
+                $message = MessageManager::sendToUser($user, "代理商申请结果",
                     "尊敬的用户:
 您的代理商申请已被驳回。"
                     . $form->model()->note ? "原因：" . $form->model()->note : ""
