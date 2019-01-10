@@ -19,6 +19,7 @@ class MessageContent extends Model
 	protected $fillable = [
 		'title', 'content','send_type','source_id','attr'
 	];
+    protected $casts = ['attr' => 'json',];//内嵌字段
 	public function source()
 	{
 		return $this->hasOne(MessageSource::class,'id','source_id');

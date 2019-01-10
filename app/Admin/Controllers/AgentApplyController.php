@@ -212,9 +212,9 @@ class AgentApplyController extends Controller
                     $url = env("APP_URL") . "/admin";
                     $message = MessageManager::sendToUser($user, "代理商申请结果",
                         "尊敬的用户:
-您的代理商申请已经通过，请<a herf='$token'>点击这里</a>设置代理商登录信息。
+您的代理商申请已经通过，请通过下方按钮设置代理商登录信息。
 该链接仅一次有效，请设置后牢记您的登录名和密码。
-后台登录地址:$url 。", json_encode(["type" => "agent", "token" => "$token"])
+后台登录地址:$url 。", ["type" => "agent", "token" => "$token"]
                     );
                     $success = new MessageBag([
                         'title' => '审核通过成功',
@@ -229,8 +229,9 @@ class AgentApplyController extends Controller
                 $reason=($form->model()->note ? "原因：" . $form->model()->note : "");
                 $message = MessageManager::sendToUser($user, "代理商申请结果",
                     "尊敬的用户:
-您的代理商申请已被驳回。$reason
-感谢您的支持"
+                    您的代理商申请已被驳回。
+                    
+                    感谢您的支持"
                 );
                 $success = new MessageBag([
                     'title' => '审核驳回成功',
