@@ -217,12 +217,27 @@ class AgentApplyController extends Controller
 后台登录地址:$url 。", json_encode(["type" => "agent", "token" => "$token"])
                     );
                     $success = new MessageBag([
-                        'title' => '审核成功',
+                        'title' => '审核通过成功',
                         'message' => '消息已发送至申请人站内信箱'
 //						. json_encode($newAdmin_token),
                     ]);
                 }
 
+                return back()->with(compact('success'));
+            } elseif ($form->model()->status == 1) {
+                $user = User::find($form->model()->user_id);
+                $message = MessageManager::sendToUser($user, "代理商申请通过",
+                    "尊敬的用户:
+您的代理商申请已被驳回。"
+                    . $form->model()->note ? "原因：" . $form->model()->note : ""
+                        . "
+                        感谢您的支持"
+                );
+                $success = new MessageBag([
+                    'title' => '审核驳回成功',
+                    'message' => '消息已发送至申请人站内信箱'
+//						. json_encode($newAdmin_token),
+                ]);
                 return back()->with(compact('success'));
             };
 
