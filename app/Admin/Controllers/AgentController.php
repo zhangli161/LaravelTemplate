@@ -149,6 +149,8 @@ class AgentController extends Controller
 
     public function funsChartView($model, Request $request)
     {
+        if ($model->count==0)
+            return "还没有数据";
         $description = "";
         $datas = array();
         $type = $request->filled("type") ? $request->get("type") : 2;
@@ -212,7 +214,8 @@ class AgentController extends Controller
 
     public function orderChartView($model, Request $request)
     {
-
+        if ($model->count()==0)
+            return "还没有数据";
         $description = "";
         $datas = array();
         $type = $request->filled("type") ? $request->get("type") : 2;
