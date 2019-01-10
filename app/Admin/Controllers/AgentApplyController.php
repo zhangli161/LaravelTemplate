@@ -221,9 +221,9 @@ class AgentApplyController extends Controller
                         'message' => '消息已发送至申请人站内信箱'
 //						. json_encode($newAdmin_token),
                     ]);
+                    return back()->with(compact('success'));
                 }
 
-                return back()->with(compact('success'));
             } elseif ($form->model()->status == 2) {
                 $user = User::find($form->model()->user_id);
                 $reason=($form->model()->note ? "原因：" . $form->model()->note : "");
