@@ -168,7 +168,7 @@ class StatisticFinanceController extends Controller
                 return date("Y-m-d", strtotime($item->completed_at));
             });
             $model_group1 = $models[1]->groupBy(function ($item) {
-                return date("Y-m-d", strtotime($item->created_at));
+                return date("Y-m-d", strtotime($item->completed_at));
             });
             $dates = getDatesBetween(
                 min($models[0]->min('completed_at'), $models[1]->min('created_at')),
@@ -186,9 +186,10 @@ class StatisticFinanceController extends Controller
 //                ]);
                 $datas[$key] = round($income, 2);
             }
-        } elseif ($type == "2") {$model_group0 = $models[0]->groupBy(function ($item) {
-            return date("Y-m", strtotime($item->completed_at));
-        });
+        } elseif ($type == "2") {
+            $model_group0 = $models[0]->groupBy(function ($item) {
+                return date("Y-m", strtotime($item->completed_at));
+            });
             $model_group1 = $models[1]->groupBy(function ($item) {
                 return date("Y-m", strtotime($item->created_at));
             });
@@ -237,7 +238,9 @@ class StatisticFinanceController extends Controller
 
             $description = "年统计";
         }
-
+//        dd($models,$model_group0,$model_group1,$dates,$datas);
+        $lables = $dates;
+        
         return $content
             ->header('商城净收入统计图')
 //			->description('折线图')

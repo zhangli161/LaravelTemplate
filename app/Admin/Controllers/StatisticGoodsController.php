@@ -128,7 +128,7 @@ class StatisticGoodsController extends Controller
         //如果未获取的数据
         if ($model->count() < 1)
             return $content
-                ->header('订单数量折线图')
+                ->header('商品销量统计图')
 //			->description('折线图')
                 ->row("未找到对应数据！")
                 ->row($this->chartform("/admin/chart/goods/payment"));
@@ -172,9 +172,9 @@ class StatisticGoodsController extends Controller
             $description = "年统计";
         }
         return $content
-            ->header('订单数量折线图')
+            ->header('商品销量统计图')
             ->description($description)
-            ->row(ChartManager::line($lables, '订单数量', $datas))
+            ->row(ChartManager::line($lables, '商品销量', $datas))
             ->row($this->chartform("/admin/chart/goods/count"));
     }
 
@@ -184,7 +184,7 @@ class StatisticGoodsController extends Controller
         //如果未获取的数据
         if ($model->count() < 1)
             return $content
-                ->header('订单金额折线图')
+                ->header('商品销售额统计图')
 //			->description('折线图')
                 ->row("未找到对应数据！")
                 ->row($this->chartform("/admin/chart/goods/payment"));
@@ -229,9 +229,9 @@ class StatisticGoodsController extends Controller
         }
 
         return $content
-            ->header('订单金额折线图')
+            ->header('商品销售额统计图')
 //			->description('折线图')
-            ->row(ChartManager::line($lables, '订单金额', $datas))
+            ->row(ChartManager::line($lables, '商品销售额', $datas))
             ->row($this->chartform("/admin/chart/goods/payment"));
     }
 
