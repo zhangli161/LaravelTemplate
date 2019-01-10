@@ -226,12 +226,11 @@ class AgentApplyController extends Controller
                 return back()->with(compact('success'));
             } elseif ($form->model()->status == 2) {
                 $user = User::find($form->model()->user_id);
+                $reason=($form->model()->note ? "原因：" . $form->model()->note : "");
                 $message = MessageManager::sendToUser($user, "代理商申请结果",
                     "尊敬的用户:
-您的代理商申请已被驳回。"
-                    . $form->model()->note ? "原因：" . $form->model()->note : ""
-                        . "
-                        感谢您的支持"
+您的代理商申请已被驳回。$reason
+感谢您的支持"
                 );
                 $success = new MessageBag([
                     'title' => '审核驳回成功',
