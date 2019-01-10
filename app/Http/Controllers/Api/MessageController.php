@@ -30,7 +30,7 @@ class MessageController extends Controller
 		foreach ($messages as $message){
             $message->content;
             $message->content->content;
-			$message->sender=MessageManager::getSender($message);
+			$message->sender=MessageManager:: getSender($message);
 		}
 		return ApiResponse::makeResponse(true, $messages,ApiResponse::SUCCESS_CODE);
 	}

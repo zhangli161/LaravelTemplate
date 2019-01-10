@@ -214,7 +214,7 @@ class AgentApplyController extends Controller
                         "尊敬的用户:
 您的代理商申请已经通过，请<a herf='$token'>点击这里</a>设置代理商登录信息。
 该链接仅一次有效，请设置后牢记您的登录名和密码。
-后台登录地址:$url 。"
+后台登录地址:$url 。", json_encode(["type" => "agent", "token" => "$token"])
                     );
                     $success = new MessageBag([
                         'title' => '审核成功',
