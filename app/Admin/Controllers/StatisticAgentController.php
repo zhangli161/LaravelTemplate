@@ -175,7 +175,7 @@ class StatisticAgentController extends Controller
         return $content
             ->header('粉丝增长量折线图')
             ->description($description)
-            ->row(ChartManager::line($lables, '订单数量', $datas))
+            ->row(ChartManager::line($lables, '粉丝增长量', $datas))
             ->row($this->chartform("/admin/chart/agent/fans"));
     }
 
@@ -196,10 +196,10 @@ class StatisticAgentController extends Controller
         //如果未获取的数据
         if ($model->count() < 1)
             return $content
-                ->header('粉丝增长量折线图')
+                ->header('分销订单金额折线图')
 //			->description('折线图')
                 ->row("未找到对应数据！")
-                ->row($this->chartform("/admin/chart/agent/fans"));
+                ->row($this->chartform("/admin/chart/agent/fans_cost"));
 
         $description = "";
         $datas = array();
@@ -238,10 +238,10 @@ class StatisticAgentController extends Controller
             $description = "年统计";
         }
         return $content
-            ->header('粉丝增长量折线图')
+            ->header('分销订单金额折线图')
             ->description($description)
-            ->row(ChartManager::line($lables, '订单数量', $datas))
-            ->row($this->chartform("/admin/chart/agent/fans"));
+            ->row(ChartManager::line($lables, '订单金额', $datas))
+            ->row($this->chartform("/admin/chart/agent/fans_cost"));
     }
 
     protected function gridForm($action)
