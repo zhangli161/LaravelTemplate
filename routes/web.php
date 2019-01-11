@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-	return view('welcome');
+	return redirect()->to("admin");
 });
 
 Route::any('test', 'DemoController@test');//测试
