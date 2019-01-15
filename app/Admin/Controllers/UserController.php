@@ -117,7 +117,9 @@ class UserController extends Controller
 		
 		// filter($callback)方法用来设置表格的简单搜索框
 		$grid->filter(function ($filter) {
-			
+                // 在这里添加字段过滤器
+                $filter->like('name', '昵称');
+
 			// 设置created_at字段的范围查询
 			$filter->between('created_at', '注册时间')->datetime();
 		});

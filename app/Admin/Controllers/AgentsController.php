@@ -218,11 +218,13 @@ function Download(imgdata){
     {
         $form = new Form(new Agent);
 
-        $form->number('admin_id', 'Admin id');
+        $form->number('admin_id', '关联管理员ID');
         $form->text('real_name', '真实姓名')
             ->default($apply ? $apply->real_name : "")->rules('required');
-        $form->switch('gender', '性别')
-            ->default($apply ? $apply->gender : "")->rules('required');
+        $form->select('gender', '性别')
+            ->options(['0'=>"未知","1"=>"男","2"=>"女"])
+            ->default($apply ? $apply->gender : "")
+            ->rules('required');
         $form->text('telephone', '联系电话')
             ->default($apply ? $apply->telephone : "")->rules('required');
         $form->text('address', '地址')
@@ -239,7 +241,7 @@ function Download(imgdata){
             ->default($apply ? $apply->business : "");
         $form->textarea('store', '门店信息')
             ->default($apply ? $apply->store : "");
-        $form->switch('status', 'Status');
+//        $form->switch('status', 'Status');
 
         return $form;
     }

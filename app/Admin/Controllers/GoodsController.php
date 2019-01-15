@@ -85,7 +85,7 @@ class GoodsController extends Controller
 	protected function grid()
 	{
 		$grid = new Grid(new GoodsSPU);
-		
+
 		$grid->id('Id')->sortable();
 		$grid->spu_no('Spu编号')->sortable();
 		$grid->spu_name('商品名称');
@@ -108,7 +108,15 @@ class GoodsController extends Controller
 		$grid->created_at('创建时间');
 		$grid->updated_at('更新时间');
 //        $grid->deleted_at('Deleted at');
-		
+
+        $grid->filter(function($filter){
+
+            // 去掉默认的id过滤器
+//            $filter->disableIdFilter();
+
+            // 在这里添加字段过滤器
+            $filter->like('spu_name', '商品名称');
+        });
 		$grid->actions(function ($actions) {
 
 //			// append一个操作

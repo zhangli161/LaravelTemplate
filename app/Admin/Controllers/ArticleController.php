@@ -99,6 +99,15 @@ class ArticleController extends Controller
         $grid->created_at('Created at');
         $grid->updated_at('Updated at');
 
+        $grid->filter(function($filter){
+
+            // 去掉默认的id过滤器
+//            $filter->disableIdFilter();
+
+            // 在这里添加字段过滤器
+            $filter->like('title', '文章标题');
+        });
+
         $grid->disableExport();
         return $grid;
     }

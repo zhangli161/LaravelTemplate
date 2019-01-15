@@ -122,7 +122,11 @@ class OrderRefundController extends Controller
         $show->albums("图片", function ($albums) {
             return $albums;
         });
-        $show->note('备注');
+        $show->note('备注',function ($note){
+            return json_encode($note);
+        });
+
+
         $show->created_at('Created at');
         $show->updated_at('Updated at');
 

@@ -285,7 +285,7 @@ class GoodsSKUController extends Controller
                 return [$item['id'] => $item['spu_name']];
             });
 
-            $form->select('spu_id', '商品Spu id')->options($options)->default(request('spu_id'))->rules('required');
+            $form->select('spu_id', '所属商品')->options($options)->default(request('spu_id'))->rules('required');
             $form->radio('stock_type', '减库存时间')
                 ->options([0 => '付款减库存', 1 => '下单减库存'])->rules('required');
 //			$form->switch('postage', '是否包邮')->default(1)->value(1);

@@ -84,8 +84,9 @@ class OrderController extends Controller
     protected function grid()
     {
         $grid = new Grid(new Order);
+        $grid->model()->orderBy("created_at","desc");
 
-        $grid->id('Id')->sortable();
+        $grid->id('订单编号')->sortable();
         $grid->payment('商品实付金额');
         $grid->payment_type('支付方式')->using([1 => '在线支付', 2 => '货到付款']);
         $grid->post_fee('快递费用');
@@ -100,10 +101,10 @@ class OrderController extends Controller
                 6 => "<lable class='label label-danger'>交易关闭</lable>",
             ][$status];
         })->sortable();
-//        $grid->paid_at('Paid at');
-//        $grid->consigned_at('Consigned at');
-//        $grid->completed_at('Completed at');
-//        $grid->closed_at('Closed at');
+//        $grid->paid_at('支付时间');
+//        $grid->consigned_at('发货时间');
+//        $grid->completed_at('确认收货时间');
+//        $grid->closed_at('交易关闭时间');
 //		$grid->user_id('用户id');
         $grid->user_id('用户名')->display(function ($user_id) {
             $user = User::find($user_id);
@@ -111,18 +112,18 @@ class OrderController extends Controller
 //	        $user=json_encode($user);
             return "<a class='label label-warning' href='/admin/users/{$user['id']}'>{$user['name']}</a>";
         });
-//        $grid->receiver_name('Receiver name');
-//        $grid->receiver_phone('Receiver phone');
-//        $grid->receiver_region_id('Receiver region id');
-//        $grid->receiver_address('Receiver address');
-//        $grid->buyer_message('Buyer message');
-//        $grid->buyer_nick('Buyer nick');
+//        $grid->receiver_name('收货人姓名');
+//        $grid->receiver_phone('收货人电话');
+//        $grid->receiver_region_id('地区代码');
+//        $grid->receiver_address('详细地址');
+//        $grid->buyer_message('买家留言');
+//        $grid->buyer_nick('买家昵称');
         $grid->wuliu("快递处理状态")->display(function ($postage) {
             return $postage ?
                 "<lable class='label label-success'>是</lable>" :
                 "<lable class='label label-danger'>否</lable>";
         });
-        $grid->created_at('Created at')->sortable();
+        $grid->created_at('创建时间')->sortable();
         $grid->updated_at('Updated at')->sortable();
         $grid->actions(function ($actions) {
             $actions->disableDelete();
@@ -164,24 +165,31 @@ class OrderController extends Controller
     {
         $show = new Show(Order::findOrFail($id));
 
-        $show->id('Id');
-        $show->payment('Payment');
-        $show->payment_type('Payment type');
-        $show->post_fee('Post fee');
-        $show->status('Status');
-        $show->paid_at('Paid at');
-        $show->consigned_at('Consigned at');
-        $show->completed_at('Completed at');
-        $show->closed_at('Closed at');
-        $show->user_id('User id');
-        $show->receiver_name('Receiver name');
-        $show->receiver_phone('Receiver phone');
-        $show->receiver_region_id('Receiver region id');
-        $show->receiver_address('Receiver address');
-        $show->buyer_message('Buyer message');
-        $show->buyer_nick('Buyer nick');
-        $show->created_at('Created at');
-        $show->updated_at('Updated at');
+        $show->id('订单编号');
+        $show->payment('支付金额');
+        $show->payment_type('支付方式');
+        $show->post_fee('邮费');
+        $show->status('状态');
+        $show->paid_at('支付时间');
+        $show->consigned_at('发货时间');
+        $show->completed_at('确认收货时间');
+        $show->closed_at('交易关闭时间');
+        $show->user_id('用户id');
+        $show->receiver_name('收货人姓名');
+        $show->receiver_phone('收货人电话');
+        $show->receiver_region_id('地区代码');
+        $show->receiver_address('详细地址');
+        $show->buyer_message('买家留言');
+        $show->buyer_nick('买家昵称');
+        $show->created_at('创建时间');
+//        $show->updated_at('Updated at');
+        $show->skus("订单商品",function ($sku){
+            $sku->id("订单商品id");
+            $sku->sku_id("商品id");
+            $sku->sku_name("商品名称");
+            $sku->thumb("商品图片")->lightbox();
+            $sku->amount("数量");
+        });
         $show->wuliu('物流信息', function ($show) {
             $show->postage_name("快递名称")->using(PostageMananger::$codes);
 
@@ -215,20 +223,28 @@ class OrderController extends Controller
         $form = new Form(new Order);
 
 	    $form->decimal('payment', '实际支付金额');
-//        $form->switch('payment_type', 'Payment type')->default(1);
-//        $form->decimal('post_fee', 'Post fee');
-        $form->select('status', '订单状态')->default(4)->options([4 => '已发货']);
-//        $form->datetime('paid_at', 'Paid at')->default(date('Y-m-d H:i:s'));
+//        $form->switch('payment_type', '支付方式')->default(1);
+//        $form->decimal('post_fee', '邮费');
+        $form->select('status', '订单状态')->default(4)->
+        options([
+            1 => "未付款 ",
+            2 => "已付款 ",
+//				3 => "未发货 ",
+            4 => "已发货 ",
+            5 => "交易成功 ",
+            6 => "交易关闭	",
+        ]);
+//        $form->datetime('paid_at', '支付时间')->default(date('Y-m-d H:i:s'));
         $form->datetime('consigned_at', '发货时间')->default(date('Y-m-d H:i:s'));
-//        $form->datetime('completed_at', 'Completed at')->default(date('Y-m-d H:i:s'));
-//        $form->datetime('closed_at', 'Closed at')->default(date('Y-m-d H:i:s'));
-//        $form->number('user_id', 'User id');
-//        $form->text('receiver_name', 'Receiver name');
-//        $form->text('receiver_phone', 'Receiver phone');
-//        $form->number('receiver_region_id', 'Receiver region id');
-//        $form->text('receiver_address', 'Receiver address');
-//        $form->text('buyer_message', 'Buyer message');
-//        $form->text('buyer_nick', 'Buyer nick');
+//        $form->datetime('completed_at', '确认收货时间')->default(date('Y-m-d H:i:s'));
+//        $form->datetime('closed_at', '交易关闭时间')->default(date('Y-m-d H:i:s'));
+//        $form->number('user_id', '用户id');
+//        $form->text('receiver_name', '收货人姓名');
+//        $form->text('receiver_phone', '收货人电话');
+//        $form->number('receiver_region_id', '地区代码');
+//        $form->text('receiver_address', '详细地址');
+//        $form->text('buyer_message', '买家留言');
+//        $form->text('buyer_nick', '买家昵称');
 
         $form->select("wuliu.postage_name", '快递名称')->options(PostageMananger::$codes);
         $form->text("wuliu.postage_code", '快递单号');
