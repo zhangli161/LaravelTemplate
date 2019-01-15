@@ -34,6 +34,7 @@ use App\Models\OrderPostage;
 use App\Models\Postage;
 use App\Models\UserCoupon;
 use App\User;
+use Carbon\Carbon;
 use Encore\Admin\Auth\Database\Administrator;
 use Encore\Admin\Facades\Admin;
 use Illuminate\Http\Request;
@@ -43,14 +44,11 @@ class DemoController extends Controller
 //	static $worker=SnowFlakeIDWorker(1);
     public static function test()
     {
-//        $pay = new WXPayManager();
-//        $ret = $pay->transfer(1, "test0", "oHK0P5ROsBac0PvlbOu_teyFTdjY", "测试付款");
-//        dd($ret);
-//        $acs=AgentCash::where("status",0)->get();
-//        foreach ($acs as $ac)
-//        AgentManager::doCash($ac);
-//        dd($acs);
-        return (GoodsSKU::with(["similar_skus","matched_skus"])->find(1)->toArray());
+        $this_week = Carbon::today()->startOfWeek();
+//            ->lastOfMonth();
+        $this_month = Carbon::today()->startOfMonth();
+        dd($this_week,$this_month);
+//        return (GoodsSKU::with(["similar_skus","matched_skus"])->find(1)->toArray());
     }
 
     //Manager的用法
