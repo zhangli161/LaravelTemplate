@@ -38,7 +38,7 @@ class AgentController
     }
 
     public static function getById(Request $request){
-        $agent_apply = AgentApply::findOrFail($request->filled("id"));
+        $agent_apply = AgentApply::with("region")->findOrFail($request->filled("id"));
         return ApiResponse::makeResponse(true, $agent_apply, 200);
     }
 
