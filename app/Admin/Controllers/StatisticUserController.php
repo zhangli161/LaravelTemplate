@@ -36,8 +36,8 @@ class StatisticUserController extends Controller
     public function index(Content $content, Request $request)
     {
         return $content
-            ->header('Index')
-            ->description('description')
+            ->header('消费者统计')
+//            ->description('description')
             ->row($this->grid($request));
 //            ->row($this->chartform("/admin/statistic/goods"));
     }

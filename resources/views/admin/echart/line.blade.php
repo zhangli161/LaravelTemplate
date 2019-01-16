@@ -1,8 +1,13 @@
-<script src="{{URL::asset('js/echarts.common.min.js')}}"></script>
-<div id="{{isset($canvas_id)?$canvas_id:"main"}}" style="width:100%;height:{{$height}}px"></div>
+<head>
+    <title>{{isset($title)?$title:"图表"}}</title>
+    <script src="{{URL::asset('js/echarts.common.min.js')}}"></script>
+</head><div id="{{isset($canvas_id)?$canvas_id:"main"}}" style="width:100%;height:{{$height}}px"></div>
+<body>
 {{--<div id="main" style="width: {{$width}}px;height:{{$height}}px;"></div>--}}
 <script type="text/javascript">
     // 基于准备好的dom，初始化echarts实例
+    if(typeof echarts == 'undefined')
+        location.reload()
     var myChart = echarts.init(document.getElementById('{{isset($canvas_id)?$canvas_id:"main"}}'));
 
     // 指定图表的配置项和数据
@@ -67,3 +72,4 @@
     // 使用刚指定的配置项和数据显示图表。
     myChart.setOption(option);
 </script>
+</body>

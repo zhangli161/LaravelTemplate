@@ -38,8 +38,8 @@ class StatisticCouponController extends Controller
     public function index(Content $content, Request $request)
     {
         return $content
-            ->header('Index')
-            ->description('description')
+            ->header('优惠券统计')
+//            ->description('description')
             ->row($this->grid($request));
 //            ->row($this->chartform("/admin/statistic/goods"));
     }

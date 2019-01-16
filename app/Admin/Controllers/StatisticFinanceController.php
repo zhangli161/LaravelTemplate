@@ -32,8 +32,8 @@ class StatisticFinanceController extends Controller
     public function index(Content $content, Request $request)
     {
         return $content
-            ->header('Index')
-            ->description('description')
+            ->header('财务流水')
+//            ->description('description')
             ->row($this->grid($request))
             ->row($this->chartform("/admin/statistic/order"));
     }
