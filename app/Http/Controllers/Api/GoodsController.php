@@ -16,6 +16,7 @@ use App\Models\FootPrint;
 use App\Models\GoodsSKU;
 use App\Models\GoodsSKUSearchWord;
 use App\Models\GoodsSPU;
+use App\Models\GoodsSPUSence;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Routing\Controller;
@@ -36,7 +37,8 @@ class GoodsController extends Controller
             $query->where('cate_id', $request->get('cate_id'));
         }
         if ($request->filled('sence_cate_id')) {
-            $query->where('sence_cate_id', $request->get('sence_cate_id'));
+            $spu_ids=GoodsSPUSence::where("sence_cate_id",$request->get("sence_cate_id"))->pluck("spu_id");
+            $query->where('id', $spu_ids->toArray());
         }
         $goods = $query->get();
         foreach ($goods as $good) {
@@ -123,8 +125,10 @@ class GoodsController extends Controller
                 $query->whereIn('sku_id', $sku_ids);
             }
             if ($request->filled('sence_cate_id')) {
+                $spu_ids=GoodsSPUSence::where("sence_cate_id",$request->get("sence_cate_id"))->pluck("spu_id");
+                $query->where('id', $spu_ids->toArray());
                 $spus = GoodsSPU::query()
-                ->where("sence_cate_id", $request->get('sence_cate_id'))
+                ->where('id', $spu_ids->toArray())
 //                    ->where('status', 1)
 //                    ->with("skus")
                     ->get();

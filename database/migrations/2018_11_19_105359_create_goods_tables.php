@@ -31,8 +31,8 @@ class CreateGoodsTables extends Migration
 		        ->comment("销量");//
 	        $table->integer('cate_id',false,true)
 		        ->comment("分类id");//
-            $table->integer('sence_cate_id',false,true)
-                ->comment("场景分类分类id");
+//            $table->integer('sence_cate_id',false,true)
+//                ->comment("场景分类分类id");
 	        
 	        $table->timestamps();
 	        $table->softDeletes();

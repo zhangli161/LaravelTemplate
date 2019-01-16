@@ -100,11 +100,11 @@ class GoodsController extends Controller
 		    $cate_name=$cate?$cate->name:"未知";
 		    return "<lable class='label label-primary'>$cate_name</lable>";
         })->sortable();
-        $grid->sence_cate_id('场景分类')->display(function ($cate_id){
-            $cate=Category::find($cate_id);
-            $cate_name=$cate?$cate->name:"未知";
-            return "<lable class='label label-primary'>$cate_name</lable>";
-        })->sortable();
+//        $grid->sence_cate_id('场景分类')->display(function ($cate_id){
+//            $cate=Category::find($cate_id);
+//            $cate_name=$cate?$cate->name:"未知";
+//            return "<lable class='label label-primary'>$cate_name</lable>";
+//        })->sortable();
 		$grid->created_at('创建时间');
 		$grid->updated_at('更新时间');
 //        $grid->deleted_at('Deleted at');
@@ -174,7 +174,7 @@ class GoodsController extends Controller
 	protected function form()
 	{
 		$form = new Form(new GoodsSPU);
-		
+
 		$form->tab('基本信息', function ($form) {
 			
 			$form->number('spu_no', 'Spu编号')->rules('required');
@@ -194,9 +194,14 @@ class GoodsController extends Controller
             foreach ($categories as $category){
                 $options1[$category->id]=$category->name;
             }
-            $form->select('sence_cate_id', '场景分类')->options($options1)->rules('required');
-			
-		})->tab('图文详情', function ($form) {
+//            $form->select('sence_cate_id', '场景分类')
+//                ->options($options1)
+//                ->rules('required');
+            $form->listbox('sences', trans('admin.permissions'))
+                ->options($options1);
+
+
+        })->tab('图文详情', function ($form) {
 			
 			$form->editor('detail.content', '图文详情')->rules('required');
 			

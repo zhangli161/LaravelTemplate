@@ -24,7 +24,7 @@ class GoodsTablesSeeder extends Seeder
                 'view' => '0',
                 'sell' => '0',
                 'cate_id' => \App\Models\Category::query()->where('parentid',1)->inRandomOrder()->first()->id,
-                'sence_cate_id' => \App\Models\Category::query()->where('parentid',2)->inRandomOrder()->first()->id,
+//                'sence_cate_id' => \App\Models\Category::query()->where('parentid',2)->inRandomOrder()->first()->id,
             ]);
             DB::table('goods_spu_spec')->insert([
                 'spu_id' => $spuid,

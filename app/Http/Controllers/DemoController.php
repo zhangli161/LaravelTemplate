@@ -26,6 +26,7 @@ use App\Http\Helpers\SnowFlakeIDWorker;
 use App\Models\Agent;
 use App\Models\AgentCash;
 use App\Models\GoodsSKU;
+use App\Models\GoodsSPU;
 use App\Models\Message;
 use App\Models\MessageContent;
 use App\Models\NativePlaceRegion;
@@ -44,11 +45,11 @@ class DemoController extends Controller
 //	static $worker=SnowFlakeIDWorker(1);
     public static function test()
     {
-        $this_week = Carbon::today()->startOfWeek();
-//            ->lastOfMonth();
-        $this_month = Carbon::today()->startOfMonth();
-        dd($this_week,$this_month);
-//        return (GoodsSKU::with(["similar_skus","matched_skus"])->find(1)->toArray());
+        $spus=GoodsSPU::query()->get();
+        foreach ($spus as $spu){
+            $spu->sences()->attach($spu->sence_cate_id);
+        }
+        dd( GoodsSPU::with('sences')->get());
     }
 
     //Manager的用法

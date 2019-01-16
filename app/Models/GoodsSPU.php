@@ -30,15 +30,14 @@ class GoodsSPU extends Model
 	{
 		return $this->morphOne(RichText::class, 'item');
 	}
-	
-
 
 	public function cate(){
 	    return $this->belongsTo(Category::class,"cate_id");
     }
-	public function sence(){
-        return $this->belongsTo(Category::class,"sence_cate_id");
+	public function sences(){
+        return $this->belongsToMany(Category::class,"goods_spu_sences","spu_id","sence_cate_id");
     }
+
     public function comments(){
 	    return $this->hasMany(Comment::class,'sku_id');
     }
