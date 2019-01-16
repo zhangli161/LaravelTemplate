@@ -30,6 +30,7 @@ class CreateAgentAppliesTable extends Migration
 	        $table->text("note")->collation('utf8mb4_unicode_ci')->comment("备注 ")->nullable();
 	
 	        $table->timestamps();
+	        $table->softDeletes();
         });
     }
 

@@ -37,8 +37,11 @@ class GoodsController extends Controller
             $query->where('cate_id', $request->get('cate_id'));
         }
         if ($request->filled('sence_cate_id')) {
-            $spu_ids=GoodsSPUSence::where("sence_cate_id",$request->get("sence_cate_id"))->pluck("spu_id");
+            $spu_ids=GoodsSPUSence::whereIn("sence_cate_id",$request->get("sence_cate_id"))
+                ->pluck("spu_id");
+
             $query->where('id', $spu_ids->toArray());
+
         }
         $goods = $query->get();
         foreach ($goods as $good) {
@@ -125,7 +128,7 @@ class GoodsController extends Controller
                 $query->whereIn('sku_id', $sku_ids);
             }
             if ($request->filled('sence_cate_id')) {
-                $spu_ids=GoodsSPUSence::where("sence_cate_id",$request->get("sence_cate_id"))->pluck("spu_id");
+                $spu_ids=GoodsSPUSence::whereIn("sence_cate_id",$request->get("sence_cate_id"))->pluck("spu_id");
                 $query->where('id', $spu_ids->toArray());
                 $spus = GoodsSPU::query()
                 ->where('id', $spu_ids->toArray())

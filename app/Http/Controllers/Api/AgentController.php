@@ -26,10 +26,14 @@ class AgentController
         if ($request->filled("id")) {
             $agent_apply = AgentApply::find($request->filled("id"));
         }
-        if ($agent_apply)
+        if (!isset($agent_apply))
             $agent_apply = AgentApply::create($data);
         $agent_apply->update($data);
         $agent_apply->save();
+        AgentApply::query()
+            ->where("user_id",Auth::user()->id)
+            ->where("id","<>",$agent_apply->id)
+            ->delete();
         return ApiResponse::makeResponse(true, $agent_apply, 200);
     }
 
