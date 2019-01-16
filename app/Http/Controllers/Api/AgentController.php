@@ -80,7 +80,7 @@ class AgentController
     public static function mine(){
         $user_id = Auth::user()->id;
 
-        $agent_applies=AgentApply::where("user_id",$user_id)->get();
+        $agent_applies=AgentApply::with("region")->where("user_id",$user_id)->get();
         return ApiResponse::makeResponse(true, $agent_applies, 200);
     }
 	
