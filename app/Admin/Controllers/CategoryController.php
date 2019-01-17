@@ -39,8 +39,8 @@ class CategoryController extends Controller
     public function show($id, Content $content)
     {
         return $content
-            ->header('Detail')
-            ->description('description')
+            ->header('分类')
+            ->description('分类')
             ->body($this->detail($id));
     }
 
@@ -54,8 +54,8 @@ class CategoryController extends Controller
     public function edit($id, Content $content)
     {
         return $content
-            ->header('Edit')
-            ->description('description')
+            ->header('分类')
+            ->description('分类')
             ->body($this->form()->edit($id));
     }
 
@@ -68,8 +68,8 @@ class CategoryController extends Controller
     public function create(Content $content)
     {
         return $content
-            ->header('Create')
-            ->description('description')
+            ->header('创建')
+            ->description('')
             ->body($this->form());
     }
 
@@ -88,7 +88,7 @@ class CategoryController extends Controller
 //        $grid->deleted_at('Deleted at');
         $grid->name('名称');
         $grid->order('排序');
-        $grid->parentid('Parentid');
+//        $grid->parentid('Parentid');
 
         return $grid;
     }

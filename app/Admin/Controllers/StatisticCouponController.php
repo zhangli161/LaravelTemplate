@@ -39,7 +39,7 @@ class StatisticCouponController extends Controller
     {
         return $content
             ->header('优惠券统计')
-//            ->description('description')
+//            ->description('')
             ->row($this->grid($request));
 //            ->row($this->chartform("/admin/statistic/goods"));
     }

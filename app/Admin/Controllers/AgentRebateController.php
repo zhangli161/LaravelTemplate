@@ -23,8 +23,8 @@ class AgentRebateController extends Controller
     public function index(Content $content)
     {
         return $content
-            ->header('Index')
-            ->description('description')
+            ->header('代理商返利')
+            ->description('代理商返利')
             ->body($this->grid());
     }
 
@@ -38,8 +38,8 @@ class AgentRebateController extends Controller
     public function show($id, Content $content)
     {
         return $content
-            ->header('Detail')
-            ->description('description')
+            ->header('代理商返利')
+            ->description('代理商返利')
             ->body($this->detail($id));
     }
 
@@ -53,8 +53,8 @@ class AgentRebateController extends Controller
     public function edit($id, Content $content)
     {
         return $content
-            ->header('Edit')
-            ->description('description')
+            ->header('代理商返利')
+            ->description('代理商返利')
             ->body($this->form()->edit($id));
     }
 
@@ -67,8 +67,8 @@ class AgentRebateController extends Controller
     public function create(Content $content)
     {
         return $content
-            ->header('Create')
-            ->description('description')
+            ->header('代理商返利')
+            ->description('代理商返利')
             ->body($this->form());
     }
 
@@ -84,8 +84,8 @@ class AgentRebateController extends Controller
         $grid->id('Id');
         $grid->step('门槛值');
         $grid->percent('比例');
-        $grid->created_at('Created at');
-        $grid->updated_at('Updated at');
+        $grid->created_at('创建时间');
+        $grid->updated_at('上次修改时间');
 
         return $grid;
     }
@@ -103,8 +103,8 @@ class AgentRebateController extends Controller
         $show->id('Id');
         $show->step('门槛值');
         $show->percent('比例');
-        $show->created_at('Created at');
-        $show->updated_at('Updated at');
+        $show->created_at('创建时间');
+        $show->updated_at('上次修改时间');
 
         return $show;
     }

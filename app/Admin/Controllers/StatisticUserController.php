@@ -37,7 +37,7 @@ class StatisticUserController extends Controller
     {
         return $content
             ->header('消费者统计')
-//            ->description('description')
+//            ->description('')
             ->row($this->grid($request));
 //            ->row($this->chartform("/admin/statistic/goods"));
     }

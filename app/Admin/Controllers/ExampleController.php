@@ -23,7 +23,7 @@ class ExampleController extends Controller
     {
         return $content
             ->header('Index')
-            ->description('description')
+            ->description('')
             ->body($this->grid());
     }
 
@@ -38,7 +38,7 @@ class ExampleController extends Controller
     {
         return $content
             ->header('Detail')
-            ->description('description')
+            ->description('')
             ->body($this->detail($id));
     }
 
@@ -53,7 +53,7 @@ class ExampleController extends Controller
     {
         return $content
             ->header('Edit')
-            ->description('description')
+            ->description('')
             ->body($this->form()->edit($id));
     }
 
@@ -66,8 +66,8 @@ class ExampleController extends Controller
     public function create(Content $content)
     {
         return $content
-            ->header('Create')
-            ->description('description')
+            ->header('创建')
+            ->description('')
             ->body($this->form());
     }
 
@@ -114,8 +114,8 @@ class ExampleController extends Controller
         $form = new Form(new YourModel);
 
         $form->display('id', 'ID');
-        $form->display('created_at', 'Created At');
-        $form->display('updated_at', 'Updated At');
+        $form->display('created_at', '创建时间');
+        $form->display('updated_at', '上次修改时间');
 
         return $form;
     }

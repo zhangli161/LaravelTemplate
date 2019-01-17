@@ -27,8 +27,8 @@ class OrderController extends Controller
     public function index(Content $content)
     {
         return $content
-            ->header('Index')
-            ->description('description')
+            ->header('订单')
+            ->description('订单')
             ->body($this->grid());
     }
 
@@ -42,8 +42,8 @@ class OrderController extends Controller
     public function show($id, Content $content)
     {
         return $content
-            ->header('Detail')
-            ->description('description')
+            ->header('订单')
+            ->description('订单')
             ->body($this->detail($id));
     }
 
@@ -57,8 +57,8 @@ class OrderController extends Controller
     public function edit($id, Content $content)
     {
         return $content
-            ->header('Edit')
-            ->description('description')
+            ->header('订单')
+            ->description('订单')
             ->body($this->form()->edit($id));
     }
 
@@ -71,8 +71,8 @@ class OrderController extends Controller
 //    public function create(Content $content)
 //    {
 //        return $content
-//            ->header('Create')
-//            ->description('description')
+//            ->header('创建')
+//            ->description('')
 //            ->body($this->form());
 //    }
 
@@ -124,7 +124,7 @@ class OrderController extends Controller
                 "<lable class='label label-danger'>否</lable>";
         });
         $grid->created_at('创建时间')->sortable();
-        $grid->updated_at('Updated at')->sortable();
+        $grid->updated_at('上次修改时间')->sortable();
         $grid->actions(function ($actions) {
             $actions->disableDelete();
 //			$actions->disableEdit();
@@ -182,7 +182,7 @@ class OrderController extends Controller
         $show->buyer_message('买家留言');
         $show->buyer_nick('买家昵称');
         $show->created_at('创建时间');
-//        $show->updated_at('Updated at');
+//        $show->updated_at('上次修改时间');
         $show->skus("订单商品",function ($sku){
             $sku->id("订单商品id");
             $sku->sku_id("商品id");

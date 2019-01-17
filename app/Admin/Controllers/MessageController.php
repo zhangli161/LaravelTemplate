@@ -24,7 +24,7 @@ class MessageController extends Controller
     {
         return $content
             ->header('消息列表')
-//            ->description('description')
+//            ->description('')
             ->body($this->grid());
     }
 
@@ -38,8 +38,8 @@ class MessageController extends Controller
     public function show($id, Content $content)
     {
         return $content
-            ->header('Detail')
-            ->description('description')
+            ->header('消息列表')
+            ->description('消息列表')
             ->body($this->detail($id));
     }
 
@@ -53,8 +53,8 @@ class MessageController extends Controller
     public function edit($id, Content $content)
     {
         return $content
-            ->header('Edit')
-            ->description('description')
+            ->header('消息列表')
+            ->description('消息列表')
             ->body($this->form()->edit($id));
     }
 
@@ -67,8 +67,8 @@ class MessageController extends Controller
     public function create(Content $content)
     {
         return $content
-            ->header('Create')
-            ->description('description')
+            ->header('创建')
+            ->description('')
             ->body($this->form());
     }
 

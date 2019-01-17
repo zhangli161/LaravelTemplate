@@ -33,7 +33,7 @@ class StatisticFinanceController extends Controller
     {
         return $content
             ->header('财务流水')
-//            ->description('description')
+//            ->description('')
             ->row($this->grid($request))
             ->row($this->chartform("/admin/statistic/order"));
     }

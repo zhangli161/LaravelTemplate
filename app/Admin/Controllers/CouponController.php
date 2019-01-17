@@ -23,8 +23,8 @@ class CouponController extends Controller
 	public function index(Content $content)
 	{
 		return $content
-			->header('Index')
-			->description('description')
+			->header('优惠券')
+			->description('优惠券')
 			->body($this->grid());
 	}
 	
@@ -38,8 +38,8 @@ class CouponController extends Controller
 	public function show($id, Content $content)
 	{
 		return $content
-			->header('Detail')
-			->description('description')
+			->header('优惠券')
+			->description('优惠券')
 			->body($this->detail($id));
 	}
 	
@@ -53,8 +53,8 @@ class CouponController extends Controller
 	public function edit($id, Content $content)
 	{
 		return $content
-			->header('Edit')
-			->description('description')
+			->header('优惠券')
+			->description('优惠券')
 			->body($this->form()->edit($id));
 	}
 	
@@ -67,8 +67,8 @@ class CouponController extends Controller
 	public function create(Content $content)
 	{
 		return $content
-			->header('Create')
-			->description('description')
+			->header('创建')
+			->description('')
 			->body($this->form());
 	}
 	
@@ -92,8 +92,8 @@ class CouponController extends Controller
 		$grid->min_cost('门槛金额');
 		$grid->expiry_date('固定有效期');
 		$grid->expriy_days('动态有效期');
-		$grid->created_at('Created at');
-		$grid->updated_at('Updated at');
+		$grid->created_at('创建时间');
+		$grid->updated_at('上次修改时间');
 
 		$grid->disableExport();
 		return $grid;
@@ -120,8 +120,8 @@ class CouponController extends Controller
 		$show->min_cost('门槛金额');
 		$show->expiry_date('固定有效期');
 		$show->expriy_days('动态有效期');
-		$show->created_at('Created at');
-		$show->updated_at('Updated at');
+		$show->created_at('创建时间');
+		$show->updated_at('上次修改时间');
 		$show->distribute_methods('发放方式', function ($grid) {
 			$grid->method('发放方式')->using([1 => '积分兑换']);
 			$grid->price('价格');

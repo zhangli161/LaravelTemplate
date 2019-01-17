@@ -26,7 +26,7 @@ class UserAddressController extends Controller
 	{
 		return $content
 			->header('收货地址')
-//            ->description('description')
+//            ->description('')
 			->body($this->grid());
 	}
 	
@@ -40,8 +40,8 @@ class UserAddressController extends Controller
 	public function show($id, Content $content)
 	{
 		return $content
-			->header('Detail')
-			->description('description')
+			->header('收货地址')
+			->description('收货地址')
 			->body($this->detail($id));
 	}
 	
@@ -55,8 +55,8 @@ class UserAddressController extends Controller
 	public function edit($id, Content $content)
 	{
 		return $content
-			->header('编辑')
-			->description('description')
+			->header('收货地址')
+			->description('收货地址')
 			->body($this->form()->edit($id));
 	}
 	
@@ -70,7 +70,7 @@ class UserAddressController extends Controller
 	{
 		return $content
 			->header('新增地址')
-//			->description('description')
+//			->description('')
 			->body($this->form());
 	}
 	

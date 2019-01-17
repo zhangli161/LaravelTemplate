@@ -35,7 +35,7 @@ class StatisticGoodsController extends Controller
     {
         return $content
             ->header('商品统计')
-//            ->description('description')
+//            ->description('')
             ->row($this->grid($request))
             ->row($this->chartform("/admin/statistic/goods"));
     }

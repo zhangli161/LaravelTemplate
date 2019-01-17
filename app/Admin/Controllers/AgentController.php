@@ -335,7 +335,7 @@ class AgentController extends Controller
     {
         return $content
             ->header('Index')
-            ->description('description')
+            ->description('')
 //            ->body($this->cashGrid())
             ->row(function (Row $row) {
 
@@ -374,7 +374,7 @@ class AgentController extends Controller
 
 
         $grid->created_at('时间')->sortable();
-//        $grid->updated_at('Updated at');
+//        $grid->updated_at('上次修改时间');
 //
         $grid->tools(function ($tools) {
             $tools->batch(function ($batch) {

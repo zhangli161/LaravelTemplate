@@ -38,7 +38,7 @@ class BannerController extends Controller
 	public function show($id, Content $content)
 	{
 		return $content
-			->header('详细')
+			->header('轮播图')
 			->description('')
 			->body($this->detail($id));
 	}
@@ -53,8 +53,8 @@ class BannerController extends Controller
 	public function edit($id, Content $content)
 	{
 		return $content
-			->header('编辑')
-			->description('描述')
+			->header('轮播图')
+			->description('轮播图')
 			->body($this->form()->edit($id));
 	}
 	

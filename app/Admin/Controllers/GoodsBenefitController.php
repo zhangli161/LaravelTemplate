@@ -24,8 +24,8 @@ class GoodsBenefitController extends Controller
 	public function index(Content $content)
 	{
 		return $content
-			->header('Index')
-			->description('description')
+			->header('商品活动')
+			->description('商品活动')
 			->body($this->grid());
 	}
 	
@@ -39,8 +39,8 @@ class GoodsBenefitController extends Controller
 	public function show($id, Content $content)
 	{
 		return $content
-			->header('Detail')
-			->description('description')
+			->header('商品活动')
+			->description('商品活动')
 			->body($this->detail($id));
 	}
 	
@@ -54,8 +54,8 @@ class GoodsBenefitController extends Controller
 	public function edit($id, Content $content)
 	{
 		return $content
-			->header('Edit')
-			->description('description')
+			->header('商品活动')
+			->description('商品活动')
 			->body($this->form()->edit($id));
 	}
 	
@@ -68,8 +68,8 @@ class GoodsBenefitController extends Controller
 	public function create(Content $content)
 	{
 		return $content
-			->header('Create')
-			->description('description')
+			->header('商品活动')
+			->description('商品活动')
 			->body($this->form());
 	}
 	
@@ -144,8 +144,8 @@ class GoodsBenefitController extends Controller
 		$show->origin_price('原价');
 		$show->show_origin_price('显示原价');
 		$show->status('活动状态')->using(['-1' => '已解释', '0' => '未开始','1'=>'进行中']);
-		$show->created_at('Created at');
-		$show->updated_at('Updated at');
+		$show->created_at('创建时间');
+		$show->updated_at('上次修改时间');
 		
 		return $show;
 	}

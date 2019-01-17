@@ -30,8 +30,8 @@ class AgentsController extends Controller
     public function index(Content $content)
     {
         return $content
-            ->header('Index')
-            ->description('description')
+            ->header('代理商')
+            ->description('代理商')
             ->row(function(Row $row) {
                 $today=$this_week = Carbon::today();
                 $this_week = Carbon::today()->startOfWeek();
@@ -63,8 +63,8 @@ class AgentsController extends Controller
     public function show($id, Content $content)
     {
         return $content
-            ->header('Detail')
-            ->description('description')
+            ->header('代理商')
+            ->description('代理商')
             ->body($this->detail($id));
     }
 
@@ -78,8 +78,8 @@ class AgentsController extends Controller
     public function edit($id, Content $content)
     {
         return $content
-            ->header('Edit')
-            ->description('description')
+            ->header('代理商')
+            ->description('代理商')
             ->body($this->form()->edit($id));
     }
 
@@ -93,15 +93,15 @@ class AgentsController extends Controller
     {
         if (request('apply_id')) {
             return $content
-                ->header('Create')
-                ->description('description')
+                ->header('代理商')
+                ->description('代理商')
                 ->body($this->form(
                     AgentApply::find(request('apply_id')
                     )));
         }
         return $content
-            ->header('Create')
-            ->description('description')
+            ->header('代理商')
+            ->description('代理商')
             ->body($this->form());
     }
 
@@ -131,8 +131,8 @@ class AgentsController extends Controller
         $grid->business('从事行业');
         $grid->store('门店信息');
 //        $grid->status('Status');
-        $grid->created_at('Created at');
-        $grid->updated_at('Updated at');
+        $grid->created_at('创建时间');
+        $grid->updated_at('上次修改时间');
 
         return $grid;
     }
@@ -250,8 +250,8 @@ function Download(imgdata){
             return $users_count;
         });
 
-        $show->created_at('Created at');
-        $show->updated_at('Updated at');
+        $show->created_at('创建时间');
+        $show->updated_at('上次修改时间');
 
 
         $show->finances('流水', function ($grid) {
@@ -272,7 +272,7 @@ function Download(imgdata){
 
 
             $grid->created_at('时间')->sortable();
-//        $grid->updated_at('Updated at');
+//        $grid->updated_at('上次修改时间');
 //
             $grid->tools(function ($tools) {
                 $tools->batch(function ($batch) {

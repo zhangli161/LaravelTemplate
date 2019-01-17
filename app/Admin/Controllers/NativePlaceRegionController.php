@@ -26,7 +26,7 @@ class NativePlaceRegionController extends Controller
 	{
 //		return $content
 //			->header('Index')
-//			->description('description')
+//			->description('')
 //			->body($this->grid());
 		return $content
 			->header('地区管理')
@@ -62,7 +62,7 @@ class NativePlaceRegionController extends Controller
 	{
 		return $content
 			->header('详情')
-//			->description('description')
+//			->description('')
 			->body($this->detail($id));
 	}
 	
@@ -77,7 +77,7 @@ class NativePlaceRegionController extends Controller
 	{
 		return $content
 			->header('编辑')
-//			->description('description')
+//			->description('')
 			->body($this->form()->edit($id));
 	}
 	

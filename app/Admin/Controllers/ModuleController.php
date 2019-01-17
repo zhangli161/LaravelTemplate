@@ -25,7 +25,7 @@ class ModuleController extends Controller
     {
         return $content
             ->header('小程序首页模块')
-            ->description('description')
+            ->description('小程序首页模块')
             ->body($this->grid());
     }
 
@@ -39,8 +39,8 @@ class ModuleController extends Controller
     public function show($id, Content $content)
     {
         return $content
-            ->header('Detail')
-            ->description('description')
+            ->header('小程序首页模块')
+            ->description('小程序首页模块')
             ->body($this->detail($id));
     }
 
@@ -54,8 +54,8 @@ class ModuleController extends Controller
     public function edit($id, Content $content)
     {
         return $content
-            ->header('Edit')
-            ->description('description')
+            ->header('小程序首页模块')
+            ->description('小程序首页模块')
             ->body($this->form()->edit($id));
     }
 
@@ -68,8 +68,8 @@ class ModuleController extends Controller
     public function create(Content $content)
     {
         return $content
-            ->header('Create')
-            ->description('description')
+            ->header('创建')
+            ->description('')
             ->body($this->form());
     }
 
@@ -85,8 +85,8 @@ class ModuleController extends Controller
         $grid->id('Id');
         $grid->name('模块名称');
         $grid->order('排序');
-        $grid->created_at('Created at');
-        $grid->updated_at('Updated at');
+        $grid->created_at('创建时间');
+        $grid->updated_at('上次修改时间');
 
         $grid->disableExport();
 
@@ -106,8 +106,8 @@ class ModuleController extends Controller
         $show->id('Id');
         $show->name('模块名称');
         $show->order('排序');
-        $show->created_at('Created at');
-        $show->updated_at('Updated at');
+        $show->created_at('创建时间');
+        $show->updated_at('上次修改时间');
 
         return $show;
     }

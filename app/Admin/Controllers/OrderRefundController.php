@@ -29,8 +29,8 @@ class OrderRefundController extends Controller
     public function index(Content $content)
     {
         return $content
-            ->header('Index')
-            ->description('description')
+            ->header('订单退款')
+            ->description('订单退款')
             ->body($this->grid());
     }
 
@@ -44,8 +44,8 @@ class OrderRefundController extends Controller
     public function show($id, Content $content)
     {
         return $content
-            ->header('Detail')
-            ->description('description')
+            ->header('订单退款')
+            ->description('订单退款')
             ->body($this->detail($id));
     }
 
@@ -59,8 +59,8 @@ class OrderRefundController extends Controller
     public function edit($id, Content $content)
     {
         return $content
-            ->header('Edit')
-            ->description('description')
+            ->header('订单退款')
+            ->description('订单退款')
             ->body($this->form()->edit($id));
     }
 
@@ -73,8 +73,8 @@ class OrderRefundController extends Controller
     public function create(Content $content)
     {
         return $content
-            ->header('Create')
-            ->description('description')
+            ->header('创建')
+            ->description('')
             ->body($this->form());
     }
 
@@ -110,8 +110,8 @@ class OrderRefundController extends Controller
         ]);
         $grid->payment('退款金额');
         $grid->note('备注');
-        $grid->created_at('Created at');
-        $grid->updated_at('Updated at');
+        $grid->created_at('创建时间');
+        $grid->updated_at('上次修改时间');
 
         $grid->disableExport();
         $grid->disableCreateButton();
@@ -165,8 +165,8 @@ class OrderRefundController extends Controller
         });
         $show->result('退款结果');
 
-        $show->created_at('Created at');
-        $show->updated_at('Updated at');
+        $show->created_at('创建时间');
+        $show->updated_at('上次修改时间');
 
         return $show;
     }
@@ -209,7 +209,7 @@ class OrderRefundController extends Controller
 //        return $request->all();
         return $content
             ->header('Index')
-            ->description('description')
+            ->description('')
             ->row($this->statistic_grid($request))
             ->row($this->chartform("/admin/statistic/refund"));
     }

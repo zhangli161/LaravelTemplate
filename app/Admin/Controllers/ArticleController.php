@@ -24,8 +24,8 @@ class ArticleController extends Controller
     public function index(Content $content)
     {
         return $content
-            ->header('Index')
-            ->description('description')
+            ->header('文章')
+            ->description('文章')
             ->body($this->grid());
     }
 
@@ -39,8 +39,8 @@ class ArticleController extends Controller
     public function show($id, Content $content)
     {
         return $content
-            ->header('Detail')
-            ->description('description')
+            ->header('文章')
+            ->description('文章')
             ->body($this->detail($id));
     }
 
@@ -54,8 +54,8 @@ class ArticleController extends Controller
     public function edit($id, Content $content)
     {
         return $content
-            ->header('Edit')
-            ->description('description')
+            ->header('文章')
+            ->description('文章')
             ->body($this->form()->edit($id));
     }
 
@@ -68,8 +68,8 @@ class ArticleController extends Controller
     public function create(Content $content)
     {
         return $content
-            ->header('Create')
-            ->description('description')
+            ->header('文章')
+            ->description('文章')
             ->body($this->form());
     }
 
@@ -96,8 +96,8 @@ class ArticleController extends Controller
         $grid->hits('点击量')->sortable();
 //        $grid->on_top('置顶')->sortable();
         $grid->thumb('封面图片');
-        $grid->created_at('Created at');
-        $grid->updated_at('Updated at');
+        $grid->created_at('创建时间');
+        $grid->updated_at('上次修改时间');
 
         $grid->filter(function($filter){
 
@@ -134,8 +134,8 @@ class ArticleController extends Controller
         $show->hits('点击量');
 //        $show->on_top('置顶')->using(['0'=>"否","1"=>"是"]);
         $show->thumb('封面图片');
-        $show->created_at('Created at');
-        $show->updated_at('Updated at');
+        $show->created_at('创建时间');
+        $show->updated_at('上次修改时间');
 
         return $show;
     }

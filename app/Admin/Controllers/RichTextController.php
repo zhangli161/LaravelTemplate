@@ -26,7 +26,7 @@ class RichTextController extends Controller
     {
         return $content
             ->header('Index')
-            ->description('description')
+            ->description('')
             ->body($this->grid());
     }
 
@@ -41,7 +41,7 @@ class RichTextController extends Controller
     {
         return $content
             ->header('Detail')
-            ->description('description')
+            ->description('')
             ->body($this->detail($id));
     }
 
@@ -56,7 +56,7 @@ class RichTextController extends Controller
     {
         return $content
             ->header('Edit')
-            ->description('description')
+            ->description('')
             ->body($this->form()->edit($id));
     }
 
@@ -69,8 +69,8 @@ class RichTextController extends Controller
     public function create(Content $content)
     {
         return $content
-            ->header('Create')
-            ->description('description')
+            ->header('创建')
+            ->description('')
             ->body($this->form());
     }
 
@@ -87,8 +87,8 @@ class RichTextController extends Controller
         $grid->content('Content');
         $grid->item_id('Item id');
         $grid->item_type('Item type');
-        $grid->created_at('Created at');
-        $grid->updated_at('Updated at');
+        $grid->created_at('创建时间');
+        $grid->updated_at('上次修改时间');
 
         return $grid;
     }
@@ -107,8 +107,8 @@ class RichTextController extends Controller
         $show->content('Content');
         $show->item_id('Item id');
         $show->item_type('Item type');
-        $show->created_at('Created at');
-        $show->updated_at('Updated at');
+        $show->created_at('创建时间');
+        $show->updated_at('上次修改时间');
 
         return $show;
     }

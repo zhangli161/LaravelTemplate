@@ -28,8 +28,8 @@ class AgentApplyController extends Controller
     public function index(Content $content)
     {
         return $content
-            ->header('Index')
-            ->description('description')
+            ->header('代理商申请')
+            ->description('代理商申请')
             ->body($this->grid());
     }
 
@@ -43,8 +43,8 @@ class AgentApplyController extends Controller
     public function show($id, Content $content)
     {
         return $content
-            ->header('Detail')
-            ->description('description')
+            ->header('代理商申请')
+            ->description('代理商申请')
             ->body($this->detail($id));
     }
 
@@ -58,8 +58,8 @@ class AgentApplyController extends Controller
     public function edit($id, Content $content)
     {
         return $content
-            ->header('Edit')
-            ->description('description')
+            ->header('代理商申请')
+            ->description('代理商申请')
             ->body($this->form()->edit($id));
     }
 
@@ -72,8 +72,8 @@ class AgentApplyController extends Controller
     public function create(Content $content)
     {
         return $content
-            ->header('Create')
-            ->description('description')
+            ->header('代理商申请')
+            ->description('代理商申请')
             ->body($this->form());
     }
 
@@ -113,8 +113,8 @@ class AgentApplyController extends Controller
             '1' => "<label class='label label-success'>已通过</label>",
             '2' => "<label class='label label-warning'>已驳回</label>"
         ])->sortable();
-        $grid->created_at('Created at');
-        $grid->updated_at('Updated at');
+        $grid->created_at('创建时间');
+        $grid->updated_at('上次修改时间');
 
         $grid->tools(function ($tools) {
             $tools->batch(function ($batch) {
@@ -165,8 +165,8 @@ class AgentApplyController extends Controller
         })->unescape();
 
         $show->status('Status');
-        $show->created_at('Created at');
-        $show->updated_at('Updated at');
+        $show->created_at('创建时间');
+        $show->updated_at('上次修改时间');
 
         return $show;
     }

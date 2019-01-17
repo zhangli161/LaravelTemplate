@@ -25,8 +25,8 @@ class AgentCashController extends Controller
     public function index(Content $content)
     {
         return $content
-            ->header('Index')
-            ->description('description')
+            ->header('代理商提现')
+            ->description('代理商提现')
             ->body($this->grid());
     }
 
@@ -40,8 +40,8 @@ class AgentCashController extends Controller
     public function show($id, Content $content)
     {
         return $content
-            ->header('Detail')
-            ->description('description')
+            ->header('代理商提现')
+            ->description('代理商提现')
             ->body($this->detail($id));
     }
 
@@ -55,8 +55,8 @@ class AgentCashController extends Controller
     public function edit($id, Content $content)
     {
         return $content
-            ->header('Edit')
-            ->description('description')
+            ->header('代理商提现')
+            ->description('代理商提现')
             ->body($this->form()->edit($id));
     }
 
@@ -69,8 +69,8 @@ class AgentCashController extends Controller
     public function create(Content $content)
     {
         return $content
-            ->header('Create')
-            ->description('description')
+            ->header('代理商提现')
+            ->description('代理商提现')
             ->body($this->form());
     }
 
@@ -90,8 +90,8 @@ class AgentCashController extends Controller
         $grid->status('Status');
         $grid->return('Return');
         $grid->note('Note');
-        $grid->created_at('Created at');
-        $grid->updated_at('Updated at');
+        $grid->created_at('创建时间');
+        $grid->updated_at('上次修改时间');
 
         return $grid;
     }
@@ -113,8 +113,8 @@ class AgentCashController extends Controller
         $show->status('Status');
         $show->return('Return');
         $show->note('Note');
-        $show->created_at('Created at');
-        $show->updated_at('Updated at');
+        $show->created_at('创建时间');
+        $show->updated_at('上次修改时间');
 
         return $show;
     }
@@ -142,7 +142,7 @@ class AgentCashController extends Controller
     {
         return $content
             ->header('Index')
-            ->description('description')
+            ->description('')
             ->body($this->grid());
     }
 
@@ -162,7 +162,7 @@ class AgentCashController extends Controller
 //        $grid->return('Return');
         $grid->note('备注');
         $grid->created_at('申请时间');
-//        $grid->updated_at('Updated at');
+//        $grid->updated_at('上次修改时间');
 
         $grid->disableActions();
         $grid->disableCreateButton();
