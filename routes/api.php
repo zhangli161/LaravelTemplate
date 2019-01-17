@@ -127,7 +127,7 @@ Route::group(['middleware' => 'auth:api', 'namespace' => 'Api'], function () {
 
     });//上传图片
 });
-Route::any('payment/notify', 'OrderController@notify');//微信支付回调
+Route::any('payment/notify', 'api/OrderController@notify');//微信支付回调
 
 
 //Route::group(['prefix' => 'v1', 'middleware' => 'auth:api'], function(){
