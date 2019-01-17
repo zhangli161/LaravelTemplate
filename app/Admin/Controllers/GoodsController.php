@@ -197,7 +197,7 @@ class GoodsController extends Controller
 //            $form->select('sence_cate_id', '场景分类')
 //                ->options($options1)
 //                ->rules('required');
-            $form->listbox('sences', trans('admin.permissions'))
+            $form->listbox('sences', "场景分类")
                 ->options($options1);
 
 
