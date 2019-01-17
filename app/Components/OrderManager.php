@@ -484,7 +484,7 @@ class OrderManager extends Manager
 
     public static function doRefund($refund)
     {
-        $refund=OrderRefund::find($refund->id);
+        $refund=OrderRefund::query()->find($refund->id);
         $order = Order::with("xcx_pay")->find($refund->order_id);
         if (!$order)
             return "订单不存在";
