@@ -153,7 +153,7 @@ class OrderRefundController extends Controller
                     $html = $html . "<image src='$album'></image>";
                 return $html;
             }
-        });
+        })->unescape();
 //        $show->albums("图片", function ($albums) {
 //            $html="";
 //            foreach ($albums as $album)
