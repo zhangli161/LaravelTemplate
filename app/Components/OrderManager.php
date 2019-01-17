@@ -484,7 +484,7 @@ class OrderManager extends Manager
 
     public static function doRefund($refund)
     {
-
+        $refund=OrderRefund::find($refund->id);
         $order = Order::with("xcx_pay")->find($refund->order_id);
         if (!$order)
             return "订单不存在";
@@ -504,6 +504,7 @@ class OrderManager extends Manager
             $order->xcx_pay->transaction_id,
             "XCX_$order->id "
         );
+
         $refund->update(['result' => json_encode($result)]);
         Log::info("退款结果" . json_encode($result));
     }
