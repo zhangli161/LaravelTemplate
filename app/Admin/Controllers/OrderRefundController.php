@@ -86,12 +86,27 @@ class OrderRefundController extends Controller
     {
         $grid = new Grid(new OrderRefund);
 
+        $grid->filter(function ($filter){
+            $filter->equal('status','状态')->select([
+                0 => "未处理 ",
+                1 => " 通过",
+//                2 => "退款中",
+//                3 => " 退款完成",
+                4 => "驳回"
+            ]);
+        });
         $grid->id('Id');
         $grid->order_id('关联订单id');
         $grid->order_sku_id('关联订单商品id');
         $grid->amount('退款商品数量');
         $grid->reason('退款原因');
-        $grid->status('状态');
+        $grid->status('状态')->using([
+            0 => "未处理 ",
+            1 => " 通过",
+            2 => "退款中",
+            3 => " 退款完成",
+            4 => "驳回"
+        ]);
         $grid->payment('退款金额');
         $grid->note('备注');
         $grid->created_at('Created at');
@@ -117,7 +132,14 @@ class OrderRefundController extends Controller
         $show->order_sku_id('关联订单商品id');
         $show->amount('退款商品数量');
         $show->reason('退款原因');
-        $show->status('状态');
+        $show->desc('描述');
+        $show->status('状态')->using([
+            0 => "未处理 ",
+            1 => " 通过",
+            2 => "退款中",
+            3 => " 退款完成",
+            4 => "驳回"
+        ]);
         $show->payment('退款金额');
         $show->albums("图片", function ($albums) {
             return $albums;
@@ -125,7 +147,7 @@ class OrderRefundController extends Controller
         $show->note('备注',function ($note){
             return json_encode($note);
         });
-
+        $show->result('退款结果');
 
         $show->created_at('Created at');
         $show->updated_at('Updated at');
@@ -146,6 +168,7 @@ class OrderRefundController extends Controller
         $form->text('order_sku_id', '关联订单商品id')->readOnly();
         $form->text('amount', '退款商品数量')->readOnly();
         $form->text('reason', '退款原因')->readOnly();
+        $form->text('desc', '描述')->readOnly();
         $form->select('status', '状态')->options([
 //            0 => "未处理 ",
             1 => " 通过",

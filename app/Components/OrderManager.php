@@ -504,7 +504,7 @@ class OrderManager extends Manager
             $order->xcx_pay->transaction_id,
             "XCX_$order->id "
         );
-        $order->update(['result' => json_encode($result)]);
+        $refund->update(['result' => json_encode($result)]);
         Log::info("退款结果" . json_encode($result));
     }
 }
