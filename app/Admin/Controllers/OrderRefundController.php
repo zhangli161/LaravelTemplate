@@ -14,6 +14,7 @@ use Encore\Admin\Layout\Content;
 use Encore\Admin\Show;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use function PHPSTORM_META\type;
 
 class OrderRefundController extends Controller
 {
@@ -86,8 +87,8 @@ class OrderRefundController extends Controller
     {
         $grid = new Grid(new OrderRefund);
 
-        $grid->filter(function ($filter){
-            $filter->equal('status','状态')->select([
+        $grid->filter(function ($filter) {
+            $filter->equal('status', '状态')->select([
                 0 => "未处理 ",
                 1 => " 通过",
 //                2 => "退款中",
@@ -125,7 +126,8 @@ class OrderRefundController extends Controller
      */
     protected function detail($id)
     {
-        $show = new Show(OrderRefund::findOrFail($id));
+        $refund = OrderRefund::findOrFail($id);
+        $show = new Show($refund);
 
         $show->id('Id');
         $show->order_id('关联订单id');
@@ -141,10 +143,24 @@ class OrderRefundController extends Controller
             4 => "驳回"
         ]);
         $show->payment('退款金额');
-        $show->albums("图片", function ($albums) {
-            return $albums;
+
+        $show->field("albums", "图片")->as(function () use ($refund) {
+            if ($refund->albums == null)
+                return "无";
+            else{
+                $html = "";
+                foreach ($refund->albums as $album)
+                    $html = $html . "<image src='$album'></image>";
+                return $html;
+            }
         });
-        $show->note('备注',function ($note){
+//        $show->albums("图片", function ($albums) {
+//            $html="";
+//            foreach ($albums as $album)
+//                $html=$html."<image src='$album'></image>";
+//            return $html;
+//        });
+        $show->note('备注', function ($note) {
             return json_encode($note);
         });
         $show->result('退款结果');
