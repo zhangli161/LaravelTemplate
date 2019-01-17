@@ -228,7 +228,7 @@ class OrderController extends Controller
             if ($request->filled('id')) {
                 $return = OrderManager::editRefund($request->get('id'), $order, $order_sku, $request->get("amount"), $request->get("reason"), $request->get("albums"));
             } else
-                $return = OrderManager::refund($order, $order_sku, $request->get("amount"), $request->get("reason"), $request->get("albums"));
+                $return = OrderManager::refund($order, $order_sku, $request->get("amount"), $request->get("reason"),$request->get("desc"), $request->get("albums"));
 
 //            $return = [$order, $order_sku];
             return ApiResponse::makeResponse(true, $return, ApiResponse::SUCCESS_CODE);

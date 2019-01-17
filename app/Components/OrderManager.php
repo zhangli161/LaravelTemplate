@@ -449,12 +449,13 @@ class OrderManager extends Manager
         return;
     }
 
-    public static function refund(Order $order, OrderSKU $order_sku, int $amount, $reason = null, $albums = [])
+    public static function refund(Order $order, OrderSKU $order_sku, int $amount, $reason = null,$desc=null, $albums = [])
     {
         $refund = $order->refund()->create([
             'order_sku_id' => $order_sku->id,
             'amount' => $amount,
             'reason' => $reason ? $reason : request('reason'),
+            'desc'=>$desc,
             'status' => 0,
             'payment' => $amount * $order_sku->average_price,
             'albums' => $albums,
