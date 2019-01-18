@@ -91,7 +91,7 @@ class OrderManager extends Manager
                 'total_price' => $total_price,
             ]);
 
-            if ($sku->postage) {
+            if ($sku->postage=="1") {
                 //包邮时所有的商品都包邮
                 $postage = 1;
             }

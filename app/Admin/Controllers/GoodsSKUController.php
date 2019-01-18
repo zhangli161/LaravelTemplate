@@ -288,7 +288,7 @@ class GoodsSKUController extends Controller
             $form->select('spu_id', '所属商品')->options($options)->default(request('spu_id'))->rules('required');
             $form->radio('stock_type', '减库存时间')
                 ->options([0 => '付款减库存', 1 => '下单减库存'])->rules('required');
-//			$form->switch('postage', '是否包邮')->default(1)->value(1);
+			$form->switch('postage', '是否包邮');
             $form->number('order', '排序');
             $form->tags('search_word.search_words', '搜索关键词');
 //			Log::info('表单'.json_encode($form->search_word->search_words));
