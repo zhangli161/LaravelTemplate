@@ -498,8 +498,8 @@ class OrderManager extends Manager
         //4200000214201812297536195648
         $result = $wxPay->refund(
             (int)$order->xcx_pay->total_fee,
-//            (int)($refund->payment * 100),
-            1,
+            (int)($refund->payment * 100),
+//            1,
             $refund->id,
             $order->xcx_pay->transaction_id,
             "XCX_$order->id "

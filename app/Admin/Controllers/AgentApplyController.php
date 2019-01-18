@@ -113,8 +113,8 @@ class AgentApplyController extends Controller
             '1' => "<label class='label label-success'>已通过</label>",
             '2' => "<label class='label label-warning'>已驳回</label>"
         ])->sortable();
-        $grid->created_at('创建时间');
-        $grid->updated_at('上次修改时间');
+        $grid->created_at('创建时间')->sortable();
+        $grid->updated_at('上次修改时间')->sortable();
 
         $grid->tools(function ($tools) {
             $tools->batch(function ($batch) {

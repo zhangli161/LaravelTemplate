@@ -90,7 +90,7 @@ class GoodsController extends Controller
 		$grid->spu_no('Spu编号')->sortable();
 		$grid->spu_name('商品名称');
 		$grid->desc('描述');
-		$grid->status('上架状态');
+		$grid->status('上架状态')->using(['0' => '下架', '1' => '上架']);
 		$grid->thumb('封面图片')->lightbox();;
 		$grid->view('浏览量')->sortable();
 		$grid->sell('销售量')->sortable();
