@@ -39,6 +39,6 @@ class GoodsSPU extends Model
     }
 
     public function comments(){
-	    return $this->hasMany(Comment::class,'sku_id');
+	    return $this->hasMany(Comment::class,'spu_id');
     }
 }
