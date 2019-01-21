@@ -196,6 +196,13 @@ function copyText(item) {
         });
         $show->buyer_message('买家留言');
         $show->buyer_nick('买家昵称');
+        $show->field("name","快递信息")->as(function ()use($order){
+            $address=NativePalceReagionManager::getFullAddress($order->receiver_region_id)."  $order->receiver_address";
+            $html="<div>收货人姓名:$order->receiver_name</div>
+<div>收货地址:$address</div>
+<div>电话:$order->receiver_phone</div>";
+            return $html;
+        });
         $show->created_at('创建时间');
 //        $show->updated_at('上次修改时间');
         $show->skus("订单商品",function ($sku){
