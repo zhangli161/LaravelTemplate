@@ -202,7 +202,7 @@ function copyText(item) {
 <div>收货地址:$address</div>
 <div>电话:$order->receiver_phone</div>";
             return $html;
-        });
+        })->unescape();
         $show->created_at('创建时间');
 //        $show->updated_at('上次修改时间');
         $show->skus("订单商品",function ($sku){
