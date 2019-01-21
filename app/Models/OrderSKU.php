@@ -14,4 +14,7 @@ class OrderSKU extends Model
     public function sku(){
         return $this->belongsTo(GoodsSKU::class,'sku_id');
     }
+    public function refund(){
+	    return $this->hasMany(OrderRefund::class,"order_sku_id");
+    }
 }

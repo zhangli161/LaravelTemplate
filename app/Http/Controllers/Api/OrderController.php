@@ -91,7 +91,7 @@ class OrderController extends Controller
 
 
         $commentable_count = OrderSKU::whereIn("order_id", $status_5_ids)
-            ->doesntHave("comment")->orderBy("created_at", 'desc')->count();
+            ->doesntHave("comment")->doesntHave("refund")->orderBy("created_at", 'desc')->count();
 
 //            OrderSKU::whereIn('order_id', $status_5_ids)->where("is_buyer_rated", 0)->count();
         $refund_count = OrderRefund::whereIn('order_id', $status_5_ids)->count();
@@ -266,10 +266,10 @@ class OrderController extends Controller
     {
         $orders = Auth::user()->orders()->where('status', 5);
         $order_skus = OrderSKU::query()->whereIn("order_id", $orders->pluck("id")->toArray())
-            ->doesntHave("comment")->orderBy("created_at", 'desc')->get();
-        $order_skus=$order_skus->filter(function ($order_sku) {
-            return ($order_sku->refund_amount < $order_sku->amount);
-        });
+            ->doesntHave("comment")->doesntHave("refund")->orderBy("created_at", 'desc')->get();
+//        $order_skus=$order_skus->filter(function ($order_sku) {
+//            return ($order_sku->refund_amount < $order_sku->amount);
+//        });
 //        dd($order_skus);
         foreach ($order_skus as $key => $order_sku) {
             $order_sku->sku = GoodsSKUManager::getDetailsForApp($order_sku->sku, true);
