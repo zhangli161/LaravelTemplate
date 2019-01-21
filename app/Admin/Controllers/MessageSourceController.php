@@ -80,8 +80,9 @@ class MessageSourceController extends Controller
 	protected function grid()
 	{
 		$grid = new Grid(new MessageSource);
-		
-		$grid->id('Id');
+        $grid->model()->orderBy("created_at","desc");
+
+        $grid->id('Id');
 		$grid->code('英文简称');
 		$grid->name('名称');
 		$grid->created_at('创建于');

@@ -80,6 +80,7 @@ class AgentRebateController extends Controller
     protected function grid()
     {
         $grid = new Grid(new AgentRebate);
+        $grid->model()->orderBy("created_at","desc");
 
         $grid->id('Id');
         $grid->step('门槛值');

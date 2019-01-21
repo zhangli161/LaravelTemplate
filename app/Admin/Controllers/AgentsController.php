@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers;
 
+use App\Components\NativePalceReagionManager;
 use App\Components\QRManager;
 use App\Models\Agent;
 use App\Http\Controllers\Controller;
@@ -32,20 +33,20 @@ class AgentsController extends Controller
         return $content
             ->header('代理商')
             ->description('代理商')
-            ->row(function(Row $row) {
-                $today=$this_week = Carbon::today();
+            ->row(function (Row $row) {
+                $today = $this_week = Carbon::today();
                 $this_week = Carbon::today()->startOfWeek();
 //            ->lastOfMonth();
                 $this_month = Carbon::today()->startOfMonth();
-                $box0=new Box("本日代理商增长",Agent::where("created_at",">=",$today)->count()." 名");
+                $box0 = new Box("本日代理商增长", Agent::where("created_at", ">=", $today)->count() . " 名");
                 $box0->style("small-box bg-aqua");
                 $row->column(4, $box0);
 
-                $box1=new Box("本周代理商增长",Agent::where("created_at",">=",$this_week)->count()." 名");
+                $box1 = new Box("本周代理商增长", Agent::where("created_at", ">=", $this_week)->count() . " 名");
                 $box1->style("small-box bg-aqua");
                 $row->column(4, $box1);
 
-                $box2=new Box("本月代理商增长",Agent::where("created_at",">=",$this_week)->count()." 名");
+                $box2 = new Box("本月代理商增长", Agent::where("created_at", ">=", $this_week)->count() . " 名");
                 $box2->style("small-box bg-aqua");
                 $row->column(4, $box2);
 //                $row->column(4, 'baz');
@@ -113,18 +114,24 @@ class AgentsController extends Controller
     protected function grid()
     {
         $grid = new Grid(new Agent);
+        $grid->model()->orderBy("created_at", "desc");
+        $grid->disableExport();
 
-        $grid->filter(function($filter){
+        $grid->filter(function ($filter) {
             // 在这里添加字段过滤器
             $filter->like('real_name', '真实姓名');
+            $filter->equal('region_id', '地区编号');
+            $filter->like('telephone', '手机号码');
         });
         $grid->id('Id');
         $grid->admin_id('Admin id');
         $grid->real_name('真实姓名');
-        $grid->gender('性别');
+        $grid->gender('性别')->using(['0' => '男', '1' => '女']);
         $grid->telephone('联系电话');
         $grid->address('地址');
-        $grid->region_id('合作区域');
+        $grid->column('region_id','合作区域')->display(function ($region_id){
+            return NativePalceReagionManager::getFullAddress($region_id);
+        });
         $grid->wx('微信号');
         $grid->qq('QQ');
         $grid->email('邮箱');
@@ -166,11 +173,11 @@ class AgentsController extends Controller
                 });;
         });
         $show->real_name('真实姓名');
-        $show->gender('性别');
+        $show->gender('性别')->using(['0' => '男', '1' => '女']);
         $show->telephone('联系电话');
         $show->address('地址');
         $show->region_id('合作区域')->as(function ($region_id) {
-            return NativePlaceRegion::find($region_id)->region_name;
+            return NativePalceReagionManager::getFullAddress($region_id);
         });
         $show->wx('微信号');
         $show->qq('QQ');
@@ -234,19 +241,19 @@ function Download(imgdata){
 //            ->lastOfMonth();
         $this_month = Carbon::today()->startOfMonth();
 
-        $show->field("本周粉丝增长")->as(function (){
+        $show->field("本周粉丝增长")->as(function () {
             $this_week = Carbon::today()->startOfWeek();
-            $admin=Auth::guard("admin")->user();
-            $agent=Agent::where("admin_id",$admin->id)->first();
-            $users_count=$agent->users()->where("bind_agent_time",">=",$this_week)->count();
+            $admin = Auth::guard("admin")->user();
+            $agent = Agent::where("admin_id", $admin->id)->first();
+            $users_count = $agent->users()->where("bind_agent_time", ">=", $this_week)->count();
             return $users_count;
         });
 
-        $show->field("本月粉丝增长")->as(function (){
+        $show->field("本月粉丝增长")->as(function () {
             $this_month = Carbon::today()->startOfMonth();
-            $admin=Auth::guard("admin")->user();
-            $agent=Agent::where("admin_id",$admin->id)->first();
-            $users_count=$agent->users()->where("bind_agent_time",">=",$this_month)->count();
+            $admin = Auth::guard("admin")->user();
+            $agent = Agent::where("admin_id", $admin->id)->first();
+            $users_count = $agent->users()->where("bind_agent_time", ">=", $this_month)->count();
             return $users_count;
         });
 
@@ -335,8 +342,6 @@ function Download(imgdata){
         });
 
 
-
-
         return $show;
     }
 
@@ -353,15 +358,20 @@ function Download(imgdata){
         $form->text('real_name', '真实姓名')
             ->default($apply ? $apply->real_name : "")->rules('required');
         $form->select('gender', '性别')
-            ->options(['0'=>"未知","1"=>"男","2"=>"女"])
+            ->options(["0" => "男", "1" => "女"])
             ->default($apply ? $apply->gender : "")
             ->rules('required');
         $form->text('telephone', '联系电话')
             ->default($apply ? $apply->telephone : "")->rules('required');
         $form->text('address', '地址')
             ->default($apply ? $apply->address : "")->rules('required');
-        $form->number('region_id', '合作区域')
-            ->default($apply ? $apply->region_id : "")->rules('required');
+        $form->distpicker([
+            'province_id' => '省',
+            'city_id'     => '市',
+            'region_id' => '区'
+        ], '合作区域')
+            ->autoselect(3)
+            ->rules('required')->attribute('data-value-type', 'code');
         $form->text('wx', '微信号')
             ->default($apply ? $apply->wx : "");
         $form->text('qq', 'QQ')
@@ -384,7 +394,7 @@ function Download(imgdata){
         $agent->update(['xcx_qr' => $qr]);
         $agent->xcx_qr = $qr;
         $agent->save();
-        echo"<script>alert('生成成功');history.go(-1);</script>";
+        echo "<script>alert('生成成功');history.go(-1);</script>";
 //        return redirect()->to("/admin/agent/$id");
     }
 }

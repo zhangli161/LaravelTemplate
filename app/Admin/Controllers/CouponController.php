@@ -80,8 +80,9 @@ class CouponController extends Controller
 	protected function grid()
 	{
 		$grid = new Grid(new Coupon);
-		
-		$grid->id('Id');
+        $grid->model()->orderBy("created_at","desc");
+
+        $grid->id('Id');
 		$grid->name('名称');
 		$types = [
 			1 => '打折券',

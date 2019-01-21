@@ -18,6 +18,7 @@ use Encore\Admin\Show;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\MessageBag;
 
 class GoodsSKUController extends Controller
 {
@@ -89,22 +90,33 @@ class GoodsSKUController extends Controller
     protected function grid()
     {
         $grid = new Grid(new GoodsSKU);
+        $grid->model()->orderBy("created_at","desc");
+
         $spu_id = request('spu_id');
         if ($spu_id)
             $grid->model()->where('spu_id', '=', $spu_id);
 
-        $grid->disableFilter();//去掉过滤器
+        $grid->filter(function ($filter) {
+
+            // 去掉默认的id过滤器
+//            $filter->disableIdFilter();
+
+            // 在这里添加字段过滤器
+            $filter->like('sku_name', '子商品名称');
+
+            $filter->equal('sku_no', 'SKU编号');
+        });
         $grid->id('Id');
-        $grid->sku_no('Sku编号');
+        $grid->sku_no('Sku编号')->sortable();
         $grid->sku_name('子商品名称');
         $grid->price('价格（元）');
-        $grid->stock('库存量');
+        $grid->stock('库存量')->sortable();
 //        $grid->shop_id('Shop id');
 //        $grid->spu_id('Spu id');
 //        $grid->stock_type('减库存时间');
 //        $grid->postage('是否包邮');
         $grid->order('排序');
-        $grid->created_at('创建时间');
+        $grid->created_at('创建时间')->sortable();
         $grid->updated_at('更新时间');
 //        $grid->deleted_at('Deleted at');
         $grid->tools(function ($tools) {
@@ -288,7 +300,7 @@ class GoodsSKUController extends Controller
             $form->select('spu_id', '所属商品')->options($options)->default(request('spu_id'))->rules('required');
             $form->radio('stock_type', '减库存时间')
                 ->options([0 => '付款减库存', 1 => '下单减库存'])->rules('required');
-			$form->switch('postage', '是否包邮');
+            $form->switch('postage', '是否包邮');
             $form->number('order', '排序');
             $form->tags('search_word.search_words', '搜索关键词');
 //			Log::info('表单'.json_encode($form->search_word->search_words));
@@ -362,6 +374,19 @@ class GoodsSKUController extends Controller
         });
 //		$form->ignore(['spec_id']);
         $form->saving(function (Form $form) {
+
+            $exist = GoodsSKU::where("spu_no", $form->spu_no)->first();
+//		    dd($form->spu_no,$form->model()->id);
+            if ($exist)
+                if ($exist->id != $form->model()->id) {
+
+                    $error = new MessageBag([
+                        'title' => '错误',
+                        'message' => '编号重复',
+                    ]);
+
+                    return back()->with(compact('error'));
+                }
 
 //			dd($form);
 //			Log::info('表单'.json_encode($form->search_word['search_words']));

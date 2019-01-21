@@ -20,6 +20,8 @@ class CreateAgentsTable extends Migration
 			$table->tinyInteger("gender")->comment("性别 0男 1女");
 			$table->string("telephone", 50)->comment("电话号码");
 			$table->string("address", 100)->collation('utf8mb4_unicode_ci')->comment("地址");
+            $table->integer('province_id', false, true)->nullable();
+            $table->integer('city_id', false, true)->nullable();
 			$table->integer('region_id', false, true);
 			$table->string("wx", 100)->comment("微信号")->nullable();
 			$table->string("qq", 100)->comment("QQ")->nullable();

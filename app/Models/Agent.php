@@ -16,6 +16,8 @@ class Agent extends Model
         "gender",
         "telephone",
         "address",
+        "province_id",
+        "city_id",
         "region_id",
         "wx",
         "qq",
@@ -29,6 +31,16 @@ class Agent extends Model
     public function admin()
     {
         return $this->belongsTo(Administrator::class, 'admin_id');
+    }
+
+    public function city()
+    {
+        return $this->belongsTo(NativePlaceRegion::class, 'city_id');
+    }
+
+    public function province()
+    {
+        return $this->belongsTo(NativePlaceRegion::class, 'province_id');
     }
 
     public function region()

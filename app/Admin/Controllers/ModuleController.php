@@ -81,6 +81,7 @@ class ModuleController extends Controller
     protected function grid()
     {
         $grid = new Grid(new Module);
+        $grid->model()->orderBy("created_at","desc");
 
         $grid->id('Id');
         $grid->name('模块名称');

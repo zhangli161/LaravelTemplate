@@ -85,6 +85,7 @@ class AgentApplyController extends Controller
     protected function grid()
     {
         $grid = new Grid(new AgentApply);
+        $grid->model()->orderBy("created_at","desc");
 
         $grid->id('Id');
         $grid->user_id('用户名')->display(function ($user_id) {

@@ -58,6 +58,8 @@ class AgentController
                     "gender" => $apply->gender,
                     "telephone" => $apply->telephone,
                     "address" => $apply->address,
+                    "province_id" => $apply->province_id,
+                    "city_id" => $apply->city_id,
                     "region_id" => $apply->region_id,
                     "wx" => $apply->wx,
                     "qq" => $apply->qq,

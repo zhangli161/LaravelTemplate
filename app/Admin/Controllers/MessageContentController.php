@@ -81,8 +81,9 @@ class MessageContentController extends Controller
 	protected function grid()
 	{
 		$grid = new Grid(new MessageContent);
-		
-		$grid->model()->where('send_type', '=', 1);
+        $grid->model()->orderBy("created_at","desc");
+
+        $grid->model()->where('send_type', '=', 1);
 		
 		$grid->id('Id');
 		$grid->title('标题');

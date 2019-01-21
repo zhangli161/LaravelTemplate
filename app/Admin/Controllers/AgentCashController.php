@@ -82,6 +82,7 @@ class AgentCashController extends Controller
     protected function grid()
     {
         $grid = new Grid(new AgentCash);
+        $grid->model()->orderBy("created_at","desc");
 
         $grid->id('Id');
         $grid->agent_id('Agent id');

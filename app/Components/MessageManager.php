@@ -53,7 +53,7 @@ class MessageManager extends Manager
 	
 	public static function getGroupMessages(Authenticatable $user)
 	{
-		$message_contents = MessageContent::query()
+		$message_contents = MessageContent::query()->where("send_type","1")
 			->where('created_at', '>=', $user->created_at)->get();//用户注册后的群发消息
 		$messages = [];
 		foreach ($message_contents as $content) {

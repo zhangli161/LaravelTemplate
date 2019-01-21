@@ -81,6 +81,7 @@ class CategoryController extends Controller
     protected function grid()
     {
         $grid = new Grid(new Category);
+        $grid->model()->orderBy("created_at","desc");
 
         $grid->id('Id');
         $grid->created_at('创建时间');

@@ -5,11 +5,14 @@ namespace App\Admin\Controllers;
 use App\Admin\Extensions\ExcelExpoter;
 use App\User;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Encore\Admin\Controllers\HasResourceActions;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
+use Encore\Admin\Layout\Row;
 use Encore\Admin\Show;
+use Encore\Admin\Widgets\Box;
 
 class UserController extends Controller
 {
@@ -26,7 +29,25 @@ class UserController extends Controller
 		return $content
 			->header('用户列表')
 			->description('用户列表')
-			->body($this->grid());
+            ->row(function (Row $row) {
+                $today = $this_week = Carbon::today();
+                $this_week = Carbon::today()->startOfWeek();
+//            ->lastOfMonth();
+                $this_month = Carbon::today()->startOfMonth();
+                $box0 = new Box("本日用户增长", User::where("created_at", ">=", $today)->count() . " 名");
+                $box0->style("small-box bg-aqua");
+                $row->column(4, $box0);
+
+                $box1 = new Box("本周用户增长", User::where("created_at", ">=", $this_week)->count() . " 名");
+                $box1->style("small-box bg-aqua");
+                $row->column(4, $box1);
+
+                $box2 = new Box("本月用户增长", User::where("created_at", ">=", $this_week)->count() . " 名");
+                $box2->style("small-box bg-aqua");
+                $row->column(4, $box2);
+//                $row->column(4, 'baz');
+            })
+			->row($this->grid());
 	}
 	
 	/**
@@ -81,8 +102,9 @@ class UserController extends Controller
 	protected function grid()
 	{
 		$grid = new Grid(new User);
-		
-		//直接->字段名（表头）可以在表单中创建一列，某些冲突的名字可以用$grid->column('字段名');
+        $grid->model()->orderBy("created_at","desc");
+
+        //直接->字段名（表头）可以在表单中创建一列，某些冲突的名字可以用$grid->column('字段名');
 		$grid->id('用户id')->sortable();//->sortable()表示可排序列
 		$grid->name('名称');
 		$grid->column('id');

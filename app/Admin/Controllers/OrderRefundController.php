@@ -86,6 +86,7 @@ class OrderRefundController extends Controller
     protected function grid()
     {
         $grid = new Grid(new OrderRefund);
+        $grid->model()->orderBy("created_at","desc");
 
         $grid->filter(function ($filter) {
             $filter->equal('status', '状态')->select([

@@ -80,8 +80,9 @@ class BannerController extends Controller
 	protected function grid()
 	{
 		$grid = new Grid(new Banner);
-		
-		$grid->id('ID')->sortable();
+        $grid->model()->orderBy("created_at","desc");
+
+        $grid->id('ID')->sortable();
 		$grid->order('排序')->editable()->sortable();
 		$grid->desc('描述');
 		$grid->img_url('图片')->image();

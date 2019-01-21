@@ -80,7 +80,17 @@ class GoodsSpecController extends Controller
     protected function grid()
     {
         $grid = new Grid(new GoodsSpec);
+        $grid->model()->orderBy("created_at","desc");
+        $grid->filter(function ($filter) {
 
+            // 去掉默认的id过滤器
+//            $filter->disableIdFilter();
+
+            // 在这里添加字段过滤器
+            $filter->like('spec_name', '子商品名称');
+
+            $filter->equal('spec_no', '规格编号');
+        });
         $grid->id('Id');
         $grid->spec_no('规格编号');
         $grid->spec_name('规格名称');

@@ -35,7 +35,7 @@ class StatisticFinanceController extends Controller
             ->header('财务流水')
 //            ->description('')
             ->row($this->grid($request))
-            ->row($this->chartform("/admin/statistic/order"));
+            ->row($this->chartform("/admin/statistic/finance"));
     }
 
 

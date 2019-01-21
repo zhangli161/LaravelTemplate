@@ -82,8 +82,9 @@ class UserAddressController extends Controller
 	protected function grid()
 	{
 		$grid = new Grid(new UserAddress);
-		
-		$grid->id();
+        $grid->model()->orderBy("created_at","desc");
+
+        $grid->id();
 //        $grid->user_id('User id');
 		$grid->user('用户名')->display(function ($user) {
 //	        $count = count($comments);

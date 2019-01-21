@@ -5,6 +5,7 @@ namespace App\Admin\Controllers;
 use App\Models\GoodsBenefit;
 use App\Http\Controllers\Controller;
 use App\Models\GoodsSKU;
+use Carbon\Carbon;
 use Encore\Admin\Controllers\HasResourceActions;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
@@ -81,8 +82,9 @@ class GoodsBenefitController extends Controller
 	protected function grid()
 	{
 		$grid = new Grid(new GoodsBenefit);
-		
-		$grid->id('Id');
+        $grid->model()->orderBy("created_at","desc");
+
+        $grid->id('Id');
 		$grid->sku_id('促销商品')->display(function ($sku_id) {
 			$sku = GoodsSKU::find($sku_id);
 			$ret = "<span class='label label-error'>商品id错误</span>";
@@ -173,7 +175,9 @@ class GoodsBenefitController extends Controller
 		$form->decimal('price', '活动价')->rules('required');
 		$form->decimal('origin_price', '原价')->help("活动结束后会恢复到这个价格")->rules('required');
 		$form->decimal('show_origin_price', '显示原价')->rules('required');
-		$form->datetimeRange('time_form', 'time_to', '活动时间')->rules('required|after:now');
+		$form->datetimeRange('time_form', 'time_to', '活动时间')
+            ->rules('required|after:now');
+
 //		$form->switch('reset', '结束时恢复原价')->default(1);
 		
 		$form->saved(function (Form $form) {

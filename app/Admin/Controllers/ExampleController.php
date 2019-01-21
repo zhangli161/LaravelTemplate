@@ -79,6 +79,7 @@ class ExampleController extends Controller
     protected function grid()
     {
         $grid = new Grid(new YourModel);
+        $grid->model()->orderBy("created_at","desc");
 
         $grid->id('ID')->sortable();
         $grid->created_at('创建时间');

@@ -81,10 +81,11 @@ class PostageController extends Controller
 	protected function grid()
 	{
 		$grid = new Grid(new Postage);
-		
-		$grid->id('Id');
-		$grid->name('Name');
-		$grid->cost('Cost');
+        $grid->model()->orderBy("created_at","desc");
+
+        $grid->id('Id');
+		$grid->name('名称');
+		$grid->cost('费用');
 		$grid->created_at('创建时间');
 		$grid->updated_at('更新时间');
 //        $grid->deleted_at('Deleted at');
@@ -103,8 +104,8 @@ class PostageController extends Controller
 		$show = new Show(Postage::findOrFail($id));
 		
 		$show->id('Id');
-		$show->name('Name');
-		$show->cost('Cost');
+		$show->name('名称');
+		$show->cost('费用');
 		$show->created_at('创建时间');
 		$show->updated_at('更新时间');
 //        $show->deleted_at('Deleted at');

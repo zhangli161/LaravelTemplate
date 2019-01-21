@@ -3,6 +3,7 @@
 namespace App\Admin\Controllers;
 
 use App\Components\ChartManager;
+use App\Components\NativePalceReagionManager;
 use App\Components\PostageMananger;
 use App\Models\Order;
 use App\Http\Controllers\Controller;
@@ -163,7 +164,8 @@ class OrderController extends Controller
      */
     protected function detail($id)
     {
-        $show = new Show(Order::findOrFail($id));
+        $order=Order::findOrFail($id);
+        $show = new Show($order);
 
         $show->id('订单编号');
         $show->payment('支付金额');
@@ -178,7 +180,20 @@ class OrderController extends Controller
         $show->receiver_name('收货人姓名');
         $show->receiver_phone('收货人电话');
         $show->receiver_region_id('地区代码');
-        $show->receiver_address('详细地址');
+        $show->receiver_address('收货地址')->unescape()->as(function ()use($order){
+            $address=NativePalceReagionManager::getFullAddress($order->receiver_region_id)."  $order->receiver_address";
+            $html="
+<input onclick=\"$(this).select();document.execCommand('copy');alert('复制成功');\"value='$address' style='border: none;width: 100%' readonly/>
+<script>
+function copyText(item) {
+  item.select();
+  document.execCommand(\"copy\"); // 执行浏览器复制命令
+  alert(\"复制成功\");
+}
+</script>"
+            ;
+            return $html;
+        });
         $show->buyer_message('买家留言');
         $show->buyer_nick('买家昵称');
         $show->created_at('创建时间');
