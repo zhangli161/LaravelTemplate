@@ -46,7 +46,7 @@ class AgentsController extends Controller
                 $box1->style("small-box bg-aqua");
                 $row->column(4, $box1);
 
-                $box2 = new Box("本月代理商增长", Agent::where("created_at", ">=", $this_week)->count() . " 名");
+                $box2 = new Box("本月代理商增长", Agent::where("created_at", ">=", $this_month)->count() . " 名");
                 $box2->style("small-box bg-aqua");
                 $row->column(4, $box2);
 //                $row->column(4, 'baz');
