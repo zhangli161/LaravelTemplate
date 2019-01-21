@@ -86,6 +86,12 @@ class AgentApplyController extends Controller
     {
         $grid = new Grid(new AgentApply);
         $grid->model()->orderBy("created_at","desc");
+        $grid->filter(function (Grid\Filter $filter) {
+            // 在这里添加字段过滤器
+            $filter->like('real_name', '真实姓名');
+            $filter->equal('region_id', '地区编号');
+            $filter->like('telephone', '手机号码');
+        });
 
         $grid->id('Id');
         $grid->user_id('用户名')->display(function ($user_id) {

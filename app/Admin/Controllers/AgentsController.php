@@ -136,7 +136,7 @@ class AgentsController extends Controller
         $grid->qq('QQ');
         $grid->email('邮箱');
         $grid->business('从事行业');
-        $grid->store('门店信息');
+//        $grid->store('门店信息');
 //        $grid->status('Status');
         $grid->created_at('创建时间');
         $grid->updated_at('上次修改时间');
