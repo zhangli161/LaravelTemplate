@@ -96,7 +96,7 @@ class OrderController extends Controller
 //            OrderSKU::whereIn('order_id', $status_5_ids)->where("is_buyer_rated", 0)->count();
         $refund_count = OrderRefund::whereIn('order_id', $status_5_ids)->count();
         return ApiResponse::makeResponse(true, [$status_1_count, $status_2_3_4_count, $commentable_count, $refund_count
-        ,Auth::user()->orders()->count(),Auth::user()
+            , Auth::user()->orders()->count(), Auth::user()
         ], ApiResponse::SUCCESS_CODE);
     }
 
@@ -141,7 +141,7 @@ class OrderController extends Controller
         if (!$order->xcx_pay) {
             $ret = $data->unifiedOrder([
                 'out_trade_no' => "XCX_" . $order->id,           // 订单号
-                'total_fee' => (int)($order->payment*100),              // 订单金额，**单位：分**
+                'total_fee' => (int)($order->payment * 100),              // 订单金额，**单位：分**
                 'body' => '测试订单',                   // 订单描述
                 'openid' => $order->user->WX->openId               // 支付人的 openID
             ]);
@@ -228,7 +228,7 @@ class OrderController extends Controller
             if ($request->filled('id')) {
                 $return = OrderManager::editRefund($request->get('id'), $order, $order_sku, $request->get("amount"), $request->get("reason"), $request->get("albums"));
             } else
-                $return = OrderManager::refund($order, $order_sku, $request->get("amount"), $request->get("reason"),$request->get("desc"), $request->get("albums"));
+                $return = OrderManager::refund($order, $order_sku, $request->get("amount"), $request->get("reason"), $request->get("desc"), $request->get("albums"));
 
 //            $return = [$order, $order_sku];
             return ApiResponse::makeResponse(true, $return, ApiResponse::SUCCESS_CODE);
@@ -246,8 +246,9 @@ class OrderController extends Controller
         return ApiResponse::makeResponse(true, $refunds, ApiResponse::SUCCESS_CODE);
     }
 
-    public static function cancleRefund(Request $request){
-        $refund=OrderRefund::findOrFail($request->get("id"));
+    public static function cancleRefund(Request $request)
+    {
+        $refund = OrderRefund::findOrFail($request->get("id"));
         $refund->delete();
         return ApiResponse::makeResponse(true, "删除成功", ApiResponse::SUCCESS_CODE);
     }
@@ -264,10 +265,15 @@ class OrderController extends Controller
     public static function getCommentableSKUS(Request $request)
     {
         $orders = Auth::user()->orders()->where('status', 5);
-        $order_skus = OrderSKU::whereIn("order_id", $orders->pluck("id")->toArray())
+        $order_skus = OrderSKU::query()->whereIn("order_id", $orders->pluck("id")->toArray())
             ->doesntHave("comment")->orderBy("created_at", 'desc')->get();
-        foreach ($order_skus as $order_sku) {
+        $order_skus->filter(function ($order_sku) {
+            return ($order_sku->refund_amount < $order_sku->amount);
+        });
+        dd($order_skus);
+        foreach ($order_skus as $key => $order_sku) {
             $order_sku->sku = GoodsSKUManager::getDetailsForApp($order_sku->sku, true);
+
         }
         return ApiResponse::makeResponse(true, $order_skus, ApiResponse::SUCCESS_CODE);
     }
@@ -282,7 +288,7 @@ class OrderController extends Controller
             if (!$order)
                 return ApiResponse::makeResponse(false, "订单不存在或未完成", ApiResponse::UNKNOW_ERROR);
             $order_sku = $order->skus()->find($request->get("order_sku_id"));
-            if (!$order_sku)
+            if ($order_sku==null)
                 return ApiResponse::makeResponse(false, "订单中不存在该商品", ApiResponse::UNKNOW_ERROR);
             if ($order_sku->refund_amount >= $order_sku->amount)
                 return ApiResponse::makeResponse(false, "商品已退货", ApiResponse::UNKNOW_ERROR);
@@ -297,7 +303,7 @@ class OrderController extends Controller
                     'content' => $request->get('content'),
                     'albums' => $request->filled('albums') ? $request->get('albums') : [],
 
-                    ]);
+                ]);
 //            return $order_sku;
             $comment->star = ($request->get('star_1') + $request->get('star_2') + $request->get('star_3')) / 3.0;
             $comment->sku_id = $order_sku->sku_id;
@@ -315,8 +321,9 @@ class OrderController extends Controller
         }
     }
 
-    public static function getCommentsBySPUId(Request $request){
-        $spu=GoodsSPU::findOrFail($request->get("spu_id"));
+    public static function getCommentsBySPUId(Request $request)
+    {
+        $spu = GoodsSPU::findOrFail($request->get("spu_id"));
         return ApiResponse::makeResponse(true, $spu->comments()->with("user")->get(), ApiResponse::SUCCESS_CODE);
 
     }
@@ -335,17 +342,17 @@ class OrderController extends Controller
 
     public static function similar_skus(Request $request)
     {
-        $order=Order::with("skus")->findOrFail($request->get("order_id"));
-        $sku_ids=$order->skus->pluck("sku_id")->toArray();
+        $order = Order::with("skus")->findOrFail($request->get("order_id"));
+        $sku_ids = $order->skus->pluck("sku_id")->toArray();
 //        return $sku_ids;
-        $similar_sku_ids=GoodsSKUSimilar::query()->whereIn("sku_id",$sku_ids)
+        $similar_sku_ids = GoodsSKUSimilar::query()->whereIn("sku_id", $sku_ids)
             ->pluck("similar_sku_id")->toArray();
-        $return = GoodsSKU::query()->whereIn("id",$similar_sku_ids)->inRandomOrder()->get();
-        if ($request->filled("take")){
-            $return=$return->take((int)$request->get("take"));
+        $return = GoodsSKU::query()->whereIn("id", $similar_sku_ids)->inRandomOrder()->get();
+        if ($request->filled("take")) {
+            $return = $return->take((int)$request->get("take"));
         }
-        foreach ($return as $item){
-            $item=GoodsSKUManager::getDetailsForApp($item,false,true);
+        foreach ($return as $item) {
+            $item = GoodsSKUManager::getDetailsForApp($item, false, true);
         }
         return ApiResponse::makeResponse(true, $return, ApiResponse::SUCCESS_CODE);
     }
