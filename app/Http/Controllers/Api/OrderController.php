@@ -287,9 +287,9 @@ class OrderController extends Controller
             findOrFail($request->get("order_id"));
             if (!$order)
                 return ApiResponse::makeResponse(false, "订单不存在或未完成", ApiResponse::UNKNOW_ERROR);
-            $order_sku = $order->skus()->find($request->get("order_sku_id"));
-            if ($order_sku==null)
-                return ApiResponse::makeResponse(false, "订单中不存在该商品", ApiResponse::UNKNOW_ERROR);
+            $order_sku = $order->skus()->findOrFail($request->get("order_sku_id"));
+//            if ($order_sku==null)
+//                return ApiResponse::makeResponse(false, "订单中不存在该商品", ApiResponse::UNKNOW_ERROR);
             if ($order_sku->refund_amount >= $order_sku->amount)
                 return ApiResponse::makeResponse(false, "商品已退货", ApiResponse::UNKNOW_ERROR);
             if ($order_sku->is_buyer_rated != 0)

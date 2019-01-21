@@ -50,7 +50,7 @@ class DemoController extends Controller
         findOrFail(270);
         if (!$order)
             return ApiResponse::makeResponse(false, "订单不存在或未完成", ApiResponse::UNKNOW_ERROR);
-        $order_sku = $order->skus()->find(276);
+        $order_sku = $order->skus()->findOrFail(276);
         if ($order_sku==null)
             return ApiResponse::makeResponse(false, "订单中不存在该商品", ApiResponse::UNKNOW_ERROR);
         if ($order_sku->refund_amount >= $order_sku->amount)
