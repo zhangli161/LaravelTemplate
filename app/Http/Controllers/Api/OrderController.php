@@ -267,7 +267,7 @@ class OrderController extends Controller
         $orders = Auth::user()->orders()->where('status', 5);
         $order_skus = OrderSKU::query()->whereIn("order_id", $orders->pluck("id")->toArray())
             ->doesntHave("comment")->orderBy("created_at", 'desc')->get();
-        $order_skus->filter(function ($order_sku) {
+        $order_skus=$order_skus->filter(function ($order_sku) {
             return ($order_sku->refund_amount < $order_sku->amount);
         });
 //        dd($order_skus);
