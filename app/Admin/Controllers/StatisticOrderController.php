@@ -15,6 +15,7 @@ use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Layout\Row;
 use Encore\Admin\Show;
+use Encore\Admin\Widgets\Box;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
@@ -39,8 +40,10 @@ class StatisticOrderController extends Controller
         return $content
             ->header('订单统计')
 //            ->description('')
+            ->row($this->chartform("/admin/statistic/order"))
             ->row($this->grid($request))
-            ->row($this->chartform("/admin/statistic/order"));
+            ->row($this->count_chart($content,$request))
+            ->row($this->payment_chart($content,$request));
     }
 
 
@@ -69,9 +72,9 @@ class StatisticOrderController extends Controller
 
         if ($type == "0") {
             $model_group = $model->groupBy(function ($item) {
-                return date("Y-m-d", strtotime($item->completed_at));
+                return date("Y-m-d", strtotime($item->created_at));
             });
-            $dates = getDatesBetween($model->min('completed_at'), $model->max('completed_at'));
+            $dates = getDatesBetween($model->min('created_at'), $model->max('created_at'));
             foreach ($dates as $key => $lable) {
                 array_push($rows, new Collection([$lable,
                     $region ? NativePalceReagionManager::getFullAddress($region->region_id) : "全国",
@@ -81,9 +84,9 @@ class StatisticOrderController extends Controller
 
         } elseif ($type == "2") {
             $model_group = $model->groupBy(function ($item) {
-                return date("Y-m", strtotime($item->completed_at));
+                return date("Y-m", strtotime($item->created_at));
             });
-            $dates = getDatesBetween($model->min('completed_at'), $model->max('completed_at'), 2);
+            $dates = getDatesBetween($model->min('created_at'), $model->max('created_at'), 2);
             foreach ($dates as $key => $lable) {
                 array_push($rows,new Collection( [$lable,
                     $region ? NativePalceReagionManager::getFullAddress($region->region_id) : "全国",
@@ -92,9 +95,9 @@ class StatisticOrderController extends Controller
             }
         } elseif ($type == "4") {
             $model_group = $model->groupBy(function ($item) {
-                return date("Y", strtotime($item->completed_at));
+                return date("Y", strtotime($item->created_at));
             });
-            $dates = getDatesBetween($model->min('completed_at'), $model->max('completed_at'), 4);
+            $dates = getDatesBetween($model->min('created_at'), $model->max('created_at'), 4);
             foreach ($dates as $key => $lable) {
                 array_push($rows, new Collection([$lable,
                     $region ? NativePalceReagionManager::getFullAddress($region->region_id) : "全国",
@@ -132,11 +135,12 @@ class StatisticOrderController extends Controller
         $model = self::getModel($request);
         //如果未获取的数据
         if ($model->count() < 1)
-            return $content
-                ->header('订单数量折线图')
-//			->description('折线图')
-                ->row("未找到对应数据！")
-                ->row($this->chartform("/admin/chart/order/count"));
+            return new Box('订单数量折线图',"未找到对应数据！");
+//            return $content
+//                ->header('订单数量折线图')
+////			->description('折线图')
+//                ->row("未找到对应数据！")
+//                ->row($this->chartform("/admin/chart/order/count"));
 
 
         $description = "";
@@ -145,9 +149,9 @@ class StatisticOrderController extends Controller
         $type = $request->filled("type") ? $request->get("type") : 2;
         if ($type == "0") {
             $model_group = $model->groupBy(function ($item) {
-                return date("Y-m-d", strtotime($item->completed_at));
+                return date("Y-m-d", strtotime($item->created_at));
             });
-            $lables = getDatesBetween($model->min('completed_at'), $model->max('completed_at'));
+            $lables = getDatesBetween($model->min('created_at'), $model->max('created_at'));
 //            $lables=$model->keys()->toArray();
             foreach ($lables as $key => $lable) {
                 $datas[$key] = $model_group->get($lable, new Collection())->count();
@@ -156,10 +160,10 @@ class StatisticOrderController extends Controller
             $description = "日统计";
         } elseif ($type == "2") {
             $model_group = $model->groupBy(function ($item) {
-                return date("Y-m", strtotime($item->completed_at));
+                return date("Y-m", strtotime($item->created_at));
             });
 //            $lables=$model_group->keys()->toArray();
-            $lables = getDatesBetween($model->min('completed_at'), $model->max('completed_at'), 2);
+            $lables = getDatesBetween($model->min('created_at'), $model->max('created_at'), 2);
             foreach ($lables as $key => $lable) {
                 $datas[$key] = $model_group->get($lable, new Collection())->count();
             }
@@ -167,15 +171,17 @@ class StatisticOrderController extends Controller
             $description = "月统计";
         } elseif ($type == "4") {
             $model_group = $model->groupBy(function ($item) {
-                return date("Y", strtotime($item->completed_at));
+                return date("Y", strtotime($item->created_at));
             });
-            $lables = getDatesBetween($model->min('completed_at'), $model->max('completed_at'), 4);
+            $lables = getDatesBetween($model->min('created_at'), $model->max('created_at'), 4);
             foreach ($lables as $key => $lable) {
                 $datas[$key] = $model_group->get($lable, new Collection())->count();
             }
 
             $description = "年统计";
         }
+        return new Box('订单数量折线图',ChartManager::line($lables, '订单数量', $datas,"count"));
+
         return $content
             ->header('订单数量折线图')
             ->description($description)
@@ -188,11 +194,13 @@ class StatisticOrderController extends Controller
         $model = self::getModel($request);
         //如果未获取的数据
         if ($model->count() < 1)
-            return $content
-                ->header('订单金额折线图')
-//			->description('折线图')
-                ->row("未找到对应数据！")
-                ->row($this->chartform("/admin/chart/order/payment"));
+            return new Box('订单金额折线图',"未找到对应数据");
+//
+//        return $content
+//                ->header('订单金额折线图')
+////			->description('折线图')
+//                ->row("未找到对应数据！")
+//                ->row($this->chartform("/admin/chart/order/payment"));
 
 
         $description = "";
@@ -201,9 +209,9 @@ class StatisticOrderController extends Controller
         $type = $request->filled("type") ? $request->get("type") : 2;
         if ($type == "0") {
             $model_group = $model->groupBy(function ($item) {
-                return date("Y-m-d", strtotime($item->completed_at));
+                return date("Y-m-d", strtotime($item->created_at));
             });
-            $lables = getDatesBetween($model->min('completed_at'), $model->max('completed_at'));
+            $lables = getDatesBetween($model->min('created_at'), $model->max('created_at'));
 //            $lables=$model->keys()->toArray();
             foreach ($lables as $key => $lable) {
                 $datas[$key] = round($model_group->get($lable, new Collection())->sum('payment'), 2);
@@ -212,10 +220,10 @@ class StatisticOrderController extends Controller
             $description = "日统计";
         } elseif ($type == "2") {
             $model_group = $model->groupBy(function ($item) {
-                return date("Y-m", strtotime($item->completed_at));
+                return date("Y-m", strtotime($item->created_at));
             });
 //            $lables=$model_group->keys()->toArray();
-            $lables = getDatesBetween($model->min('completed_at'), $model->max('completed_at'), 2);
+            $lables = getDatesBetween($model->min('created_at'), $model->max('created_at'), 2);
             foreach ($lables as $key => $lable) {
                 $datas[$key] = round($model_group->get($lable, new Collection())->sum('payment'), 2);
             }
@@ -223,21 +231,22 @@ class StatisticOrderController extends Controller
             $description = "月统计";
         } elseif ($type == "4") {
             $model_group = $model->groupBy(function ($item) {
-                return date("Y", strtotime($item->completed_at));
+                return date("Y", strtotime($item->created_at));
             });
-            $lables = getDatesBetween($model->min('completed_at'), $model->max('completed_at'), 4);
+            $lables = getDatesBetween($model->min('created_at'), $model->max('created_at'), 4);
             foreach ($lables as $key => $lable) {
                 $datas[$key] = round($model_group->get($lable, new Collection())->sum('payment'));
             }
 
             $description = "年统计";
         }
+        return new Box('订单金额折线图',ChartManager::line($lables, '订单金额', $datas,"payment"));
 
-        return $content
-            ->header('订单金额折线图')
-//			->description('折线图')
-            ->row(ChartManager::line($lables, '订单金额', $datas))
-            ->row($this->chartform("/admin/chart/order/payment"));
+//        return $content
+//            ->header('订单金额折线图')
+////			->description('折线图')
+//            ->row(ChartManager::line($lables, '订单金额', $datas))
+//            ->row($this->chartform("/admin/chart/order/payment"));
     }
 
     protected function chartform($action)
@@ -267,7 +276,7 @@ class StatisticOrderController extends Controller
         $form->setAction($action);
         $form->select('type', '类型')
             ->options(["0" => "每日统计", "2" => "每月统计", "4" => "每年统计"])
-            ->default($this->request->get("type"));
+            ->default($this->request->filled("type")?$this->request->get("type"):2);
 
         $proviences = NativePalceReagionManager::getProviencesAndCitys();
         $names = [];

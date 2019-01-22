@@ -14,8 +14,10 @@
  * @param string $format
  * @return array
  */
-function getDatesBetween(string $start_date_str, string $end_date_str, int $type = 0, $format = null)
+function getDatesBetween($start_date_str, $end_date_str, int $type = 0, $format = null)
 {
+    if (empty($start_date_str) or empty($end_date_str))
+        return [];
     $ret = array();
     $start_date = strtotime($start_date_str);
     $end_date = strtotime($end_date_str);

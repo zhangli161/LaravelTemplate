@@ -18,6 +18,7 @@ use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Layout\Row;
 use Encore\Admin\Show;
+use Encore\Admin\Widgets\Box;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
@@ -41,7 +42,9 @@ class StatisticGoodsController extends Controller
             ->header('商品统计')
 //            ->description('')
             ->row($this->grid($request))
-            ->row($this->chartform("/admin/statistic/goods"));
+            ->row($this->chartform("/admin/statistic/goods"))
+            ->row($this->count_chart($content,$request))
+            ->row($this->payment_chart($content,$request));
     }
 
 
@@ -102,8 +105,8 @@ class StatisticGoodsController extends Controller
         $query = Order::query();
 
         if ($request->filled("date_from") && $request->filled("date_to")) {
-            $query->where("completed_at", ">=", $request->get("date_from"));
-            $query->where("completed_at", '<=', $request->get("date_to"));
+            $query->where("created_at", ">=", $request->get("date_from"));
+            $query->where("created_at", '<=', $request->get("date_to"));
         }
         $region_id = $request->filled("provience") ?
             $request->filled("city") ? $request->get("city") : $request->get("provience")
@@ -131,11 +134,13 @@ class StatisticGoodsController extends Controller
         $model = self::getModel($request);
         //如果未获取的数据
         if ($model->count() < 1)
-            return $content
-                ->header('商品销量统计图')
-//			->description('折线图')
-                ->row("未找到对应数据！")
-                ->row($this->chartform("/admin/chart/goods/payment"));
+            return new Box('商品销量统计图',"未找到对应数据！");
+
+//        return $content
+//                ->header('商品销量统计图')
+////			->description('折线图')
+//                ->row("未找到对应数据！")
+//                ->row($this->chartform("/admin/chart/goods/payment"));
 
 
         $description = "";
@@ -175,11 +180,14 @@ class StatisticGoodsController extends Controller
 
             $description = "年统计";
         }
-        return $content
-            ->header('商品销量统计图')
-            ->description($description)
-            ->row(ChartManager::line($lables, '商品销量', $datas))
-            ->row($this->chartform("/admin/chart/goods/count"));
+
+        return new Box('商品销量统计图',ChartManager::line($lables, '商品销量', $datas,"count"));
+
+//        return $content
+//            ->header('商品销量统计图')
+//            ->description($description)
+//            ->row(ChartManager::line($lables, '商品销量', $datas))
+//            ->row($this->chartform("/admin/chart/goods/count"));
     }
 
     public function payment_chart(Content $content, Request $request)
@@ -232,11 +240,13 @@ class StatisticGoodsController extends Controller
             $description = "年统计";
         }
 
-        return $content
-            ->header('商品销售额统计图')
-//			->description('折线图')
-            ->row(ChartManager::line($lables, '商品销售额', $datas))
-            ->row($this->chartform("/admin/chart/goods/payment"));
+        return new Box('商品销售额统计图',ChartManager::line($lables, '商品销售额', $datas,"payment"));
+
+//        return $content
+//            ->header('商品销售额统计图')
+////			->description('折线图')
+//            ->row(ChartManager::line($lables, '商品销售额', $datas))
+//            ->row($this->chartform("/admin/chart/goods/payment"));
     }
 
     protected function chartform($action)
@@ -266,7 +276,7 @@ class StatisticGoodsController extends Controller
         $form->setAction($action);
         $form->select('type', '类型')
             ->options([0 => "每日统计", 2 => "每月统计", 4 => "每年统计"])
-            ->default(\request('type') | 2);
+            ->default($this->request->filled("type")?$this->request->get("type"):2);
 
         $proviences = NativePalceReagionManager::getProviencesAndCitys();
         $names = [];

@@ -19,6 +19,12 @@ use function PHPSTORM_META\type;
 class OrderRefundController extends Controller
 {
     use HasResourceActions;
+    private $request;
+
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
+    }
 
     /**
      * Index interface.
@@ -86,7 +92,7 @@ class OrderRefundController extends Controller
     protected function grid()
     {
         $grid = new Grid(new OrderRefund);
-        $grid->model()->orderBy("created_at","desc");
+        $grid->model()->orderBy("created_at", "desc");
 
         $grid->filter(function ($filter) {
             $filter->equal('status', '状态')->select([
@@ -148,7 +154,7 @@ class OrderRefundController extends Controller
         $show->field("albums", "图片")->as(function () use ($refund) {
             if ($refund->albums == null)
                 return "无";
-            else{
+            else {
                 $html = "";
                 foreach ($refund->albums as $album)
                     $html = $html . "<image src='$album'></image>";
@@ -301,7 +307,7 @@ class OrderRefundController extends Controller
         $form->setAction($action);
         $form->select('type', '类型')
             ->options([0 => "每日统计", 2 => "每月统计", 4 => "每年统计"])
-            ->default(\request('type') | 2);
+            ->default($this->request->filled("type") ? $this->request->get("type") : 2);
 
         $form->switch('with_status_0', "包含未通过申请")
 //            ->help(\request('with_status_0')=="on")
@@ -310,8 +316,9 @@ class OrderRefundController extends Controller
             ->default(\request('with_status_4') == "on");
 
         $form->date('date_from', "开始时间")
-            ->default(\request('date_from'));
-        $form->date('date_to', "结束时间")->default(\request('date_to') == "on");
+            ->default($this->request->get('date_from'));
+        $form->date('date_to', "结束时间")
+            ->default($this->request->get('date_to'));
 
         return $form;
     }
@@ -320,10 +327,11 @@ class OrderRefundController extends Controller
     {
         $query = OrderRefund::query();
 
-        if ($request->filled("date_from") && $request->filled("date_to")) {
+        if ($request->filled("date_from")) {
             $query->where("created_at", ">=", $request->get("date_from"));
-            $query->where("created_at", '<=', $request->get("date_to"));
         }
+        if ($request->filled("date_to"))
+            $query->where("created_at", '<=', $request->get("date_to"));
 
         if ($request->get("with_status_0") == "off")
             $query->where('status', '<>', '0');

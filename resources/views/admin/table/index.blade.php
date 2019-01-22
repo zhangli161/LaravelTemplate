@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>jquery表格转excel表格插件</title>
 
-    <link href="http://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-    <link href="http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    {{--<link href="http://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">--}}
+    {{--<link href="http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">--}}
 
-    <link rel="stylesheet" type="text/css" href="/table/css/demo.css">
+    {{--<link rel="stylesheet" type="text/css" href="/table/css/demo.css">--}}
 
 </head>
 <body>
@@ -22,7 +22,7 @@
                         class="hidden-xs"> 刷新</span></a>
 
         </span>
-        <button type="button" class="btn btn-success grid-export" id="generate-excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i> 将表格导出为Excel</button>
+        <button type="button" class="btn btn-sm btn-success grid-export" id="generate-excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i> 将表格导出为Excel</button>
 
     </div>
 
