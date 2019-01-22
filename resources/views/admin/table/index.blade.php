@@ -13,38 +13,45 @@
 
 </head>
 <body>
+<div class="box">
+    <div class="box-header with-border">
+        <div class="pull-right">
+        </div>
+        <span>
+            <a class="btn btn-sm btn-primary grid-refresh" title="刷新" onclick="window.location.href=window.location.href"><i class="fa fa-refresh"></i><span
+                        class="hidden-xs"> 刷新</span></a>
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-3" style="padding:2em 0;">
-            <button type="button" class="btn btn-success btn-block" id="generate-excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i> 将表格转换为Excel</button>
-        </div>
-        <div class="col-md-12" style="padding:2em 0;">
-            <div class="table-responsive">
-                <table class="table table-bordered table-striped" id="test_table">
-                    <thead>
-                    <tr>
-                        @foreach($titles as $title)
-                            <th>{{$title}}</th>
-                        @endforeach
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($rows as $row)
-                        <tr>
-                            @foreach($row as $title=>$value)
-                                <td>
-                                    {{$value}}
-                                </td>
-                            @endforeach
-                        </tr>
+        </span>
+        <button type="button" class="btn btn-success grid-export" id="generate-excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i> 将表格导出为Excel</button>
+
+    </div>
+
+    <div class="box-body table-responsive no-padding">
+        <table class="table table-hover table-bordered table-striped" id="test_table">
+            <thead>
+            <tr>
+                @foreach($titles as $title)
+                    <th>{{$title}}</th>
+                @endforeach
+            </tr>
+            </thead>
+            <tbody>
+            @foreach($rows as $row)
+                <tr>
+                    @foreach($row as $title=>$value)
+                        <td>
+                            {{$value}}
+                        </td>
                     @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
     </div>
 </div>
+
+
+
 
 <script type="text/javascript" src="/table/external/jquery-1.8.2.js"></script>
 <script type="text/javascript" src="/table/external/jszip.js"></script>
