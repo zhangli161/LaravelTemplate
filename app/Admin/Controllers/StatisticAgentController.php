@@ -28,6 +28,11 @@ class StatisticAgentController extends Controller
 {
     use HasResourceActions;
 
+    private $request;
+    public function __construct(Request $request)
+    {
+        $this->request=$request;
+    }
     /**
      * Index interface.
      *
@@ -309,7 +314,7 @@ class StatisticAgentController extends Controller
         $form->number("agent_id", "分销商id")->default(\request("agent_id"));
         $form->select('type', '类型')
             ->options([0 => "每日统计", 2 => "每月统计", 4 => "每年统计"])
-            ->default(\request('type') | 2);
+            ->default($this->request->get("type"));
 
         $form->date('date_from', "开始时间")->default(\request('date_from'));
         $form->date('date_to', "结束时间")->default(\request('date_to'));

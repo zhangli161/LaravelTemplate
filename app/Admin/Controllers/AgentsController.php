@@ -117,10 +117,16 @@ class AgentsController extends Controller
         $grid->model()->orderBy("created_at", "desc");
         $grid->disableExport();
 
+
         $grid->filter(function ($filter) {
+            $regions = NativePlaceRegion::query()->whereDoesntHave('children_regions')->get();
+//        $arr=$regions->keyBy('region_id');
+            $options = $regions->mapWithKeys(function ($item) {
+                return [$item['region_id'] => NativePalceReagionManager::getFullAddress($item['region_id'])];
+            });
             // 在这里添加字段过滤器
             $filter->like('real_name', '真实姓名');
-            $filter->equal('region_id', '地区编号');
+            $filter->equal('region_id', '合作地区')->select($options);
             $filter->like('telephone', '手机号码');
         });
         $grid->id('Id');
@@ -129,7 +135,7 @@ class AgentsController extends Controller
         $grid->gender('性别')->using(['0' => '男', '1' => '女']);
         $grid->telephone('联系电话');
         $grid->address('地址');
-        $grid->column('region_id','合作区域')->display(function ($region_id){
+        $grid->column('region_id', '合作区域')->display(function ($region_id) {
             return NativePalceReagionManager::getFullAddress($region_id);
         });
         $grid->wx('微信号');
@@ -367,7 +373,7 @@ function Download(imgdata){
             ->default($apply ? $apply->address : "")->rules('required');
         $form->distpicker([
             'province_id' => '省',
-            'city_id'     => '市',
+            'city_id' => '市',
             'region_id' => '区'
         ], '合作区域')
             ->autoselect(3)

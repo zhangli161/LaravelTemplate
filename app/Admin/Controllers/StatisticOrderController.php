@@ -22,6 +22,12 @@ class StatisticOrderController extends Controller
 {
     use HasResourceActions;
 
+    private $request;
+    public function __construct(Request $request)
+    {
+        $this->request=$request;
+    }
+
     /**
      * Index interface.
      *
@@ -60,13 +66,17 @@ class StatisticOrderController extends Controller
 
         $rows = array();
         $type = $request->filled("type") ? $request->get("type") : 2;
+
         if ($type == "0") {
             $model_group = $model->groupBy(function ($item) {
                 return date("Y-m-d", strtotime($item->completed_at));
             });
             $dates = getDatesBetween($model->min('completed_at'), $model->max('completed_at'));
             foreach ($dates as $key => $lable) {
-                array_push($rows, [$lable, $region ? NativePalceReagionManager::getFullAddress($region->region_id) : "全国", $model_group->get($lable, new Collection())->count(), round($model_group->get($lable, new Collection())->sum('payment'), 2)]);
+                array_push($rows, new Collection([$lable,
+                    $region ? NativePalceReagionManager::getFullAddress($region->region_id) : "全国",
+                    $model_group->get($lable, new Collection())->count(),
+                    round($model_group->get($lable, new Collection())->sum('payment'), 2)]));
             }
 
         } elseif ($type == "2") {
@@ -75,7 +85,10 @@ class StatisticOrderController extends Controller
             });
             $dates = getDatesBetween($model->min('completed_at'), $model->max('completed_at'), 2);
             foreach ($dates as $key => $lable) {
-                array_push($rows, [$lable, $region ? NativePalceReagionManager::getFullAddress($region->region_id) : "全国", $model_group->get($lable, new Collection())->count(), round($model_group->get($lable, new Collection())->sum('payment'), 2)]);
+                array_push($rows,new Collection( [$lable,
+                    $region ? NativePalceReagionManager::getFullAddress($region->region_id) : "全国",
+                    $model_group->get($lable, new Collection())->count(),
+                    round($model_group->get($lable, new Collection())->sum('payment'), 2)]));
             }
         } elseif ($type == "4") {
             $model_group = $model->groupBy(function ($item) {
@@ -83,20 +96,25 @@ class StatisticOrderController extends Controller
             });
             $dates = getDatesBetween($model->min('completed_at'), $model->max('completed_at'), 4);
             foreach ($dates as $key => $lable) {
-                array_push($rows, [$lable, $region ? NativePalceReagionManager::getFullAddress($region->region_id) : "全国", $model_group->get($lable, new Collection())->count(), round($model_group->get($lable, new Collection())->sum('payment'), 2)]);
+                array_push($rows, new Collection([$lable,
+                    $region ? NativePalceReagionManager::getFullAddress($region->region_id) : "全国",
+                    $model_group->get($lable, new Collection())->count(),
+                    round($model_group->get($lable, new Collection())->sum('payment'), 2)
+                ]));
             }
         }
+//        dd($model_group,$titles,$dates,$rows);
 
         return view('admin.table.index', ['titles' => $titles, "rows" => $rows]);
     }
 
     private static function getModel(Request $request)
     {
-        $query = Order::query();
+        $query = Order::query()->where("status","5");
 
         if ($request->filled("date_from") && $request->filled("date_to")) {
-            $query->where("completed_at", ">=", $request->get("date_from"));
-            $query->where("completed_at", '<=', $request->get("date_to"));
+            $query->where("created_at", ">=", $request->get("date_from"));
+            $query->where("created_at", '<=', $request->get("date_to"));
         }
         $region_id = $request->filled("provience") ?
             $request->filled("city") ? $request->get("city") : $request->get("provience")
@@ -105,7 +123,7 @@ class StatisticOrderController extends Controller
             $query->whereIn("receiver_region_id",
                 NativePalceReagionManager::getChildren($region_id)->pluck('region_id')->toArray()
             );
-        $model = $query->orderBy('completed_at', 'asc')->get();
+        $model = $query->orderBy('created_at', 'asc')->get();
         return $model;
     }
 
@@ -248,8 +266,8 @@ class StatisticOrderController extends Controller
         });
         $form->setAction($action);
         $form->select('type', '类型')
-            ->options([0 => "每日统计", 2 => "每月统计", 4 => "每年统计"])
-            ->default(\request('type') | 2);
+            ->options(["0" => "每日统计", "2" => "每月统计", "4" => "每年统计"])
+            ->default($this->request->get("type"));
 
         $proviences = NativePalceReagionManager::getProviencesAndCitys();
         $names = [];
@@ -271,6 +289,7 @@ class StatisticOrderController extends Controller
         $form->date('date_from', "开始时间")->default(\request('date_from'));
         $form->date('date_to', "结束时间")->default(\request('date_to'));
 
+//        $form->text("aaaa","bbb")->default(json_encode($this->request->toArray()));
         return $form;
     }
 }

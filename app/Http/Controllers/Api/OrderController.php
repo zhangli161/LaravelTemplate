@@ -122,6 +122,7 @@ class OrderController extends Controller
         $order->skus_total_price = $order->skus->sum(function ($sku) {
             return $sku->amount * $sku->price;
         });
+        $order->skus=$order->skus()->with("sku")->get();
 
         return ApiResponse::makeResponse(true, $order, ApiResponse::SUCCESS_CODE);
     }

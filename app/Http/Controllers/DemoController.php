@@ -45,17 +45,8 @@ class DemoController extends Controller
 //	static $worker=SnowFlakeIDWorker(1);
     public static function test()
     {
-        $order = Order::
-        where('status', '5')-> //只寻找交易成功的订单
-        findOrFail(270);
-        if (!$order)
-            return ApiResponse::makeResponse(false, "订单不存在或未完成", ApiResponse::UNKNOW_ERROR);
-        $order_sku = $order->skus()->findOrFail(276);
-        if ($order_sku->refund_amount >= $order_sku->amount)
-            return ApiResponse::makeResponse(false, "商品已退货", ApiResponse::UNKNOW_ERROR);
-        if ($order_sku->is_buyer_rated != 0)
-            return ApiResponse::makeResponse(false, "已经评论过了", ApiResponse::UNKNOW_ERROR);
-
+        $regions=NativePalceReagionManager::all(true);
+        dd($regions->forPage(1,10)->toArray());
     }
 
     //Manager的用法

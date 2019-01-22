@@ -38,4 +38,9 @@ class NativePlaceRegion extends Model
 	{
 		return $this->hasMany(UserAddress::class);
 	}
+
+	public function children_regions()
+    {
+        return $this->hasMany(NativePlaceRegion::class,"parentid","region_id");
+    }
 }

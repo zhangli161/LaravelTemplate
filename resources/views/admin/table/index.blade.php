@@ -1,3 +1,7 @@
+<head>
+    <title>{{isset($title)?$title:"表格"}}</title>
+    <meta charset='utf-8' />
+</head>
 <div class="box">
     <div class="box-header with-border">
         <div class="pull-right">
@@ -54,9 +58,9 @@
     // 实例化一个Blob对象，其构造函数的第一个参数是包含文件内容的数组，第二个参数是包含文件类型属性的对象
     var blob = new Blob([html], { type: "application/vnd.ms-excel" });
     var a = document.getElementById("export");
-    console.log(html);
+    // console.log(html);
     // 利用URL.createObjectURL()方法为a元素生成blob URL
     a.href = URL.createObjectURL(blob);
     // 设置文件名
-    a.download = "学生成绩表.xls";
+    a.download = "导出文件.xls";
 </script>

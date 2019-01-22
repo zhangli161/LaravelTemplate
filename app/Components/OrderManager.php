@@ -488,6 +488,8 @@ class OrderManager extends Manager
         $order = Order::with("xcx_pay")->find($refund->order_id);
         if (!$order)
             return "订单不存在";
+        if(!$order->xcx_pay)
+            return "订单未付款";
         Log::info("订单退款:" . "|" . $order->xcx_pay->total_fee . "|" .
             (int)($refund->payment * 100) . "|" .
             $refund->id . "|" .

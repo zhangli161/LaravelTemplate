@@ -22,7 +22,11 @@ use Illuminate\Http\Request;
 class StatisticFinanceController extends Controller
 {
     use HasResourceActions;
-
+    private $request;
+    public function __construct(Request $request)
+    {
+        $this->request=$request;
+    }
     /**
      * Index interface.
      *

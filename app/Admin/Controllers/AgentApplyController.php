@@ -86,10 +86,15 @@ class AgentApplyController extends Controller
     {
         $grid = new Grid(new AgentApply);
         $grid->model()->orderBy("created_at","desc");
-        $grid->filter(function (Grid\Filter $filter) {
+        $grid->filter(function ($filter) {
+            $regions = NativePlaceRegion::query()->whereDoesntHave('children_regions')->get();
+//        $arr=$regions->keyBy('region_id');
+            $options = $regions->mapWithKeys(function ($item) {
+                return [$item['region_id'] => NativePalceReagionManager::getFullAddress($item['region_id'])];
+            });
             // 在这里添加字段过滤器
             $filter->like('real_name', '真实姓名');
-            $filter->equal('region_id', '地区编号');
+            $filter->equal('region_id', '合作地区')->select($options);
             $filter->like('telephone', '手机号码');
         });
 

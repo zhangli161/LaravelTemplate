@@ -51,12 +51,12 @@ class NativePalceReagionManager extends Manager
         return $regions;
     }
 	public static function getChildren($region_ids){
-//	    $region=NativePlaceRegion::findOrFail($region_id);
+
         if(gettype($region_ids)!=="array")
             $region_ids=array($region_ids);
 	    $regions=NativePlaceRegion::query()
             ->whereIn("parentid",$region_ids)->get();
-//	    return $regions->pluck('region_id')->toArray();
+
 	    if (count($regions)>0){
 	        return $regions->merge(self::getChildren($regions->pluck('region_id')->toArray()));
         }
@@ -64,4 +64,14 @@ class NativePalceReagionManager extends Manager
 	        return $regions;
         }
     }
+
+    public static function all($fullname=false){
+	    $regions=NativePlaceRegion::all();
+	    if ($fullname){
+	        foreach ($regions as $region)
+	            $region->region_name=self::getFullAddress($region->region_id);
+        }
+	    return $regions;
+    }
+
 }
