@@ -126,6 +126,8 @@ class GoodsController extends Controller
             }
 
             $filter->equal('cate_id','商品分类')->select($options);
+
+            $filter->equal('status','上架状态')->select(['0' => '下架', '1' => '上架']);
         });
         $grid->actions(function ($actions) {
 

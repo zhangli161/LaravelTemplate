@@ -22,10 +22,12 @@ class CouponController
 {
 	public function getList()
 	{
-		$coupons = CouponDistributeMethod::query()->where('method', 1)->paginate();
-//		$coupons=Coupon::whereIn('id',$coupon_ids)->paginate();
-		foreach ($coupons as $coupon)
-			$coupon->coupon;
+		$coupons = CouponDistributeMethod::query()
+            ->where('method', 1)
+            ->where("stock","!=","0")
+            ->with("coupon")
+            ->paginate();
+
 		return ApiResponse::makeResponse(true, $coupons, ApiResponse::SUCCESS_CODE);
 	}
 	
@@ -58,5 +60,12 @@ class CouponController
 			$coupon->coupon;
 		return ApiResponse::makeResponse(true, $coupons, ApiResponse::SUCCESS_CODE);
 	}
-	
+
+	public static function getBenefitById(Request $request){
+	    $coupon=CouponDistributeMethod::query()
+            ->where('method', 2)
+            ->with("coupon")
+            ->findOrFail($request->get("id"));
+        return ApiResponse::makeResponse(true,$coupon,ApiResponse::SUCCESS_CODE);
+    }
 }

@@ -12,10 +12,13 @@
         "fideloper/proxy": "^4.0",
         "laravel-admin-ext/chartjs": "^1.0",
         "laravel-admin-ext/china-distpicker": "^1.0",
+        "laravel-admin-ext/cropper": "^1.0",
+        "laravel-admin-ext/daterangepicker": "^1.0",
         "laravel-admin-ext/grid-lightbox": "^1.0",
         "laravel/framework": "5.6.*",
         "laravel/passport": "^7.0",
         "laravel/tinker": "^1.0",
+        "maatwebsite/excel": "^3.1",
         "overtrue/laravel-filesystem-qiniu": "^1.0",
         "yansongda/pay": "^2.5"
     },

@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers;
 
+use App\Admin\Extensions\Tools\Fahuodan;
 use App\Components\ChartManager;
 use App\Components\NativePalceReagionManager;
 use App\Components\PostageMananger;
@@ -85,7 +86,7 @@ class OrderController extends Controller
     protected function grid()
     {
         $grid = new Grid(new Order);
-        $grid->model()->orderBy("created_at","desc");
+        $grid->model()->orderBy("created_at", "desc");
 
         $grid->id('订单编号')->sortable();
         $grid->payment('商品实付金额');
@@ -131,6 +132,7 @@ class OrderController extends Controller
 //			$actions->disableEdit();
 //			$actions->disableView();
         });
+        $grid->disableExport();
         $grid->filter(function ($filter) {
             // 设置created_at字段的范围查询
             $filter->between('created_at', '下单时间')->datetime();
@@ -164,8 +166,18 @@ class OrderController extends Controller
      */
     protected function detail($id)
     {
-        $order=Order::findOrFail($id);
+        $order = Order::findOrFail($id);
         $show = new Show($order);
+        $export_url = "http://localhost/admin/export/order?id=$id";
+        $show->panel()->tools(function (Show\Tools $tools) use ($export_url) {
+//            $tools->prepend("<a href=\"/admin/export/order?id=$id\" class=\"btn btn-sm btn-primary\" title=\"导出\">
+//        <i class=\"fa fa-edit\"></i><span class=\"hidden-xs\"> 编辑</span>
+//    </a>");
+
+            $tools->prepend("<button onclick='window.location.href=\"$export_url\"' type=\"button\" class=\"btn btn-sm btn-success grid-export\" id=\"generate-excel\"><i class=\"fa fa-file-excel-o\" aria-hidden=\"true\"></i>导出发货单</button>");
+        });
+
+
 
         $show->id('订单编号');
         $show->payment('支付金额');
@@ -180,9 +192,9 @@ class OrderController extends Controller
         $show->receiver_name('收货人姓名');
         $show->receiver_phone('收货人电话');
         $show->receiver_region_id('地区代码');
-        $show->receiver_address('收货地址')->unescape()->as(function ()use($order){
-            $address=NativePalceReagionManager::getFullAddress($order->receiver_region_id)."  $order->receiver_address";
-            $html="
+        $show->receiver_address('收货地址')->unescape()->as(function () use ($order) {
+            $address = NativePalceReagionManager::getFullAddress($order->receiver_region_id) . "  $order->receiver_address";
+            $html = "
 <input onclick=\"$(this).select();document.execCommand('copy');alert('复制成功');\"value='$address' style='border: none;width: 100%' readonly/>
 <script>
 function copyText(item) {
@@ -190,22 +202,21 @@ function copyText(item) {
   document.execCommand(\"copy\"); // 执行浏览器复制命令
   alert(\"复制成功\");
 }
-</script>"
-            ;
+</script>";
             return $html;
         });
         $show->buyer_message('买家留言');
         $show->buyer_nick('买家昵称');
-        $show->field("name","快递信息")->as(function ()use($order){
-            $address=NativePalceReagionManager::getFullAddress($order->receiver_region_id)."  $order->receiver_address";
-            $html="<div>收货人姓名:$order->receiver_name</div>
+        $show->field("name", "快递信息")->as(function () use ($order) {
+            $address = NativePalceReagionManager::getFullAddress($order->receiver_region_id) . "  $order->receiver_address";
+            $html = "<div>收货人姓名:$order->receiver_name</div>
 <div>收货地址:$address</div>
 <div>电话:$order->receiver_phone</div>";
             return $html;
         })->unescape();
         $show->created_at('创建时间');
 //        $show->updated_at('上次修改时间');
-        $show->skus("订单商品",function ($sku){
+        $show->skus("订单商品", function ($sku) {
             $sku->id("订单商品id");
             $sku->sku_id("商品id");
             $sku->sku_name("商品名称");
@@ -244,7 +255,7 @@ function copyText(item) {
     {
         $form = new Form(new Order);
 
-	    $form->decimal('payment', '实际支付金额');
+        $form->decimal('payment', '实际支付金额');
 //        $form->switch('payment_type', '支付方式')->default(1);
 //        $form->decimal('post_fee', '邮费');
         $form->select('status', '订单状态')->default(4)->

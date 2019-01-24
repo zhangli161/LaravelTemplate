@@ -375,8 +375,8 @@ class GoodsSKUController extends Controller
 //		$form->ignore(['spec_id']);
         $form->saving(function (Form $form) {
 
-            $exist = GoodsSKU::where("sku_no", $form->spu_no)->first();
-//		    dd($form->spu_no,$form->model()->id);
+            $exist = GoodsSKU::where("sku_no", $form->sku_no)->first();
+//		    dd($exist->id,$form,$form->model()->id);
             if ($exist)
                 if ($exist->id != $form->model()->id) {
 

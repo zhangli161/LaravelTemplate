@@ -4,6 +4,7 @@ namespace App\Admin\Controllers;
 
 use App\Components\NativePalceReagionManager;
 use App\Components\OrderManager;
+use App\Models\Order;
 use App\Models\OrderRefund;
 use App\Http\Controllers\Controller;
 use App\Models\StatisticOrder;
@@ -105,7 +106,18 @@ class OrderRefundController extends Controller
         });
         $grid->id('Id');
         $grid->order_id('关联订单id');
-        $grid->order_sku_id('关联订单商品id');
+        $grid->column("order.id", '订单所有者')
+            ->display(function ($order_id) {
+//            dd($order_id);
+            $order = Order::with("user")->find($order_id);
+            if ($order==null)
+                return"订单丢失";
+            if ($order->user==null)
+                return"用户丢失";
+            $user=$order->user;
+            return "<a href='/admin/users/$user->id'>$user->name</a>";
+        })
+        ;
         $grid->amount('退款商品数量');
         $grid->reason('退款原因');
         $grid->status('状态')->using([

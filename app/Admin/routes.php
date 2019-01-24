@@ -72,12 +72,22 @@ Route::group([
     $router->any('agent/chart/fans', "AgentController@funsChart");
     $router->get('agent/cash', "AgentController@cash");
     $router->post('agent/cash', "AgentController@cash_post");
-    $router->get("test",function (){
+    $router->get("qr",function (){
        return "welcome";
+    });
+    $router->post("qr",function (\Illuminate\Http\Request $request){
+       dd($request->all());
     });
 
     $router->resource('refund/order', OrderRefundController::class);
 
     $router->resource('module', ModuleController::class);
+
+    $router->get('export/order', function (\Illuminate\Http\Request $request){
+        $id=$request->get("id");
+//        return (new \App\Admin\Extensions\OrderExport($id))->view();
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Admin\Extensions\OrderExport($id), "$id.xlsx");
+//        return view("admin.expoter.fahuodan",["order"=>$order]);
+    });
 
 });

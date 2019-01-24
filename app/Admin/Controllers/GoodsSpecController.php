@@ -87,7 +87,7 @@ class GoodsSpecController extends Controller
 //            $filter->disableIdFilter();
 
             // 在这里添加字段过滤器
-            $filter->like('spec_name', '子商品名称');
+            $filter->like('spec_name', '规格名称');
 
             $filter->equal('spec_no', '规格编号');
         });

@@ -19,7 +19,6 @@ class ExcelExpoter extends AbstractExporter
 		Excel::create('导出', function ($excel) {
 			
 			$excel->sheet('Sheetname', function ($sheet) {
-				
 				// 这段逻辑是从表格数据中取出需要导出的字段
 				$rows = collect($this->getData())->map(function ($item) {
 //					return array_only($item, ['id','avatar', '名称', 'id+姓名', '密码', '头像']);
@@ -31,7 +30,11 @@ class ExcelExpoter extends AbstractExporter
 				$sheet->rows($rows);
 				
 			});
+
+
 			
 		})->export('xls');
+
+
 	}
 }
