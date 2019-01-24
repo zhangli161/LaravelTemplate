@@ -28,10 +28,12 @@ class StatisticUserController extends Controller
 {
     use HasResourceActions;
     private $request;
+
     public function __construct(Request $request)
     {
-        $this->request=$request;
+        $this->request = $request;
     }
+
     /**
      * Index interface.
      *
@@ -60,8 +62,8 @@ class StatisticUserController extends Controller
                 $row->column(4, $box2);
 //                $row->column(4, 'baz');
             })
-            ->row($this->grid($request));
-//            ->row($this->chartform("/admin/statistic/goods"));
+            ->row($this->grid($request))
+            ->row($this->chartform("/admin/statistic/user"));
     }
 
 
@@ -75,6 +77,7 @@ class StatisticUserController extends Controller
         $rows = array();
 
         $users = User::with(["orders"])->get();
+        $sum_row = ["总计", "", 0, 0.0, 0, 0];
         foreach ($users as $user) {
             $refunds = OrderRefund::whereIn("order_id", $user->orders->pluck("id")->toArray())->get();
             array_push($rows, [
@@ -85,12 +88,67 @@ class StatisticUserController extends Controller
                 $refunds->count(),//退款次数
                 $refunds->sum("payment")//退款金额
             ]);
-        }
+            $sum_row[2] += $user->orders->count();
+            $sum_row[3] += $user->orders->sum("payment");
+            $sum_row[4] += $refunds->count();
+            $sum_row[5] += $refunds->sum("payment");
 
+        }
+        $collection = collect($rows);
+        if ($request->get("opt") == "desc")
+            $sorted = $collection->sortByDesc($request->get("orderBy", "0"));
+        else {
+            $sorted = $collection->sortBy($request->get("orderBy", "0"));
+        }
+//        $rows->sortByDesc(0);
+//        dd($collection->toArray(),$sorted->values()->all());
+        $sorted->push($sum_row);
         $titles = ['用户id', '昵称', "订单数量", "总消费额", "退款次数", "退款金额"];
+        $rows = $sorted->toArray();
 
         return view('admin.table.index', ['titles' => $titles, "rows" => $rows]);
     }
 
+    protected function chartform($action)
+    {
+        $form = new Form(new StatisticOrder);
+        $form->setTitle("排序");
+        $form->tools(function (Form\Tools $tools) {
+
+            // 去掉`列表`按钮
+            $tools->disableList();
+        });
+        $form->footer(function ($footer) {
+
+            // 去掉`重置`按钮
+            $footer->disableReset();
+
+            // 去掉`查看`checkbox
+            $footer->disableViewCheck();
+
+            // 去掉`继续编辑`checkbox
+            $footer->disableEditingCheck();
+
+            // 去掉`继续创建`checkbox
+            $footer->disableCreatingCheck();
+
+        });
+        $form->setAction($action);
+        $form->select('orderBy', '排序方式')
+            ->options([
+                "0" => "ID",
+                "2" => "订单数量",
+                "3" => "总消费额",
+                "4" => "退款次数",
+                "5" => "退款金额"
+            ])
+            ->default($this->request->get("orderBy","0"));
+        $form->select("opt","顺序")
+            ->options(["asc"=>"正序","desc"=>"倒序"])
+            ->default($this->request->get("opt","asc"));
+
+//        $form->text("aaaa","bbb")->default(json_encode($this->request->toArray()));
+        return $form;
+    }
 
 }
