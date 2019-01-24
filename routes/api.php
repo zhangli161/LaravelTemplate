@@ -63,6 +63,8 @@ Route::group(['middleware' => 'auth:api', 'namespace' => 'Api'], function () {
     Route::get('/coupon', 'CouponController@getList');//所有优惠券
     Route::post('/coupon/buy', 'CouponController@buy');//购买
     Route::get('/coupon/my', 'CouponController@myCoupons');//我的优惠券
+    Route::get('/coupon/benefit', 'CouponController@getBenefitById');//我的优惠券
+    Route::post('/coupon/benefit', 'CouponController@receiveBenefit');//我的优惠券
 
     Route::get('/favorite/my/goods', 'FavoriteController@myFavoriteSPU');//我的收藏
     Route::post('/favorite/add', 'FavoriteController@add');//收藏

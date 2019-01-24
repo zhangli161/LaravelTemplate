@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class UserCoupon extends Model
 {
 	use SoftDeletes;
-	protected $fillable = ['user_id', 'coupon_id', 'expiry_date'];
+	protected $fillable = ['user_id', 'coupon_id', 'expiry_date',"get_way","get_way_id"];
 	
 	public function user()
 	{

@@ -148,4 +148,29 @@ class UserCouponManager
         }
         return $payment;
     }
+
+    public static function benefitGetCoupon(User $user, $coupon_benefit){
+        $coupon_id=$coupon_benefit->coupon_id;
+        $coupon = Coupon::findOrFail($coupon_id);
+        $expiry_date = null;
+        if ($coupon->expiry_date) {
+            $expiry_date = $coupon->expiry_date;
+        }
+        if ($coupon->expriy_days) {
+            $date_t = date('Y-m-d', strtotime("+$coupon->expriy_days days"));
+            if (!$expiry_date or $expiry_date > $date_t) {
+                $expiry_date = $date_t;
+            }
+        }
+        $user_coupon = new UserCoupon([
+            'user_id' => $user->id,
+            'coupon_id' => $coupon_id,
+            'expiry_date' => $expiry_date,
+            "get_way"=>"1",
+            "get_way_id"=>$coupon_benefit->id
+        ]);
+        $user_coupon->save();
+
+        return true;
+    }
 }

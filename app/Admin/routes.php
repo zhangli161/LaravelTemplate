@@ -28,6 +28,7 @@ Route::group([
     $router->resource('benefit', GoodsBenefitController::class);
     $router->resource('richtext', RichTextController::class);
     $router->resource('coupon', CouponController::class);
+    $router->resource('coupon_benefit', CouponBenefitController::class);
     $router->resource('order', OrderController::class);
 //	$router->get('chart/order', 'OrderController@chart');
 
