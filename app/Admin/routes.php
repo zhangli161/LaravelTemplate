@@ -72,12 +72,8 @@ Route::group([
     $router->any('agent/chart/fans', "AgentController@funsChart");
     $router->get('agent/cash', "AgentController@cash");
     $router->post('agent/cash', "AgentController@cash_post");
-    $router->get("qr",function (){
-       return "welcome";
-    });
-    $router->post("qr",function (\Illuminate\Http\Request $request){
-       dd($request->all());
-    });
+    $router->any("qr","QRController@getForm");
+
 
     $router->resource('refund/order', OrderRefundController::class);
 

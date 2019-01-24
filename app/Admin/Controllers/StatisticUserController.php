@@ -20,6 +20,7 @@ use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Layout\Row;
 use Encore\Admin\Show;
+use Encore\Admin\Widgets\Box;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
@@ -41,7 +42,24 @@ class StatisticUserController extends Controller
     {
         return $content
             ->header('消费者统计')
-//            ->description('')
+            ->row(function (Row $row) {
+                $today = $this_week = Carbon::today();
+                $this_week = Carbon::today()->startOfWeek();
+//            ->lastOfMonth();
+                $this_month = Carbon::today()->startOfMonth();
+                $box0 = new Box("本日用户增长", User::where("created_at", ">=", $today)->count() . " 名");
+                $box0->style("small-box bg-aqua");
+                $row->column(4, $box0);
+
+                $box1 = new Box("本周用户增长", User::where("created_at", ">=", $this_week)->count() . " 名");
+                $box1->style("small-box bg-aqua");
+                $row->column(4, $box1);
+
+                $box2 = new Box("本月用户增长", User::where("created_at", ">=", $this_month)->count() . " 名");
+                $box2->style("small-box bg-aqua");
+                $row->column(4, $box2);
+//                $row->column(4, 'baz');
+            })
             ->row($this->grid($request));
 //            ->row($this->chartform("/admin/statistic/goods"));
     }

@@ -182,10 +182,21 @@ class OrderRefundController extends Controller
         $show->note('备注', function ($note) {
             return json_encode($note);
         });
+
         $show->result('退款结果');
+
+        $show->order_skus('订单内商品', function ($order_skus) {
+            $order_skus->setResource('');
+
+            $order_skus->sku_name("商品名称");
+            $order_skus->thumb("商品图片")->image();
+            $order_skus->amount("数量");
+            $order_skus->total_price("总价");
+        });
 
         $show->created_at('创建时间');
         $show->updated_at('上次修改时间');
+
 
         return $show;
     }
