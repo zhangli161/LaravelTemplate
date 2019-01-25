@@ -22,7 +22,8 @@ class UserCouponManager
     {
         $limit_per_user = $coupon_DM->limit_per_user;
         $cooldown = $coupon_DM->cooldown;
-        $user_coupons = $user->coupons()->withTrashed()
+        $user_coupons = $user->coupons()->where("get_way","0")
+            ->where("get_way_id",$coupon_DM->id)->withTrashed()
             ->where('coupon_id', $coupon_DM->coupon_id)->get();
         $lasttime = $user_coupons->max('created_at');
 
@@ -64,9 +65,18 @@ class UserCouponManager
         $user_coupon = new UserCoupon([
             'user_id' => $user->id,
             'coupon_id' => $coupon_id,
-            'expiry_date' => $expiry_date
+            'expiry_date' => $expiry_date,
+            "get_way"=>"0",
+            "get_way_id"=>$coupon_DM->id
         ]);
 
+        if ($coupon_DM->stock!=0)
+        {
+            $coupon_DM->stock-=1;
+            $coupon_DM->save();
+        }
+        else
+            return false;
         if (UserCreditManager::changeCredit($user, [
             'amount' => -$coupon_DM->price,
             'reason' => '购买优惠券',
@@ -151,6 +161,7 @@ class UserCouponManager
 
     public static function benefitGetCoupon(User $user, $coupon_benefit){
         $coupon_id=$coupon_benefit->coupon_id;
+
         $coupon = Coupon::findOrFail($coupon_id);
         $expiry_date = null;
         if ($coupon->expiry_date) {
