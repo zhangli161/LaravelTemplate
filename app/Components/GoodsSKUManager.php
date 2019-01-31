@@ -28,17 +28,17 @@ class GoodsSKUManager extends Manager
             $sku->spu = GoodsSPUManager::getDetailsForApp($sku->spu);
         }
         if ($getOtherSKUs) {
-            $similar_skus=$sku->similar_skus;
-            foreach ($similar_skus as $similar_sku){
-                $similar_sku=self::getDetailsForApp($similar_sku);
+            $similar_skus = $sku->similar_skus;
+            foreach ($similar_skus as $similar_sku) {
+                $similar_sku = self::getDetailsForApp($similar_sku);
             }
-            $sku->similar_skus=$similar_skus;
+            $sku->similar_skus = $similar_skus;
 
-            $matched_skus=$sku->matched_skus;
-            foreach ($matched_skus as $matched_sku){
-                $matched_sku=self::getDetailsForApp($matched_sku);
+            $matched_skus = $sku->matched_skus;
+            foreach ($matched_skus as $matched_sku) {
+                $matched_sku = self::getDetailsForApp($matched_sku);
             }
-            $sku->matched_skus=$matched_skus;
+            $sku->matched_skus = $matched_skus;
 
 //            $sku->matched_skus=self::getDetailsForApp($sku->matched_skus);
         }
@@ -70,10 +70,11 @@ class GoodsSKUManager extends Manager
     {
 
         $strs = array();
-        foreach ($sku->spec_values as $spec_value) {
-            array_push($strs,
-                $spec_value->spec->spec_name . ':' . $spec_value->value);
-        }
+        if (!empty($sku->spec_values))
+            foreach ($sku->spec_values as $spec_value) {
+                array_push($strs,
+                    $spec_value->spec->spec_name . ':' . $spec_value->value);
+            }
         $sku->spec_value_strs = $strs;
         return $sku;
     }
