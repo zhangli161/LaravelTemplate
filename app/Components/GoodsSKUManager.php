@@ -72,8 +72,9 @@ class GoodsSKUManager extends Manager
         $strs = array();
         if (!empty($sku->spec_values))
             foreach ($sku->spec_values as $spec_value) {
-                array_push($strs,
-                    $spec_value->spec->spec_name . ':' . $spec_value->value);
+                if ($spec_value->spec)
+                    array_push($strs,
+                        $spec_value->spec->spec_name . ':' . $spec_value->value);
             }
         $sku->spec_value_strs = $strs;
         return $sku;
