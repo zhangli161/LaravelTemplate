@@ -170,7 +170,7 @@ class OrderController extends Controller
     {
         $order = Order::findOrFail($id);
         $show = new Show($order);
-        $export_url = "http://localhost/admin/export/order?id=$id";
+        $export_url = url("/admin/export/order?id=$id");
         $show->panel()->tools(function (Show\Tools $tools) use ($export_url) {
 //            $tools->prepend("<a href=\"/admin/export/order?id=$id\" class=\"btn btn-sm btn-primary\" title=\"导出\">
 //        <i class=\"fa fa-edit\"></i><span class=\"hidden-xs\"> 编辑</span>
