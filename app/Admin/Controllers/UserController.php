@@ -106,8 +106,8 @@ class UserController extends Controller
 
         //直接->字段名（表头）可以在表单中创建一列，某些冲突的名字可以用$grid->column('字段名');
 		$grid->id('用户id')->sortable();//->sortable()表示可排序列
-		$grid->name('名称');
-		$grid->column('id');
+		$grid->name('昵称');
+//		$grid->column('id');
 		
 		// 添加不存在的字段
 		//display()方法接收的匿名函数绑定了当前行的数据对象，可以在里面调用当前行的其它字段数据
@@ -126,7 +126,7 @@ class UserController extends Controller
 		$grid->released('上映?')->display(function ($released) {
 			return $released ? '是' : '否';
 		});*/
-		$grid->avatar("头像")->lightbox();
+		$grid->avatar("头像")->lightbox(['width' => 200]);
 		// 设置text、color、和存储值
 		$states = [
 			'on' => ['value' => "1", 'text' => '生效', 'color' => 'success'],

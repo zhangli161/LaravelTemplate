@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-	return redirect()->to("admin");
+    return redirect()->to("admin");
 });
 
 Route::any('test', 'DemoController@test');//测试
@@ -26,5 +26,15 @@ Auth::routes();//包含了所有认证需要的路由（login,register等）
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/user', function () {
-	return new \App\Http\Resources\UserCollection(\App\Models\Template::find(1));
+    return new \App\Http\Resources\UserCollection(\App\Models\Template::find(1));
+});
+//Route::group(['middleware' => 'auth:agent', 'namespace' => 'agent','prefix' => 'agent'],function (){
+
+Route::group(['namespace' => 'agent','prefix' => 'agent'], function () {
+    Route::get('/', function () {
+        return redirect()->to("agent/test");
+    });//
+    Route::get('test', function () {
+        return "测试";
+    });
 });

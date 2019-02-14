@@ -145,7 +145,9 @@ class MessageContentController extends Controller
 		foreach ($sources as $source) {
 			$options[$source->id] = $source->name;
 		}
-		$form->select('source_id', '消息源')->options($options);
+		$form->select('source_id', '消息源')
+            ->options($options)
+            ->rules('required');
 		
 		return $form;
 	}

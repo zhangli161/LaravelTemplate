@@ -4,8 +4,10 @@ namespace App\Admin\Controllers;
 
 use App\Admin\Extensions\Tools\Fahuodan;
 use App\Components\ChartManager;
+use App\Components\GoodsSKUManager;
 use App\Components\NativePalceReagionManager;
 use App\Components\PostageMananger;
+use App\Models\GoodsSKU;
 use App\Models\Order;
 use App\Http\Controllers\Controller;
 use App\User;
@@ -217,11 +219,32 @@ function copyText(item) {
         $show->created_at('创建时间');
 //        $show->updated_at('上次修改时间');
         $show->skus("订单商品", function ($sku) {
-            $sku->id("订单商品id");
+//            $sku->id("订单商品id");
             $sku->sku_id("商品id");
+            $sku->column("sku.sku_no","SKU编号");
+
             $sku->sku_name("商品名称");
-            $sku->thumb("商品图片")->lightbox();
+
+            $sku->column("sku.id","规格")->display(function ($id){
+                $sku=GoodsSKU::find($id);
+                if (empty($sku)){
+                    return "商品丢失";
+                }
+                else{
+                    $strs=GoodsSKUManager::getSpecValuesStr($sku)->spec_value_strs;
+                    $html="";
+                    foreach ($strs as $str)
+                        $html.="<div>$str</div>";
+                    return $html;
+                }
+            });
+
+            $sku->refund("退款信息")->display(function ($refund) {
+                return empty($refund) ? '<lable class="label label-success">无</lable>' : '<lable class="label label-danger">有</lable>';
+            });
+            $sku->thumb("商品图片")->lightbox(["width"=>200]);
             $sku->amount("数量");
+            $sku->average_price("商品均价");
         });
         $show->wuliu('物流信息', function ($show) {
             $show->postage_name("快递名称")->using(PostageMananger::$codes);
