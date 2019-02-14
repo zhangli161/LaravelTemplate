@@ -63,7 +63,7 @@ Route::group([
     //优惠券统计
     $router->any('statistic/coupon', "StatisticCouponController@index");
 
-    //供应商统计、
+    //代理商统计、
     $router->any('statistic/agent', "StatisticAgentController@index");
     $router->any('chart/agent/fans', "StatisticAgentController@fans_chart");
     $router->any('chart/agent/fans_cost', "StatisticAgentController@fans_cost");

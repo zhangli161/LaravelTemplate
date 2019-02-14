@@ -332,7 +332,7 @@ class MenuSeeder extends Seeder
                 'id' => 46,
                 'parent_id' => 14,
                 'order' => 46,
-                'title' => '分销商统计',
+                'title' => '代理商统计',
                 'icon' => 'fa-paper-plane',
                 'uri' => '',
             ],

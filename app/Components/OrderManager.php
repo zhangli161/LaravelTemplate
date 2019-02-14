@@ -283,7 +283,7 @@ class OrderManager extends Manager
             }
         }
 
-        //有分销商则进行分销程序
+        //有代理商则进行分销程序
         if ($order->user()->has("agent")->exists()) {
             $agent = $order->user->agent;
             Log::info("$order->id 分销人为 $agent->id ,$agent->name");

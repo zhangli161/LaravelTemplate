@@ -125,7 +125,7 @@ class AgentController extends Controller
             ["name" => "本周新增粉丝数量", "value" => $agent->users()->whereDate('bind_agent_time', '>=', date('Y-m-d', strtotime('last Monday')))->count()],
             ["name" => "本月新增粉丝数量", "value" => $agent->users()->whereDate('bind_agent_time', date('Y-m-d', strtotime('this month')))->count()],
         ];
-        return view("admin.agent.index", ["title" => "供应商", "rows" => $rows]);
+        return view("admin.agent.index", ["title" => "代理商", "rows" => $rows]);
     }
 
     public function funsChart(Content $content, Request $request)

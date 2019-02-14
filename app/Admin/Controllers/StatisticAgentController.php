@@ -311,7 +311,7 @@ class StatisticAgentController extends Controller
 
         });
         $form->setAction($action);
-        $form->number("agent_id", "分销商id")->default(\request("agent_id"));
+        $form->number("agent_id", "代理商id")->default(\request("agent_id"));
         $form->select('type', '类型')
             ->options([0 => "每日统计", 2 => "每月统计", 4 => "每年统计"])
             ->default($this->request->get("type"));
