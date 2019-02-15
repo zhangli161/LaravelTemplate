@@ -180,9 +180,10 @@ class OrderController extends Controller
         });
 
 
-
         $show->id('订单编号');
-        $show->payment('支付金额');
+        $show->payment('支付金额')->display(function ($fee) {
+            return "￥" . ($fee);
+        });
         $show->payment_type('支付方式');
         $show->post_fee('邮费');
         $show->status('状态');
@@ -221,20 +222,19 @@ function copyText(item) {
         $show->skus("订单商品", function ($sku) {
 //            $sku->id("订单商品id");
             $sku->sku_id("商品id");
-            $sku->column("sku.sku_no","SKU编号");
+            $sku->column("sku.sku_no", "SKU编号");
 
             $sku->sku_name("商品名称");
 
-            $sku->column("sku.id","规格")->display(function ($id){
-                $sku=GoodsSKU::find($id);
-                if (empty($sku)){
+            $sku->column("sku.id", "规格")->display(function ($id) {
+                $sku = GoodsSKU::find($id);
+                if (empty($sku)) {
                     return "商品丢失";
-                }
-                else{
-                    $strs=GoodsSKUManager::getSpecValuesStr($sku)->spec_value_strs;
-                    $html="";
+                } else {
+                    $strs = GoodsSKUManager::getSpecValuesStr($sku)->spec_value_strs;
+                    $html = "";
                     foreach ($strs as $str)
-                        $html.="<div>$str</div>";
+                        $html .= "<div>$str</div>";
                     return $html;
                 }
             });
@@ -242,7 +242,7 @@ function copyText(item) {
             $sku->refund("退款信息")->display(function ($refund) {
                 return empty($refund) ? '<lable class="label label-success">无</lable>' : '<lable class="label label-danger">有</lable>';
             });
-            $sku->thumb("商品图片")->lightbox(["width"=>200]);
+            $sku->thumb("商品图片")->lightbox(["width" => 200]);
             $sku->amount("数量");
             $sku->average_price("商品均价");
         });
@@ -258,7 +258,9 @@ function copyText(item) {
             $show->updated_at("物流更新时间");
         });
         $show->xcx_pay('支付信息', function ($show) {
-            $show->total_fee("支付金额");
+            $show->total_fee("支付金额")->display(function ($fee) {
+                return "￥" . ($fee / 100);
+            });
             $show->out_trade_no("微信外部订单号");
             $show->trade_state("订单状态");
             $show->trade_state_desc("描述");

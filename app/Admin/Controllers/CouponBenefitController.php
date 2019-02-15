@@ -139,9 +139,9 @@ class CouponBenefitController extends Controller
 
         $form->select('coupon_id', '关联优惠券')->options($options)->rules("required");
         $form->number('max_amount', '最大领取数量')->default(1);
-        $form->datetime('date_form', '开始日期')->rules("required");
-        $form->datetime('date_to', '结束日期')->rules("required");
-        $form->image('message_image', '对话框样式')->rules("required|after_now");
+        $form->datetime('date_form', '开始日期')->rules("required|after_now");
+        $form->datetime('date_to', '结束日期')->rules("required|after_now");
+        $form->image('message_image', '对话框样式')->rules("required");
         $form->editor("content.content", "活动描述");
 
         return $form;
