@@ -145,7 +145,7 @@ class GoodsBenefitController extends Controller
 		$show->price('活动价');
 		$show->origin_price('原价');
 		$show->show_origin_price('显示原价');
-		$show->status('活动状态')->using(['-1' => '已解释', '0' => '未开始','1'=>'进行中']);
+		$show->status('活动状态')->using(['-1' => '已结束', '0' => '未开始','1'=>'进行中']);
 		$show->created_at('创建时间');
 		$show->updated_at('上次修改时间');
 		

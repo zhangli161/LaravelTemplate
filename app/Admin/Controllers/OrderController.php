@@ -181,7 +181,7 @@ class OrderController extends Controller
 
 
         $show->id('订单编号');
-        $show->payment('支付金额')->display(function ($fee) {
+        $show->payment('支付金额')->as(function ($fee) {
             return "￥" . ($fee);
         });
         $show->payment_type('支付方式');
@@ -259,7 +259,7 @@ function copyText(item) {
         });
         $show->xcx_pay('支付信息', function ($show) {
             $show->total_fee("支付金额")->as(function ($fee) {
-                return "￥" . ($fee / 100);
+                return "￥ " . ($fee / 100);
             });
             $show->out_trade_no("微信外部订单号");
             $show->trade_state("订单状态");
