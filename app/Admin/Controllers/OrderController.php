@@ -258,7 +258,7 @@ function copyText(item) {
             $show->updated_at("物流更新时间");
         });
         $show->xcx_pay('支付信息', function ($show) {
-            $show->total_fee("支付金额")->display(function ($fee) {
+            $show->total_fee("支付金额")->as(function ($fee) {
                 return "￥" . ($fee / 100);
             });
             $show->out_trade_no("微信外部订单号");
