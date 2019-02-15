@@ -57,7 +57,7 @@
     var str = "hahahfsdafsadfsdfsdfaha";
     var str_width = ctx.measureText(str).width
     ctx.fillText(str, (width - str_width) / 2, width + 20);
-    img.src = "https://www.calex-china.com/storage/agentQR/Agent_1_1547104500.jpg";
+    img.src = "/storage/agentQR/Agent_1_1547104500.jpg";
     //浏览器加载图片完毕后再绘制图片
     img.onload = function () {
 
