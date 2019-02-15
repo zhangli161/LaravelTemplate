@@ -66,7 +66,7 @@ class QRManager
 //		$url = qiniu_upload($filePath, 'wxqr');  //调用的全局函数
 //		unlink($filePath);
         $app_url=env("APP_URL");
-		return "$app_url/storage/agentQR/{$filename}.jpg";
+		return "/storage/agentQR/{$filename}.jpg";
 //		dd($info);
 	}
 	
