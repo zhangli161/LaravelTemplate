@@ -45,8 +45,7 @@ class DemoController extends Controller
 //	static $worker=SnowFlakeIDWorker(1);
     public static function test()
     {
-        $regions=NativePalceReagionManager::all(true);
-        dd($regions->forPage(1,10)->toArray());
+        return view("agent.qr");
     }
 
     //Manager的用法
