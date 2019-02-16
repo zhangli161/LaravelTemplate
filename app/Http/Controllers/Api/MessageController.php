@@ -33,6 +33,7 @@ class MessageController extends Controller
             if(empty($message->content)){
                 $message->delete();
             }
+            else
 			$message->sender=MessageManager:: getSender($message);
 		}
 		return ApiResponse::makeResponse(true, $messages,ApiResponse::SUCCESS_CODE);
