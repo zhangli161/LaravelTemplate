@@ -28,8 +28,11 @@ class MessageController extends Controller
             ->with(["content","content.content"])
 			->get();
 		foreach ($messages as $message){
-            $message->content;
-            $message->content->content;
+//            $message->content;
+//            $message->content->content;
+            if(empty($message->content)){
+                $message->delete();
+            }
 			$message->sender=MessageManager:: getSender($message);
 		}
 		return ApiResponse::makeResponse(true, $messages,ApiResponse::SUCCESS_CODE);
