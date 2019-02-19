@@ -3,6 +3,7 @@
 namespace App\Admin\Controllers;
 
 use App\Components\MessageManager;
+use App\Components\NativePalceReagionManager;
 use App\Models\AgentApply;
 use App\Http\Controllers\Controller;
 use App\Models\NativePlaceRegion;

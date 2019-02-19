@@ -32,7 +32,7 @@ class Agent extends Authenticatable
         "password"
     ];
     protected $hidden = [
-        'password', 'remember_token',
+         'remember_token',
     ];
     protected $casts = ['store' => 'json',];//内嵌字段
 

@@ -130,7 +130,7 @@ class AgentsController extends Controller
             $filter->like('telephone', '手机号码');
         });
         $grid->id('Id');
-        $grid->admin_id('Admin id');
+        $grid->name('登录名');
         $grid->real_name('真实姓名');
         $grid->gender('性别')->using(['0' => '男', '1' => '女']);
         $grid->telephone('联系电话');
@@ -167,17 +167,7 @@ class AgentsController extends Controller
             });
 
         $show->id('Id');
-        $show->admin('管理员信息', function ($admin) {
-            $admin->setResource('/admin/auth/users');
-            $admin->id();
-            $admin->name();
-            $admin->panel()
-                ->tools(function ($tools) {
-                    $tools->disableEdit();
-//                    $tools->disableList();
-                    $tools->disableDelete();
-                });;
-        });
+
         $show->real_name('真实姓名');
         $show->gender('性别')->using(['0' => '男', '1' => '女']);
         $show->telephone('联系电话');
@@ -247,20 +237,24 @@ function Download(imgdata){
 //            ->lastOfMonth();
         $this_month = Carbon::today()->startOfMonth();
 
-        $show->field("本周粉丝增长")->as(function () {
+        $show->field("本周粉丝增长")->as(function () use ($id) {
             $this_week = Carbon::today()->startOfWeek();
-            $admin = Auth::guard("admin")->user();
-            $agent = Agent::where("admin_id", $admin->id)->first();
+//            $admin = Auth::guard("admin")->user();
+            $agent = Agent::find($id);
             $users_count = $agent->users()->where("bind_agent_time", ">=", $this_week)->count();
+
             return $users_count;
+
         });
 
-        $show->field("本月粉丝增长")->as(function () {
+        $show->field("本月粉丝增长")->as(function () use ($id) {
             $this_month = Carbon::today()->startOfMonth();
-            $admin = Auth::guard("admin")->user();
-            $agent = Agent::where("admin_id", $admin->id)->first();
+            $agent = Agent::find($id);
+
             $users_count = $agent->users()->where("bind_agent_time", ">=", $this_month)->count();
             return $users_count;
+//            return 0;
+
         });
 
         $show->created_at('创建时间');
@@ -360,7 +354,9 @@ function Download(imgdata){
     {
         $form = new Form(new Agent);
 
-        $form->number('admin_id', '关联管理员ID');
+        $form->text('name', '登录名')
+            ->rules('required');
+        $form->password('password', "密码")->rules('required');
         $form->text('real_name', '真实姓名')
             ->default($apply ? $apply->real_name : "")->rules('required');
         $form->select('gender', '性别')
@@ -389,7 +385,11 @@ function Download(imgdata){
         $form->textarea('store', '门店信息')
             ->default($apply ? $apply->store : "");
 //        $form->switch('status', 'Status');
-
+        $form->saving(function (Form $form) {
+            if ($form->password && $form->model()->password != $form->password) {
+                $form->password = bcrypt($form->password);
+            }
+        });
         return $form;
     }
 
