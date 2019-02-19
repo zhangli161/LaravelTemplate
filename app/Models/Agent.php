@@ -68,10 +68,10 @@ class Agent extends Authenticatable
 
     public function finances()
     {
-        return $this->hasMany(AgentFinance::class, "agent_id");
+        return $this->hasMany(AgentFinance::class, "agent_id")->orderby('created_at','desc');
     }
 
     public function cashes(){
-        return $this->hasMany(AgentCash::class,"agent_id");
+        return $this->hasMany(AgentCash::class,"agent_id")->orderby('created_at','desc');
     }
 }

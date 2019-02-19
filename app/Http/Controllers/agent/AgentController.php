@@ -143,13 +143,14 @@ class AgentController extends Controller
 //        return 1;
         $agent = Auth::guard("agent")->user();
 //        dd($agent);
-        $agent->update(["password"=>bcrypt($request->get("password"))]);
+        $agent->update(["password" => bcrypt($request->get("password"))]);
         return redirect()->to("agent/logout");
     }
 
     public function finance()
-    {        $agent = Auth::guard("agent")->user()->with("finances")->first();
+    {
+        $agent = Auth::guard("agent")->user()->with("finances")->first();
 
-        return view("agent.finance",['agent'=>$agent]);
+        return view("agent.finance", ['agent' => $agent]);
     }
 }
