@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return redirect()->to("admin");
+    return redirect()->to("agent");
 });
 
 Route::any('test', 'DemoController@test');//测试
@@ -29,12 +29,39 @@ Route::get('/user', function () {
     return new \App\Http\Resources\UserCollection(\App\Models\Template::find(1));
 });
 //Route::group(['middleware' => 'auth:agent', 'namespace' => 'agent','prefix' => 'agent'],function (){
+//
+//Route::group(['namespace' => 'agent','prefix' => 'agent'], function () {
+//    Route::get('/', function () {
+//        return redirect()->to("agent/test");
+//    });//
+//    Route::get('test', function () {
+//        return "测试";
+//    });
+//});
 
-Route::group(['namespace' => 'agent','prefix' => 'agent'], function () {
-    Route::get('/', function () {
-        return redirect()->to("agent/test");
-    });//
-    Route::get('test', function () {
-        return "测试";
-    });
+
+Route::group(['prefix' => 'agent','namespace' => 'agent'],function ($router)
+{
+    $router->get('login', 'LoginController@showLogin')->name('agent.login');
+    $router->post('login', 'LoginController@login');
+    Route::any('logout', 'LoginController@logout');
+
+    $router->get('/', 'AgentController@index');
+    $router->get('index', 'AgentController@index');
+
+    $router->get('qr', 'AgentController@qr');
+    $router->get('qr/refresh', 'AgentController@refresh_qr');
+
+    $router->get('record', 'AgentController@record');
+
+    $router->get('cash', 'AgentController@cash');
+    $router->post('cash', 'AgentController@cash_post');
+    $router->get('getUser', 'AgentController@getUser');
+
+    $router->get('info', 'AgentController@info');
+    $router->get('change_password', 'AgentController@change_password');
+    $router->post('change_password', 'AgentController@change_password_post');
+
+    $router->get('finance', 'AgentController@finance');
+
 });

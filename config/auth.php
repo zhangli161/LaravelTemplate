@@ -53,6 +53,10 @@ return [
             'driver' => 'passport',
             'provider' => 'users',
         ],
+        'agent'=>[
+            'driver' => 'session', // 用户信息存到session里
+            'provider' => 'agents', // 添加agents provider
+        ],
     ],
 
     /*
@@ -87,6 +91,10 @@ return [
         //     'driver' => 'database',
         //     'table' => 'users',
         // ],
+        'agents'=>[
+            'driver' => 'eloquent',
+            'model' => App\Models\Agent::class,
+        ],
     ],
 
     /*

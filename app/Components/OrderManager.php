@@ -381,10 +381,11 @@ class OrderManager extends Manager
         if ($order->order_agent()->exists()) {
             $order_agent = $order->order_agent;
             $order->order_agent()->update(['status' => 1]);//可提现
-            AgentManager::makeFinance(
+            $a_f=AgentManager::makeFinance(
                 $order_agent->agent,
                 $order->order_agent->payment, 0,
-                "订单完成获得佣金:order_id $order->id |order_angent_id $order_agent->id");
+                "订单完成获得佣金");
+            Log::info("【 $a_f 】订单完成获得佣金:order_id $order->id |order_angent_id $order_agent->id");
         }
 
         //结算积分

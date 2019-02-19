@@ -85,5 +85,15 @@ class AgentController
         $agent_applies=AgentApply::with("region")->where("user_id",$user_id)->get();
         return ApiResponse::makeResponse(true, $agent_applies, 200);
     }
-	
+
+//    public static function fans_order_in_7_days(){
+//        $user = Auth::guard("agent")->user();
+//        $agent = Agent::where("id", $user->id)->with([ "users"])->first();
+//
+//        $ret=$agent;
+//        return ApiResponse::makeResponse(true,$ret,ApiResponse::SUCCESS_CODE);
+//    }
+//    public static function fans_increase_in_7_days(){
+//
+//    }
 }

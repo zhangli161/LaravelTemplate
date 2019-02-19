@@ -15,8 +15,10 @@ class CreateAgentsTable extends Migration
 	{
 		Schema::create('agents', function (Blueprint $table) {
 			$table->increments('id');
-			$table->integer('admin_id', false, true);
-			$table->string("real_name", 50)->collation('utf8mb4_unicode_ci')->comment("真实姓名");
+//			$table->integer('admin_id', false, true);
+			$table->string("name",50)->comment("登录名");
+            $table->string("password")->comment("密码");
+            $table->string("real_name", 50)->collation('utf8mb4_unicode_ci')->comment("真实姓名");
 			$table->tinyInteger("gender")->comment("性别 0男 1女");
 			$table->string("telephone", 50)->comment("电话号码");
 			$table->string("address", 100)->collation('utf8mb4_unicode_ci')->comment("地址");
@@ -31,8 +33,9 @@ class CreateAgentsTable extends Migration
 			$table->string("xcx_qr", 255)->collation('utf8mb4_unicode_ci')->comment("微信小程序二维码地址")->nullable();
 			$table->decimal("balance")->comment("分销收益")->default(0);
 			$table->tinyInteger('status',false,true)->comment("0封禁 1正常使用")->default(0);
-			
-			$table->timestamps();
+            $table->rememberToken();
+
+            $table->timestamps();
 		});
 	}
 	

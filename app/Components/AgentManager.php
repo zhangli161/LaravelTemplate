@@ -69,7 +69,12 @@ class AgentManager
         {
             return ["result" => false, "message" => "可提现金额不足"];
         } else {
+            $a_f=AgentManager::makeFinance(
+                $agent,
+                0, $amount,
+                "提现扣款");
             $agent->cashes()->create(["user_id" => $user->id, "amount" => (int)($amount * 100)]);
+            $agent->save();
             return ["result" => true, "message" => "提现申请已经提交，您可以在一小时内修改或撤销您的申请"];
         }
 
@@ -87,6 +92,11 @@ class AgentManager
         } else {
             $agentcash->status = 2;
             $agentcash->note = $ret['return_msg'];
+//            $agentcash->agent()->increment("balance", $agentcash->amount / 100);
+            $a_f=AgentManager::makeFinance(
+                $agentcash->agent,
+                $agentcash->amount / 100, 0,
+                "提现失败，返还提现金额");
         }
 
         $agentcash->save();

@@ -21,3 +21,18 @@ $factory->define(App\User::class, function (Faker $faker) {
         'remember_token' => str_random(10),
     ];
 });
+$factory->define(\App\Models\Agent::class, function (Faker $faker) {
+    static $password;
+
+    return [
+        'name' => $faker->name,
+        'password' => $password ?: $password = bcrypt('123456'),
+//        'email' =>  $faker->email,
+        "real_name" => "测试",
+        "gender" => "0",
+        "telephone" => "123457",
+        "address" => "测试",
+        "region_id" => "211321",
+        'remember_token' => str_random(10),
+    ];
+});

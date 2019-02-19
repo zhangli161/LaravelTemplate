@@ -45,7 +45,10 @@ class DemoController extends Controller
 //	static $worker=SnowFlakeIDWorker(1);
     public static function test()
     {
-        return view("agent.qr");
+        $date_form=Carbon::today()->addDays(-6)->toDateString();
+        $dates=getDatesBetween($date_form,Carbon::today());
+
+        dd($dates);
     }
 
     //Manager的用法

@@ -9,6 +9,7 @@
 
 namespace App\Models;
 
+use App\Components\NativePalceReagionManager;
 use Encore\Admin\Traits\AdminBuilder;
 use Encore\Admin\Traits\ModelTree;
 use Illuminate\Database\Eloquent\Model;
@@ -42,5 +43,9 @@ class NativePlaceRegion extends Model
 	public function children_regions()
     {
         return $this->hasMany(NativePlaceRegion::class,"parentid","region_id");
+    }
+
+    public function full_address(){
+	    return NativePalceReagionManager::getFullAddress($this->region_id);
     }
 }

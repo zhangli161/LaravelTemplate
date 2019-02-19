@@ -7,11 +7,14 @@ use Encore\Admin\Auth\Database\Administrator;
 use Encore\Admin\Facades\Admin;
 use Encore\Admin\Grid\Displayers\Orderable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Agent extends Model
+class Agent extends Authenticatable
 {
+    use Notifiable;
     protected $fillable = [
-        "admin_id",
+
         "real_name",
         "gender",
         "telephone",
@@ -24,14 +27,19 @@ class Agent extends Model
         "email",
         "business",
         "store",
-        "status"
+        "status",
+        "name",
+        "password"
+    ];
+    protected $hidden = [
+        'password', 'remember_token',
     ];
     protected $casts = ['store' => 'json',];//内嵌字段
 
-    public function admin()
-    {
-        return $this->belongsTo(Administrator::class, 'admin_id');
-    }
+//    public function admin()
+//    {
+//        return $this->belongsTo(Administrator::class, 'admin_id');
+//    }
 
     public function city()
     {
