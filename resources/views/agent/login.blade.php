@@ -18,7 +18,7 @@
     body{
         background: #fff;
         color: #333;
-        background-image: {{url("/images/background.jpg")}};
+        background-image: url("{{url("/images/background.jpg")}}");
         background-repeat: no-repeat;
         background-size: 100% ;
     }
