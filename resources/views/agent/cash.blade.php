@@ -140,7 +140,7 @@
             <div class="user_id">小程序用户id :<input id="user_id" style="width:50%;font-size: 18px;" required="required"
                                                  type="text" name="" id="" placeholder="输入用户id"></div>
             <div class="user_id">关联手机号 :<input id="mobile" style="width:50%;font-size: 18px;" required="required"
-                                               type="text" name="" id="" placeholder="输入用户id"></div>
+                                               type="text" name="" id="" placeholder="输入关联手机号"></div>
             <div class="tx">￥<input style="width:60%;" type="number" name="payment" id="money" required="required"
                                     placeholder="输入提现金额"></div>
             <div class="hint">提示 : 提现金额不能小于1.00元</div>
@@ -196,10 +196,10 @@
             showMessage('请输入提现金额！',3000,true);
         } else if ($("#mobile").val() == '') {
             showMessage('请输入关联手机号！',3000,true);
-        {{--} else if ($("#money").val() > {!!round($agent->balance, 2)!!}) {--}}
-            {{--showMessage('提现金额不能超出可提现佣金！',3000,true);--}}
-        {{--} else if ($("#money").val() <1) {--}}
-            {{--showMessage('提现金额不能小于1元！',3000,true);--}}
+        } else if ($("#money").val() > {!!round($agent->balance, 2)!!}) {
+            showMessage('提现金额不能超出可提现佣金！',3000,true);
+        } else if ($("#money").val() <1) {
+            showMessage('提现金额不能小于1元！',3000,true);
         }
         else {
             getUser();
