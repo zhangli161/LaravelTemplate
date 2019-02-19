@@ -102,7 +102,7 @@ class OrderController extends Controller
 
     public static function my(Request $request)
     {
-        $query = Auth::user()->orders()->orderBy("created_at", 'desc')->with(["skus", "wuliu", "xcx_pay"]);
+        $query = Auth::user()->orders()->orderBy("created_at", 'desc')->with(["skus","skus.refund", "wuliu", "xcx_pay"]);
         if ($request->filled('status')) {
             if ($request->get('status') == "not_pay")
                 $query->where("status", 1);
@@ -117,7 +117,7 @@ class OrderController extends Controller
 
     public static function getById(Request $request)
     {
-        $order = Auth::user()->orders()->with(["skus", "coupon", "wuliu", "xcx_pay"])->findOrFail($request->get('id'));
+        $order = Auth::user()->orders()->with(["skus","skus.refund", "coupon", "wuliu", "xcx_pay"])->findOrFail($request->get('id'));
         $order->region_str = NativePalceReagionManager::getFullAddress($order->receiver_region_id);
         $order->skus_total_price = $order->skus->sum(function ($sku) {
             return $sku->amount * $sku->price;
