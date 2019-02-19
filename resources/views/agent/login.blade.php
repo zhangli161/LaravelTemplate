@@ -18,7 +18,9 @@
     body{
         background: #fff;
         color: #333;
-
+        background-image: {{url("/images/background.jpg")}};
+        background-repeat: no-repeat;
+        background-size: 100% ;
     }
     .container{
         text-align: center

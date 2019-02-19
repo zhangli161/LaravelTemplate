@@ -62,7 +62,7 @@
 <div style="width:100%;height:60px"></div>
 
 @foreach($agent->finances as $finance)
-    @if($finance->income<=$finance->expenditure)
+    @if($finance->income<$finance->expenditure)
         <div class="record">
             <div class="Info">
                 <div class="remarks">{{$finance->note?$finance->note:"支出"}}</div>
