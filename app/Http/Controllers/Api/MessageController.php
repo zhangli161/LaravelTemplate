@@ -23,7 +23,7 @@ class MessageController extends Controller
 		
 		$user=$request->user();
 		$messages=Message::query()->where('to_user_id',$user->id)
-			->orderBy('status','asc')
+//			->orderBy('status','asc')
 			->orderBy('created_at','desc')
             ->with(["content","content.content"])
 			->get();

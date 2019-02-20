@@ -177,7 +177,11 @@ class AgentApplyController extends Controller
 
         })->unescape();
 
-        $show->status('Status');
+        $show->status('状态')->using([
+            '0' => "未处理",
+            '1' => "已通过",
+            '2' => "已驳回"
+        ]);
         $show->created_at('创建时间');
         $show->updated_at('上次修改时间');
 
@@ -222,7 +226,7 @@ class AgentApplyController extends Controller
                             'token' => $token]);
 
                     $user = User::find($form->model()->user_id);
-                    $url = env("APP_URL") . "/admin";
+                    $url = env("APP_URL") . "/agent";
                     $message = MessageManager::sendToUser($user, "代理商申请结果",
                         "尊敬的用户:
 您的代理商申请已经通过，请通过下方按钮设置代理商登录信息。
