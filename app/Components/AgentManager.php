@@ -14,6 +14,7 @@ use App\Models\AgentCash;
 use App\Models\AgentFinance;
 use App\Models\AgentRebate;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class AgentManager
@@ -83,8 +84,8 @@ class AgentManager
     public static function doCash(AgentCash $agentcash)
     {
         $pay = new WXPayManager();
-//        $ret = $pay->transfer($agentcash->amount, $agentcash->id, $agentcash->user->WX->openId, "申请提现");
-        $ret = $pay->transfer(1, $agentcash->id, $agentcash->user->WX->openId, "申请提现");
+        $ret = $pay->transfer($agentcash->amount, $agentcash->id, $agentcash->user->WX->openId, "Calex代理商提现");
+//        $ret = $pay->transfer(31, $agentcash->id, $agentcash->user->WX->openId, "申请提现");
 
         $agentcash->return = $ret;
         $result = $ret['result_code'] == "SUCCESS";
@@ -103,6 +104,15 @@ class AgentManager
 
         $agentcash->save();
         return $agentcash;
+    }
+
+    public static function doCash_all(){
+        $acs=AgentCash::where("status","0")->get();
+        foreach ($acs as $ac){
+            self::doCash($ac);
+            sleep(1);
+        }
+        Log::info(Carbon::now()." : 共有".count($acs)."条提现");
     }
 
 
