@@ -167,7 +167,7 @@
                 </div>
                 <!-- 模态框主体 -->
                 <div class="modal-body">
-                    <img id="avatar"
+                    <img style="border-radius: 50%" id="avatar"
                          src="https://wx.qlogo.cn/mmopen/vi_32/ffuhpBJWUsA5McdUze3oHwBPZyG0OEDfOALPO5TZBGQ2NdnRQgsGYy8SMvqbznr2yPbG6td8DxV9nYxGaKbJeQ/132"
                          alt="" width="60" height="60">
                     <span class="user" id="user_name">测试账户</span>
