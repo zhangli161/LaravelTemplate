@@ -46,7 +46,7 @@ class DemoController extends Controller
     public static function test()
     {
         $a_c = AgentCash::find(1);
-        return (json_encode(AgentManager::doCash($a_c)));
+        return get_server_ip();
     }
 
     //Manager的用法
