@@ -180,7 +180,7 @@ class AgentApplyController extends Controller
         $show->status('状态')->using([
             '0' => "未处理",
             '1' => "已通过",
-            '2' => "已驳回"
+            '2' => "已驳回i"
         ]);
         $show->created_at('创建时间');
         $show->updated_at('上次修改时间');

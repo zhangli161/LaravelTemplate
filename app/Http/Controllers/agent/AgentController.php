@@ -112,7 +112,8 @@ class AgentController extends Controller
 
     public function info()
     {
-        $agent = Auth::guard("agent")->user()->with("users", "region", "order_agent")->first();
+        $agent = Auth::guard("agent")->user();
+//            $agent->with("users", "region", "order_agent");
         $orders = AgentManager::getOrders($agent);
         $orders_finish = $orders->where("status", 5);
 
@@ -149,7 +150,8 @@ class AgentController extends Controller
 
     public function finance()
     {
-        $agent = Auth::guard("agent")->user()->with("finances")->first();
+        $agent = Auth::guard("agent")->user();
+        $agent->finances;
 
         return view("agent.finance", ['agent' => $agent]);
     }

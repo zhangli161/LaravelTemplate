@@ -110,7 +110,7 @@ class AgentManager
         $acs=AgentCash::where("status","0")->get();
         foreach ($acs as $ac){
             self::doCash($ac);
-            sleep(1);
+
         }
         Log::info(Carbon::now()." : 共有".count($acs)."条提现");
     }
