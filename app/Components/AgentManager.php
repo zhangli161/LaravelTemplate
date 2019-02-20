@@ -83,7 +83,9 @@ class AgentManager
     public static function doCash(AgentCash $agentcash)
     {
         $pay = new WXPayManager();
-        $ret = $pay->transfer($agentcash->amount, $agentcash->id, $agentcash->user->WX->openId, "申请提现");
+//        $ret = $pay->transfer($agentcash->amount, $agentcash->id, $agentcash->user->WX->openId, "申请提现");
+        $ret = $pay->transfer(1, $agentcash->id, $agentcash->user->WX->openId, "申请提现");
+
         $agentcash->return = $ret;
         $result = $ret['result_code'] == "SUCCESS";
         if ($result) {
@@ -100,6 +102,7 @@ class AgentManager
         }
 
         $agentcash->save();
+        return $agentcash;
     }
 
 

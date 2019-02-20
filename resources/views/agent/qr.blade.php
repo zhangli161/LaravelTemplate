@@ -63,7 +63,7 @@
     <img id="qr_image" src=""/>
     <canvas id="qr" style="position:absolute;left: -9999px;top: -9999px;"></canvas>
 
-    <button  class="refresh" onclick="window.location.href='{{url("/agent/qr/refresh")}}'" type="button" >刷新</button>
+    <button  class="save" onclick="window.location.href='{{url("/agent/qr/refresh")}}'" type="button" >刷新</button>
     {{--<button  class="save" onclick="exportCanvasAsPNG()" type="button" >保存</button>--}}
 </div>
 <script src="/js/jquery-3.3.1.min.js"></script>

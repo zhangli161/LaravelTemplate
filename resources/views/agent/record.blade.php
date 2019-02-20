@@ -16,6 +16,9 @@
         }
 
         .title {
+            position: fixed;
+            top: 0;
+            width: 100%;
             text-align: center;
             line-height: 60px;
             background: #00c0ef;
@@ -46,12 +49,14 @@
         .state3 {
             color: #0099CC;
             width: 16%;
+
         }
+
     </style>
 </head>
 <body>
 <p class="title">提现记录</p>
-
+<div style=" width: 100%;height: 60px;"></div>
 <div>
     @foreach($datas as $data)
         @if($data->status==1)

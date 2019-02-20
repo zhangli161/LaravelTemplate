@@ -43,6 +43,7 @@
             display: flex;
             justify-content: space-around;
             margin-top: 30px;
+            margin-bottom: 30px;
         }
 
         .sign_out {
