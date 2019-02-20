@@ -94,6 +94,6 @@ function get_server_ip()
         } else {
             $server_ip = getenv('SERVER_ADDR');
         }
-        return $server_ip ? $server_ip : '获取不到服务器IP';
+        return isset($server_ip) ? $server_ip : env('SERVER_IP');
     }
 }
