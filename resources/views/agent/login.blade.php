@@ -42,7 +42,7 @@
 <body>
 
 <div class="container">
-    <h4 style=" margin: 160px auto 40px;text-align: center">供应商登录</h4>
+    <h4 style=" margin: 160px auto 40px;text-align: center">凯莱克斯代理商登录</h4>
     <form method="POST" action="{{ route('agent.login') }} " aria-label="{{ __('Login') }}">
         @csrf
         <div class="form-group">

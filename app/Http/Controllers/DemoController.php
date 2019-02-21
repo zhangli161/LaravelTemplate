@@ -45,8 +45,13 @@ class DemoController extends Controller
 //	static $worker=SnowFlakeIDWorker(1);
     public static function test()
     {
-        $a_c = AgentCash::find(1);
-        return get_server_ip();
+//        $spu=new GoodsSPU();
+        $spu = GoodsSPU::with("skus", "detail", 'sences',
+            'skus.sku_spec_values',
+            'skus.albums',
+            'skus.similar_sku_throughs',
+            'skus.matched_sku_throughs')->find(1);
+        return view("admin.goods", ['spu' => $spu]);
     }
 
     //Manager的用法
