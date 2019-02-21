@@ -185,6 +185,13 @@ class GoodsController extends Controller
      */
     protected function form()
     {
+        $spu = GoodsSPU::with("skus", "detail", 'sences',
+            'skus.sku_spec_values',
+            'skus.albums',
+            'skus.similar_sku_throughs',
+            'skus.matched_sku_throughs')->find(1);
+        return view("admin.goods", ['spu' => $spu]);
+
         $form = new Form(new GoodsSPU);
 
         $form->tab('基本信息', function ($form) {
