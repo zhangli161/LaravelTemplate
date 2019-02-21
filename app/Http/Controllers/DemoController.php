@@ -38,13 +38,16 @@ use App\User;
 use Carbon\Carbon;
 use Encore\Admin\Auth\Database\Administrator;
 use Encore\Admin\Facades\Admin;
+use Encore\Admin\Layout\Content;
 use Illuminate\Http\Request;
 
 class DemoController extends Controller
 {
 //	static $worker=SnowFlakeIDWorker(1);
-    public static function test()
+    public static function test(Request $request)
     {
+        if ($request->getMethod()=="GET"){
+
 //        $spu=new GoodsSPU();
         $spu = GoodsSPU::with("skus", "detail", 'sences',
             'skus.sku_spec_values',
@@ -52,6 +55,10 @@ class DemoController extends Controller
             'skus.similar_sku_throughs',
             'skus.matched_sku_throughs')->find(1);
         return view("admin.goods", ['spu' => $spu]);
+        }
+        else{
+            dd($request->all());
+        }
     }
 
     //Manager的用法

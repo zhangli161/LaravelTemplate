@@ -11,60 +11,116 @@
 </head>
 
 <style>
-    *{
+    * {
         margin: 0;
         padding: 0;
     }
-    body{
-        background: #fff;
+
+    body {
+        background: #000;
         color: #333;
-        background-image: url("{{url("/images/background.jpg")}}");
+        background-image: url("{{url(" images/Login_bg.jpg ")}}");
         background-repeat: no-repeat;
-        background-size: 100% ;
+        background-size: 100%;
     }
-    .container{
+
+    .container {
         text-align: center
     }
-    .form-group{
+
+    .form-group {
         display: flex;
         margin: 20px auto;
         width: 60%;
     }
-    label{
+
+    label {
         width: 16%;
         margin-right: 10px;
         font-size: 18px;
     }
-    .btn{
-        width: 60%;
+
+    .btn {
+        width: 80%;
+        border: none;
+        background: #ff3000;
+        margin-top: 20px;
+        border-radius: 16px;
+        padding: 8px 0;
+        border: 1px solid #ff3000;
+    }
+
+    input {
+        background: none;
+        outline: none;
+        border: 0px;
+        color: #fff;
+        margin-left: 6px;
+    }
+
+    .user {
+        display: flex;
+        width: 80%;
+        margin: auto;
+        padding: 4px 10px;
+        border: 1.4px solid #fff;
+        border-radius: 18px;
+        margin-top: 20px;
+        align-items: center;
+    }
+
+    .password {
+        display: flex;
+        width: 80%;
+        margin: auto;
+        padding: 4px 10px;
+        border: 1.4px solid #fff;
+        border-radius: 18px;
+        margin-top: 16px;
+        align-items: center;
+        position: relative
+    }
+
+    .visible {
+        position: absolute;
+        right: 10px;
+
     }
 </style>
 <body>
 
 <div class="container">
-    <h4 style=" margin: 160px auto 40px;text-align: center">凯莱克斯代理商登录</h4>
+    <img style="margin: 22% auto 0;" src="/images/Login_logo.png" alt="" width="180" height="180">
+    <p style=" margin:3% auto 25%;text-align: center;color:#fff; font-size: 14px;">欢迎登陆凯莱克斯商城</p>
     <form method="POST" action="{{ route('agent.login') }} " aria-label="{{ __('Login') }}">
-        @csrf
-        <div class="form-group">
-            <!-- <label for="email">账号 : </label> -->
-            <input type="text" class="form-control" id="name" name="name" placeholder="输入账号">
+        {{csrf_field()}}
+        <div class="user">
+            <img src="/images/user.png" alt="" srcset="" width="30" height="30">
+            <input type="text" id="username" placeholder="用户名" name="name">
         </div>
-        <div class="form-group">
-            <!-- <label for="pwd">密码 : </label> -->
-            <input type="password" class="form-control" id="pwd" name="password" placeholder="输入密码">
+        <div class="password">
+            <img src="/images/password.png" alt="" srcset="" width="30" height="30">
+            <input type="password" id="password" placeholder="密码" name="password">
+            <img class="visible" src="/images/Invisible.png" alt="" srcset="" width="30" height="30">
         </div>
-        <!-- <div class="form-check">
-          <label class="form-check-label">
-            <input class="form-check-input" type="checkbox"> 记住账号
-          </label>
-        </div> -->
-        @if($message)
-        <div class="text-danger">{{$message}}</div>
-        @endif
-        <button type="submit" class="btn btn-primary">登录</button>
+        @if(isset($message))<div class="text-danger">{{$message}}</div>@endif
+        <button type="submit" class="btn btn-primary">登&nbsp;&nbsp;&nbsp;&nbsp;录</button>
     </form>
 </div>
 
+
+<script>
+    $(function () {
+        $(".visible").click(function () {
+            if ($("#password").attr("type") == "password") {
+                $(this).attr("src", "/images/visible.png")
+                $("#password").attr("type", "text")
+            } else {
+                $(this).attr("src", "/images/Invisible.png")
+                $("#password").attr("type", "password")
+            }
+        })
+    })
+</script>
 </body>
 </html>
-
