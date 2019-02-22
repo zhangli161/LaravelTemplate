@@ -46,17 +46,17 @@ class DemoController extends Controller
 //	static $worker=SnowFlakeIDWorker(1);
     public static function test(Request $request)
     {
-        if ($request->getMethod()=="GET"){
+
+        if ($request->getMethod() == "GET") {
 
 //        $spu=new GoodsSPU();
-        $spu = GoodsSPU::with("skus", "detail", 'sences',
-            'skus.sku_spec_values',
-            'skus.albums',
-            'skus.similar_sku_throughs',
-            'skus.matched_sku_throughs')->find(1);
-        return view("admin.goods", ['spu' => $spu]);
-        }
-        else{
+            $spu = GoodsSPU::with("skus", "detail", 'sences',
+                'skus.sku_spec_values',
+                'skus.albums',
+                'skus.similar_sku_throughs',
+                'skus.matched_sku_throughs')->find(1);
+            return view("admin.goods", ['spu' => $spu]);
+        } else {
             dd($request->all());
         }
     }

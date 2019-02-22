@@ -26,10 +26,12 @@ class StatisticGoodsController extends Controller
 {
     use HasResourceActions;
     private $request;
+
     public function __construct(Request $request)
     {
-        $this->request=$request;
+        $this->request = $request;
     }
+
     /**
      * Index interface.
      *
@@ -44,7 +46,8 @@ class StatisticGoodsController extends Controller
             ->row($this->grid($request))
             ->row($this->chartform("/admin/statistic/goods"))
             ->row($this->count_chart($content,$request))
-            ->row($this->payment_chart($content,$request));
+            ->row($this->payment_chart($content,$request))
+            ;
     }
 
 
@@ -134,7 +137,7 @@ class StatisticGoodsController extends Controller
         $model = self::getModel($request);
         //如果未获取的数据
         if ($model->count() < 1)
-            return new Box('商品销量统计图',"未找到对应数据！");
+            return new Box('商品销量统计图', "未找到对应数据！");
 
 //        return $content
 //                ->header('商品销量统计图')
@@ -181,7 +184,7 @@ class StatisticGoodsController extends Controller
             $description = "年统计";
         }
 
-        return new Box('商品销量统计图',ChartManager::line($lables, '商品销量', $datas,"count"));
+        return new Box('商品销量统计图', ChartManager::line($lables, '商品销量', $datas, "count"));
 
 //        return $content
 //            ->header('商品销量统计图')
@@ -193,13 +196,16 @@ class StatisticGoodsController extends Controller
     public function payment_chart(Content $content, Request $request)
     {
         $model = self::getModel($request);
+//        return $model;
         //如果未获取的数据
+//        if ($model->count() < 1)
+//            return $content
+//                ->header('商品销售额统计图')
+////			->description('折线图')
+//                ->row("未找到对应数据！")
+//                ->row($this->chartform("/admin/chart/goods/payment"));
         if ($model->count() < 1)
-            return $content
-                ->header('商品销售额统计图')
-//			->description('折线图')
-                ->row("未找到对应数据！")
-                ->row($this->chartform("/admin/chart/goods/payment"));
+            return new Box('商品销量统计图', "未找到对应数据！");
 
 
         $description = "";
@@ -240,7 +246,7 @@ class StatisticGoodsController extends Controller
             $description = "年统计";
         }
 
-        return new Box('商品销售额统计图',ChartManager::line($lables, '商品销售额', $datas,"payment"));
+        return new Box('商品销售额统计图', ChartManager::line($lables, '商品销售额', $datas, "payment"));
 
 //        return $content
 //            ->header('商品销售额统计图')
@@ -276,7 +282,7 @@ class StatisticGoodsController extends Controller
         $form->setAction($action);
         $form->select('type', '类型')
             ->options([0 => "每日统计", 2 => "每月统计", 4 => "每年统计"])
-            ->default($this->request->filled("type")?$this->request->get("type"):2);
+            ->default($this->request->filled("type") ? $this->request->get("type") : 2);
 
         $proviences = NativePalceReagionManager::getProviencesAndCitys();
         $names = [];
@@ -295,9 +301,13 @@ class StatisticGoodsController extends Controller
 //        $form->select('city', '市')
 //            ->options($options);
 
-        $form->text('sku_id', "指定sku_id")->default(\request('sku_id'));
-        $form->text('spu_id', "指定spu_id")->default(\request('spu_id'));
+        $spus = GoodsSPU::all()->pluck('spu_name', 'id');
+        $skus = GoodsSKU::all()->pluck('sku_name', 'id');
 
+        $form->select('spu_id', "商品")->options($spus)
+            ->default(\request('spu_id'));
+        $form->select('sku_id', "子类商品")->options($skus)
+            ->default(\request('sku_id'));
 
         $form->date('date_from', "开始时间")->default(\request('date_from'));
         $form->date('date_to', "结束时间")->default(\request('date_to'));

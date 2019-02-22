@@ -125,7 +125,8 @@ class OrderRefundController extends Controller
             1 => " 通过",
             2 => "退款中",
             3 => " 退款完成",
-            4 => "驳回"
+            4 => "驳回",
+            5=>"失效"
         ]);
         $grid->payment('退款金额');
         $grid->note('备注');
@@ -159,7 +160,8 @@ class OrderRefundController extends Controller
             1 => " 通过",
             2 => "退款中",
             3 => " 退款完成",
-            4 => "驳回"
+            4 => "驳回",
+            5=>"失效"
         ]);
         $show->payment('退款金额');
 
@@ -335,7 +337,7 @@ class OrderRefundController extends Controller
         $form->switch('with_status_0', "包含未通过申请")
 //            ->help(\request('with_status_0')=="on")
             ->default(\request('with_status_0') == "on");
-        $form->switch('with_status_4', "包含已驳回申请")
+        $form->switch('with_status_4', "包含已驳回/失效申请")
             ->default(\request('with_status_4') == "on");
 
         $form->date('date_from', "开始时间")
@@ -359,7 +361,7 @@ class OrderRefundController extends Controller
         if ($request->get("with_status_0") == "off")
             $query->where('status', '<>', '0');
         if ($request->get("with_status_4") == "off")
-            $query->where('status', '<>', '4');
+            $query->whereNotIn('status', [ '4','5']);
 
         $models = $query->get();
         return $models;

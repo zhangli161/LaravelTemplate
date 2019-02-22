@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class AgentCash extends Model
 {
     protected $fillable=["user_id","amount"];
-    protected $casts=["return"=>"array"];
+    protected $casts=["return"=>"json"];
     public function agent(){
         return $this->belongsTo(Agent::class,"agent_id");
     }

@@ -102,7 +102,7 @@ class OrderController extends Controller
 
     public static function my(Request $request)
     {
-        $query = Auth::user()->orders()->orderBy("created_at", 'desc')->with(["skus","skus.refund", "wuliu", "xcx_pay"]);
+        $query = Auth::user()->orders()->orderBy("created_at", 'desc')->with(["skus", "skus.refund", "wuliu", "xcx_pay"]);
         if ($request->filled('status')) {
             if ($request->get('status') == "not_pay")
                 $query->where("status", 1);
@@ -117,12 +117,12 @@ class OrderController extends Controller
 
     public static function getById(Request $request)
     {
-        $order = Auth::user()->orders()->with(["skus","skus.refund", "coupon", "wuliu", "xcx_pay"])->findOrFail($request->get('id'));
+        $order = Auth::user()->orders()->with(["skus", "skus.refund", "coupon", "wuliu", "xcx_pay"])->findOrFail($request->get('id'));
         $order->region_str = NativePalceReagionManager::getFullAddress($order->receiver_region_id);
         $order->skus_total_price = $order->skus->sum(function ($sku) {
             return $sku->amount * $sku->price;
         });
-        foreach ($order->skus as $order_sku){
+        foreach ($order->skus as $order_sku) {
             $order_sku->sku;
         }
 //        $order->skus=$order->skus()->with("sku")->get();
@@ -220,7 +220,7 @@ class OrderController extends Controller
     {
         if ($request->filled(['order_id', 'order_sku_id', "amount"])) {
             $order = Order::
-//            where('status', '5')-> //只寻找交易成功的订单
+            whereIn('status', ['2','3','4'])-> //只寻找交易成功的订单
             findOrFail($request->get("order_id"));
             if (!$order)
                 return ApiResponse::makeResponse(false, "订单不存在或未完成", ApiResponse::UNKNOW_ERROR);

@@ -91,7 +91,7 @@ class OrderManager extends Manager
                 'total_price' => $total_price,
             ]);
 
-            if ($sku->postage=="1") {
+            if ($sku->postage == "1") {
                 //包邮时所有的商品都包邮
                 $postage = 1;
             }
@@ -380,8 +380,19 @@ class OrderManager extends Manager
         //结算佣金
         if ($order->order_agent()->exists()) {
             $order_agent = $order->order_agent;
-            $order->order_agent()->update(['status' => 1]);//可提现
-            $a_f=AgentManager::makeFinance(
+
+            //佣金金额需要减掉订单退款
+            $payment = $order->payment -
+                $order->refund()->whereIn('status', ['1', '2', '3'])->sum('payment');
+
+            //未处理退款信息变为已确认收货，无法退款
+            $r_refunds = $order->refund()->where('status', '0')->get();
+            foreach ($r_refunds as $r_refund) {
+                $r_refund->update(["status" => 5]);
+            }
+
+            $order->order_agent()->update(['status' => 1, 'payment' => $payment]);//可提现
+            $a_f = AgentManager::makeFinance(
                 $order_agent->agent,
                 $order->order_agent->payment, 0,
                 "订单完成获得佣金");
@@ -450,13 +461,13 @@ class OrderManager extends Manager
         return;
     }
 
-    public static function refund(Order $order, OrderSKU $order_sku, int $amount, $reason = null,$desc=null, $albums = [])
+    public static function refund(Order $order, OrderSKU $order_sku, int $amount, $reason = null, $desc = null, $albums = [])
     {
         $refund = $order->refund()->create([
             'order_sku_id' => $order_sku->id,
             'amount' => $amount,
             'reason' => $reason ? $reason : request('reason'),
-            'desc'=>$desc,
+            'desc' => $desc,
             'status' => 0,
             'payment' => $amount * $order_sku->average_price,
             'albums' => $albums,
@@ -485,11 +496,11 @@ class OrderManager extends Manager
 
     public static function doRefund($refund)
     {
-        $refund=OrderRefund::query()->find($refund->id);
+        $refund = OrderRefund::query()->find($refund->id);
         $order = Order::with("xcx_pay")->find($refund->order_id);
         if (!$order)
             return "订单不存在";
-        if(!$order->xcx_pay)
+        if (!$order->xcx_pay)
             return "订单未付款";
         Log::info("订单退款:" . "|" . $order->xcx_pay->total_fee . "|" .
             (int)($refund->payment * 100) . "|" .
