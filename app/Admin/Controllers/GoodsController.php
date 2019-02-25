@@ -168,10 +168,21 @@ class GoodsController extends Controller
 
         $show->detail('商品详情', function ($detail) {
             $detail->content('图文')->unescape();
+            $detail->panel()
+                ->tools(function ($tools) {
+                    $tools->disableEdit();
+                    $tools->disableList();
+                    $tools->disableDelete();
+                });;
         });
 
-        $show->cate('商品分类')->name()->label();
-        $show->cate('场景分类')->sence()->label();
+        $show->cate('商品分类')->name("商品分类")->label();
+        $show->sences('场景分类')
+            ->as(function ($sences){
+                return $sences->pluck("name");
+            })
+            ->label();
+//        $show->sences('场景分类')->name("场景分类")->label();
         $show->created_at('创建时间');
         $show->updated_at('更新时间');
 

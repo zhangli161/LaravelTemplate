@@ -207,8 +207,7 @@ class UserController extends Controller
 		
 		$form->display("id","id");
 		$form->text('name', '名称')
-			->placeholder('请输入。。。')
-			->help('help...');
+			->placeholder('请输入。。。');
         $states = [
             'on' => ['value' => "1", 'text' => '生效', 'color' => 'success'],
             'off' => ['value' => "2", 'text' => '封禁', 'color' => 'default'],

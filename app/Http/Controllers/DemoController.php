@@ -47,18 +47,27 @@ class DemoController extends Controller
     public static function test(Request $request)
     {
 
-        if ($request->getMethod() == "GET") {
+//        $sku=GoodsSKU::firstOrCreate();
+        $spu1 = GoodsSPU::create([
+            'spu_no' => 20003,
+            'spu_name' => '测试添加',
+            'desc' => 'ffff',
+            'thumb' => 'aaa',
+            'cate_id' => 1,
+            'status'=>1,
+            'sences'=>[8,9]
+        ]);
+//        $spu2 = GoodsSPU::find('12')->update([
+//            'spu_no' => 20000,
+//            'spu_name' => '测试添加',
+//            'desc' => 'ffff',
+//            'thumb' => 'aaa',
+//            'cate_id' => 1,
+//            'status'=>1,
+//            'sences'=>[['id'=>8]]
+//        ]);
 
-//        $spu=new GoodsSPU();
-            $spu = GoodsSPU::with("skus", "detail", 'sences',
-                'skus.sku_spec_values',
-                'skus.albums',
-                'skus.similar_sku_throughs',
-                'skus.matched_sku_throughs')->find(1);
-            return view("admin.goods", ['spu' => $spu]);
-        } else {
-            dd($request->all());
-        }
+        dd($spu1->sences);
     }
 
     //Manager的用法
