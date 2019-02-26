@@ -53,6 +53,9 @@ Route::group([
     //退款统计
     $router->any('statistic/refund', "OrderRefundController@getGrid");
 
+    //商品销售统计
+    $router->any('statistic/good-sales', "StatisticGoodsSalesController@index");
+
     //财务统计
     $router->any('statistic/finance', "StatisticFinanceController@index");
     $router->any('chart/finance/income', "StatisticFinanceController@income_chart");

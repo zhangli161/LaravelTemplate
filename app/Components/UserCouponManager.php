@@ -184,4 +184,11 @@ class UserCouponManager
 
         return true;
     }
+
+    public static function checkUserCoupon(User $user){
+        $coupons=$user->coupons()->whereDate('expiry_date','<',now())->get();
+        foreach ($coupons as $coupon){
+            $coupon->delete();
+        }
+    }
 }

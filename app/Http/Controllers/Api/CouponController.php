@@ -49,6 +49,7 @@ class CouponController
 
     public static function myCoupons(Request $request)
     {
+        UserCouponManager::checkUserCoupon(Auth::user());
         if ($request->orderBy)
             $coupons = Auth::user()->coupons()
                 ->with('coupon')
