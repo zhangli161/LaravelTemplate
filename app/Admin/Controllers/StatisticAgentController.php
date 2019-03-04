@@ -45,7 +45,8 @@ class StatisticAgentController extends Controller
             ->header('代理商统计')
             ->description('')
             ->row($this->grid($request))
-            ->row($this->gridForm("/admin/statistic/agent"));
+            ->row($this->gridForm("/admin/statistic/agent"))
+            ->row("<script>disablePjax=true</script>");
     }
 
 
@@ -62,7 +63,9 @@ class StatisticAgentController extends Controller
             return "未找到数据";
         }
 
-        $titles = ['代理商id', '粉丝总数', "粉丝增长数量", "粉丝消费额", "待返利金额","粉丝退货单数", "查看粉丝增长图表", "查看粉丝消费图表","查看代理商"];
+        $titles = ['代理商id', '粉丝总数', "粉丝增长数量", "粉丝消费额", "待返利金额","粉丝退货单数","粉丝退货金额",
+//            "粉丝已退货单数","粉丝已退货金额",
+            "查看粉丝增长图表", "查看粉丝消费图表","查看代理商"];
 
         $rows = array();
         foreach ($model as $agent) {
@@ -73,6 +76,9 @@ class StatisticAgentController extends Controller
                 $agent->order_agent->sum("order_payment"),
                 $agent->balance,
                 $agent->user_refunds->count(),
+                $agent->user_refunds->sum('payment'),
+//                $agent->user_refunds->whereIn('status',[1,2])->count(),
+//                $agent->user_refunds->whereIn('status',[1,2])->sum('payment'),
                 "<a href='/admin/chart/agent/fans?agent_id=$agent->id'>查看</a>",
                 "<a href='/admin/chart/agent/fans_cost?agent_id=$agent->id'>查看</a>",
                 "<a href='/admin/agents/$agent->id'>查看</a>",

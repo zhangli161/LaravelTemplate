@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use function GuzzleHttp\Promise\all;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -48,7 +49,6 @@ class GoodsSPU extends Model
     {
         return $this->belongsToMany(Category::class, "goods_spu_sences", "spu_id", "sence_cate_id");
     }
-
     public function comments()
     {
         return $this->hasMany(Comment::class, 'spu_id');

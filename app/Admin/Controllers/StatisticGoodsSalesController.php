@@ -41,7 +41,8 @@ class StatisticGoodsSalesController extends Controller
             ->header('销售详情统计')
 //            ->description('')
             ->row($this->chartform("/admin/statistic/good-sales"))
-            ->row($this->grid($request));
+            ->row($this->grid($request))
+            ->row("<script>disablePjax=true</script>");
 //            ->row($this->count_chart($content,$request))
 //            ->row($this->payment_chart($content,$request));
     }

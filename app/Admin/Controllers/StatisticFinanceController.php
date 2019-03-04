@@ -43,7 +43,8 @@ class StatisticFinanceController extends Controller
 //            ->description('')
             ->row($this->chartform("/admin/statistic/finance"))
             ->row($this->grid($request))
-            ->row($this->income_chart($content,$request));
+            ->row($this->income_chart($content,$request))
+            ->row("<script>disablePjax=true</script>");
 
     }
 

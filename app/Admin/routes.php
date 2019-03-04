@@ -42,6 +42,8 @@ Route::group([
 
     //订单统计
     $router->any('statistic/order', "StatisticOrderController@index");
+
+
     $router->any('chart/order/count', "StatisticOrderController@count_chart");
     $router->any('chart/order/payment', "StatisticOrderController@payment_chart");
 
@@ -90,4 +92,18 @@ Route::group([
 //        return view("admin.expoter.fahuodan",["order"=>$order]);
     });
 
+    $router->put('upload',function (\Illuminate\Http\Request $request){
+//       dd($request->all(),$request->allFiles()) ;
+        $file = $request->file("file_data");
+
+        $file_path = \Illuminate\Support\Facades\Storage::disk("admin")->putFile("uploads", $file);
+        if ($file_path) {
+//            return $file_path;
+            return \App\Http\Helpers\ApiResponse::makeResponse(true,
+                \Illuminate\Support\Facades\Storage::disk("admin")->url($file_path),
+                \App\Http\Helpers\ApiResponse::SUCCESS_CODE);
+        }
+        return \App\Http\Helpers\ApiResponse::makeResponse(false, "存储失败", \App\Http\Helpers\ApiResponse::UNKNOW_ERROR);
+
+    });
 });

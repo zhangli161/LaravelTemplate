@@ -90,7 +90,7 @@ class GoodsSKUController extends Controller
     protected function grid()
     {
         $grid = new Grid(new GoodsSKU);
-        $grid->model()->orderBy("created_at","desc");
+        $grid->model()->orderBy("created_at", "desc");
 
         $spu_id = request('spu_id');
         if ($spu_id)
@@ -108,8 +108,8 @@ class GoodsSKUController extends Controller
         });
         $grid->id('Id');
         $grid->sku_no('Sku编号')->sortable();
-        $grid->sku_name('子商品名称');
-        $grid->price('价格（元）');
+        $grid->sku_name('子商品名称')->editable();
+        $grid->price('价格（元）')->editable('text');
         $grid->stock('库存量')->sortable();
 //        $grid->shop_id('Shop id');
 //        $grid->spu_id('Spu id');
@@ -390,18 +390,21 @@ class GoodsSKUController extends Controller
 
 //			dd($form);
 //			Log::info('表单'.json_encode($form->search_word['search_words']));
+
             $search_words = $form->search_word['search_words'];
-            $skuname = $form->sku_name;
+            if ($search_words) {
+                $skuname = $form->sku_name;
 //			$spuname=null;
-            if (!in_array($skuname, $search_words)) {
-                array_unshift($search_words, $skuname);
-            }
+                if (!in_array($skuname, $search_words)) {
+                    array_unshift($search_words, $skuname);
+                }
 //			if(!in_array($spuname,$search_words)){
 //				array_unshift($search_words,$spuname);
 //			}
 
 //			dd($search_words);
-            $form->input('search_word.search_words', $search_words);
+                $form->input('search_word.search_words', $search_words);
+            }
         });
         $form->saved(function (Form $form) {
             $sku = GoodsSKU::find($form->model()->id);

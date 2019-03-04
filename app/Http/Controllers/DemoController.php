@@ -25,6 +25,8 @@ use App\Http\Helpers\ApiResponse;
 use App\Http\Helpers\SnowFlakeIDWorker;
 use App\Models\Agent;
 use App\Models\AgentCash;
+use App\Models\Coupon;
+use App\Models\CouponDistributeMethod;
 use App\Models\GoodsSKU;
 use App\Models\GoodsSPU;
 use App\Models\Message;
@@ -39,6 +41,7 @@ use Carbon\Carbon;
 use Encore\Admin\Auth\Database\Administrator;
 use Encore\Admin\Facades\Admin;
 use Encore\Admin\Layout\Content;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 class DemoController extends Controller
@@ -47,27 +50,18 @@ class DemoController extends Controller
     public static function test(Request $request)
     {
 
-//        $sku=GoodsSKU::firstOrCreate();
-        $spu1 = GoodsSPU::create([
-            'spu_no' => 20003,
-            'spu_name' => '测试添加',
-            'desc' => 'ffff',
-            'thumb' => 'aaa',
-            'cate_id' => 1,
-            'status'=>1,
-            'sences'=>[8,9]
-        ]);
-//        $spu2 = GoodsSPU::find('12')->update([
-//            'spu_no' => 20000,
-//            'spu_name' => '测试添加',
-//            'desc' => 'ffff',
-//            'thumb' => 'aaa',
-//            'cate_id' => 1,
-//            'status'=>1,
-//            'sences'=>[['id'=>8]]
-//        ]);
 
-        dd($spu1->sences);
+
+        $spus=GoodsSPU::all();
+        foreach ($spus as $spu){
+            $skus=$spu->skus()->with("spec_values")->get();
+            $spec_values=$skus->pluck("spec_values")->collapse();
+            $spec_ids=$spec_values->pluck("spec_id")->unique();
+
+            $spu->specs()->sync($spec_ids);
+        }
+
+        dd("成功");
     }
 
     //Manager的用法

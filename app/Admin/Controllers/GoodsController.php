@@ -4,14 +4,17 @@ namespace App\Admin\Controllers;
 
 use App\Models\Category;
 use App\Models\GoodsSKU;
+use App\Models\GoodsSpec;
 use App\Models\GoodsSPU;
 use App\Http\Controllers\Controller;
 use App\Models\Postage;
+use Encore\Admin\Admin;
 use Encore\Admin\Controllers\HasResourceActions;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Show;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\MessageBag;
 
@@ -71,10 +74,35 @@ class GoodsController extends Controller
      */
     public function create(Content $content)
     {
+        $spu = GoodsSPU::with([
+            'specs', 'detail', 'cate', 'sences',
+            'skus',
+            'skus.search_word','skus.albums',
+            'skus.matched_skus','skus.similar_skus',
+            "skus.spec_values"
+        ])->findOrNew(1);
+
+        $spu->spec_ids=$spu->specs->pluck('id');
+        $spu->sence_ids = $spu->sences->pluck("id");
+
+        foreach ($spu->skus as $sku){
+            $sku->spec_value_ids = $sku->spec_values->pluck("id");
+
+            $sku->matched_sku_ids=$sku->matched_skus->pluck('id');;
+
+            $sku->similar_sku_ids=$sku->similar_skus->pluck('id');;
+        }
+
+        $skus= GoodsSKU::all();
         return $content
             ->header('创建')
             ->description('')
-            ->body($this->form());
+            ->body(view('admin.goods', [
+                    'spu' => $spu,
+                    'specs'=>GoodsSpec::with('values')->get(),
+                    'skus'=>$skus,
+                ])
+            );
     }
 
     /**
@@ -85,11 +113,12 @@ class GoodsController extends Controller
     protected function grid()
     {
         $grid = new Grid(new GoodsSPU);
-        $grid->model()->orderBy("created_at","desc");
+
+        $grid->model()->orderBy("created_at", "desc");
 
         $grid->id('Id')->sortable();
         $grid->spu_no('Spu编号')->sortable();
-        $grid->spu_name('商品名称');
+        $grid->spu_name('商品名称')->editable();
         $grid->desc('描述');
         $grid->status('上架状态')->using(['0' => '下架', '1' => '上架']);
         $grid->thumb('封面图片')->lightbox();;
@@ -125,9 +154,9 @@ class GoodsController extends Controller
                 $options[$category->id] = $category->name;
             }
 
-            $filter->equal('cate_id','商品分类')->select($options);
+            $filter->equal('cate_id', '商品分类')->select($options);
 
-            $filter->equal('status','上架状态')->select(['0' => '下架', '1' => '上架']);
+            $filter->equal('status', '上架状态')->select(['0' => '下架', '1' => '上架']);
         });
         $grid->actions(function ($actions) {
 
@@ -178,7 +207,7 @@ class GoodsController extends Controller
 
         $show->cate('商品分类')->name("商品分类")->label();
         $show->sences('场景分类')
-            ->as(function ($sences){
+            ->as(function ($sences) {
                 return $sences->pluck("name");
             })
             ->label();
@@ -265,5 +294,10 @@ class GoodsController extends Controller
         });
 
         return $form;
+    }
+
+    public function store(Request $request)
+    {
+        dd($request->all());
     }
 }

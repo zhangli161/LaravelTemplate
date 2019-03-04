@@ -35,7 +35,10 @@ $(document).on('pjax:timeout', function (event) {
 })
 
 $(document).on('submit', 'form[pjax-container]', function (event) {
-    $.pjax.submit(event, '#pjax-container')
+    if (disablePjax) {
+        return
+    } else
+        $.pjax.submit(event, '#pjax-container')
 });
 
 $(document).on("pjax:popstate", function () {

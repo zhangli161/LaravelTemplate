@@ -63,7 +63,8 @@ class StatisticUserController extends Controller
 //                $row->column(4, 'baz');
             })
             ->row($this->grid($request))
-            ->row($this->chartform("/admin/statistic/user"));
+            ->row($this->chartform("/admin/statistic/user"))
+            ->row("<script>disablePjax=true</script>");
     }
 
 
@@ -76,6 +77,13 @@ class StatisticUserController extends Controller
     {
         $rows = array();
 
+        if ($request->filled('name'))
+        {
+            $users=User::with(["orders"])
+                ->where("name","like","%".$request->get("name")."%")
+                ->get();
+        }
+        else
         $users = User::with(["orders"])->get();
         $sum_row = ["总计", "", 0, 0.0, 0, 0];
         foreach ($users as $user) {
@@ -134,6 +142,8 @@ class StatisticUserController extends Controller
 
         });
         $form->setAction($action);
+        $form->text('name', '昵称')
+            ->default($this->request->get("name", ""));
         $form->select('orderBy', '排序方式')
             ->options([
                 "0" => "ID",
@@ -142,10 +152,10 @@ class StatisticUserController extends Controller
                 "4" => "退款次数",
                 "5" => "退款金额"
             ])
-            ->default($this->request->get("orderBy","0"));
-        $form->select("opt","顺序")
-            ->options(["asc"=>"正序","desc"=>"倒序"])
-            ->default($this->request->get("opt","asc"));
+            ->default($this->request->get("orderBy", "0"));
+        $form->select("opt", "顺序")
+            ->options(["asc" => "正序", "desc" => "倒序"])
+            ->default($this->request->get("opt", "asc"));
 
 //        $form->text("aaaa","bbb")->default(json_encode($this->request->toArray()));
         return $form;

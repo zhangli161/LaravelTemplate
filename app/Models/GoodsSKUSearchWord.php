@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class GoodsSKUSearchWord extends Model
 {
-	protected $table='goods_sku_search_words';
-	protected $fillable = ['search_words'];
-	protected $primaryKey='sku_id';
-	public function sku()
-	{
-		return $this->belongsTo(GoodsSKU::class, 'sku_id');
-	}
+    protected $table = 'goods_sku_search_words';
+    protected $fillable = ['search_words'];
+    protected $primaryKey = 'sku_id';
+    protected $casts = ['search_words' => 'array'];
+
+    public function sku()
+    {
+        return $this->belongsTo(GoodsSKU::class, 'sku_id');
+    }
 }

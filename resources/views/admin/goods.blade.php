@@ -3,71 +3,656 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Admin | 商品</title>
+    <link rel="stylesheet" href="{{url("vendor/laravel-admin/AdminLTE/bootstrap/css/bootstrap.min.css")}}   ">
+    <link rel="stylesheet" href="{{url("/vendor/laravel-admin/bootstrap-fileinput/css/fileinput.min.css?v=4.3.7")}}">
+    <link rel="stylesheet"
+          href="{{url("/vendor/laravel-admin/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css")}}">
+    <link rel="stylesheet" href="{{url("vendor/laravel-admin/AdminLTE/plugins/select2/select2.min.css")}}">
+    <link rel="stylesheet" href="{{url("vendor/laravel-admin/AdminLTE/dist/css/AdminLTE.min.css")}}">
+    <link rel="stylesheet" href="/css/goods.css">
+
     <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+
+
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="/lib/html5shiv.js"></script>
+    <script type="text/javascript" src="/lib/respond.min.js"></script>
+    <![endif]-->
+    {{--<link rel="stylesheet" type="text/css" href="/static/h-ui/css/H-ui.min.css"/>--}}
+    <link rel="stylesheet" type="text/css" href="/lib/Hui-iconfont/1.0.8/iconfont.min.css"/>
+    <!--[if lt IE 9]>
+    <link href="/static/h-ui/css/H-ui.ie.css" rel="stylesheet" type="text/css"/>
+    <![endif]-->
+    <!--[if IE 6]>
+    <script type="text/javascript" src="/lib/DD_belatedPNG_0.0.8a-min.js"></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+    <style type="text/css">
+        .ui-sortable .panel-header {
+            cursor: move
+        }
+
+
+    </style>
+
+    {{--<script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>--}}
 
 </head>
 <body>
 <div id="app" style="">
-    <div class="row">
-        {{--{!! \App\Http\Helpers\Form::button("aaa")->getView() !!}--}}
-        <div class="fields-group">
-            {!! \App\Http\Helpers\Form::text("aaa")->render() !!}
-            {!! \App\Http\Helpers\Form::number("bbb")->render() !!}
 
-            {!! \App\Http\Helpers\Form::textarea("ccc")->render() !!}
-            {!! \App\Http\Helpers\Form::switch("ddd")->render() !!}
-        </div>
-        <div>
-            ------------------------------------------------------
-        </div>
-        <div>
-            <p>spu_name</p>
-            <input v-model="spu_name" placeholder="编辑我……">
-            <p>消息是: @{{ spu_name }}</p>
-        </div>
-        <div>
-            <p>detail.content</p>
-            <input v-model="detail.content" placeholder="编辑我……">
-            <p>消息是: @{{ detail.content }}</p>
-        </div>
-        <div v-for="sku in skus">
-            <p>sku.sku_name</p>
-            <input v-model="sku.sku_name" placeholder="编辑我……">
-            <p>消息是: @{{ sku.sku_name }}</p>
-        </div>
-        <button onclick="addSKU()">添加SKU</button>
+    <div class="panel panel-default">
+        <div class="panel-header">表单</div>
+        <div class="panel-body">
+            @{{ JSON.stringify(spu)}}
 
-        <button onclick="submit()">提交</button>
+            <form action="{{url("/admin/goods")}}" method="post" class="form form-horizontal responsive" id="demoform">
+                {{csrf_field()}}
+                <div class="form-group">
+                    <label class="control-label col-sm-2 ">商品编号：</label>
+                    <div class="formControls col-xs-8">
+                        <input type="number" class="input-number form-control" placeholder="商品编号" name="spu_no"
+                               id="spu_no"
+                               autocomplete="off" v-model="spu.spu_no">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2 ">商品名称：</label>
+                    <div class="formControls col-xs-8">
+                        <input type="text" class="input-text form-control" placeholder="商品名称" name="spu_name"
+                               id="spu_name" v-model="spu.spu_name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2 ">商品描述：</label>
+                    <div class="formControls col-xs-8">
+                        <textarea cols="" rows="" class="textarea form-control" name="desc" id="desc"
+                                  placeholder="" v-model="spu.desc"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2 ">封面图片：</label>
+                    <div class="formControls col-xs-8">
+                        <input type="file" class="form-control thumb" name="thumb" id="thumb" v-bind="spu.thumb"
+                               data-initial-preview="{{$spu->thumb}}" data-initial-caption="{{basename($spu->thumb)}}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-sm-2 ">上架状态：</label>
+                    <div class="formControls col-xs-8">
+
+                        <input type="checkbox" class="status la_checkbox"/>
+                        <input type="hidden" class="status" name="status" v-model="spu.status"/>
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2 ">商品分类：</label>
+                    <div class="formControls col-xs-8">
+
+                        {{--<input type="hidden" name="cate_id" v-model="spu.cate_id"/>--}}
+
+                        <select class="form-control cate_id" style="width: 100%;" name="cate_id" v-model="spu.cate_id">
+                            <option value=""></option>
+                            @foreach($cates=\App\Models\Category::where('parentid', '1')->get()->pluck('id','name') as $name=>$id)
+                                <option value="{{$id}}">{{$name}}</option>
+                            @endforeach
+                        </select>
+
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2 ">场景分类：</label>
+                    <div class="formControls col-xs-8">
+                        @foreach($cates=\App\Models\Category::where('parentid', '2')->get()->pluck('id','name') as $name=>$id)
+                            <label class='input_style checkbox_bg'>
+                                <input id="sence{{$id}}" type="checkbox" name="sence[]" v-model="spu.sence_ids"
+                                       value="{{$id}}">
+                                {{$name}}
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2 ">图文详情：</label>
+                    <div class="formControls col-xs-8">
+                        <textarea id="detail_content" name="detail[content]">@{{ spu.detail.content }}</textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-sm-2 ">规格：</label>
+                    <div class="formControls col-xs-8">
+                        {{--<div class="form-control " style="width: 100%">--}}
+                        {{--<span class="control-label" v-for="spec in spu.specs">@{{ spec.spec_name }}</span>--}}
+                        {{--</div>--}}
+
+                        <select id="add-spec-select" multiple class="form-control " style="display: inline;width: 100%;"
+                        >
+                            {{--<option value=""></option>--}}
+                            {{--<option v-for="spec in specs" v-show="spu.spec_ids.indexOf(spec.id)==-1"--}}
+                            {{--value="@{{spec.id}}">@{{spec.spec_name}}--}}
+                            {{--</option>--}}
+                            @foreach($specs as $spec)
+                                <option
+                                        value="{{$spec->id}}">{{$spec->spec_name}}
+                                </option>
+                            @endforeach
+                        </select>
+                        <input id="addSpec" class="btn radius btn-secondary pull-right form-control margin btn-xs"
+                               type="button" value="添加"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-sm-2 ">子类商品：</label>
+                    <div class="formControls col-xs-8">
+                        <input id="addSKU" class="btn radius btn-secondary pull-right form-control margin btn-xs"
+                               type="button" value="添加SKU">
+                        <table class="table table-bordered table-hover">
+                            <tr class="text-danger">
+                                <th class="text-c">子商品名称</th>
+                                {{--<th class="text-c">规格</th>--}}
+                                @foreach($specs as $spec)
+                                    {{--@{{spu.spec_ids.indexOf('1')>=0}}--}}
+                                    <th class="text-c"
+                                        v-if="spu.spec_ids.indexOf('{{$spec->id}}')>=0">{{$spec->spec_name}}</th>
+                                    {{--<div class="form-group" v-if="spu.spec_ids.indexOf('{{$spec->id}}')>=0">--}}
+                                @endforeach
+                                <th class="text-c">价格</th>
+                                <th class="text-c">库存</th>
+                                <th class="text-c">操作</th>
+                            </tr>
+                            <tr class="text-c" v-for="sku in spu.skus">
+                                <td class="text-c">@{{ sku.sku_name }}</td>
+                                @foreach($specs as $spec)
+                                    <td class="text-c" v-if="spu.spec_ids.indexOf('{{$spec->id}}')>=0">
+                                        {{ $spec->spec_name }}
+                                    </td>
+                                @endforeach
+                                <td class="text-c">@{{ sku.price }}</td>
+                                <td class="text-c">@{{ sku.stock }}</td>
+                                <td class="text-c">
+                                    <span class="btn btn-danger btn-sm" v-on:click="deleteSKU(sku)">
+                                        删除
+                                    </span>
+                                    <span class="btn btn-primary btn-sm" v-on:click="editSKU(sku)">
+                                        编辑
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <div class="col-xs-8 col-xs-offset-2">
+                        <div class="btn-group pull-right">
+                            <button class="btn btn-primary">提交</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <div id="modal-global" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" style="width: 90%">
+            <div class="modal-content radius ">
+                <div class="modal-header">
+                    <h3 class="modal-title">SKU</h3>
+                    <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+                </div>
+                <div class="modal-body ">
+                    <!-- 模态框头部 -->
+                    @{{ JSON.stringify(editingSKU) }}
+                    <form class="form form-horizontal responsive">
+
+
+                        <div class="form-group">
+                            <span class="control-label col-sm-2 ">子商品编号</span>
+                            <div class="formControls col-xs-8">
+                                <input type="number" class="form-control" placeholder="" v-model="editingSKU.sku_no">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <span class="control-label col-sm-2 ">子商品名称</span>
+                            <div class="formControls col-xs-8">
+                                <input type="text" class="form-control" placeholder="" v-model="editingSKU.sku_name">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <span class="control-label col-sm-2 ">价格</span>
+                            <div class="formControls col-xs-8">
+                                <input type="text" class="form-control" placeholder="" v-model="editingSKU.price">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <span class="control-label col-sm-2 ">库存</span>
+                            <div class="formControls col-xs-8">
+                                <input type="text" class="form-control" placeholder="" v-model="editingSKU.stock">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <span class="control-label col-sm-2 ">减库存时间</span>
+
+                            <div class="formControls col-xs-8">
+                                <lable>
+                                    <i class='input_style radio_bg'><input type="radio" name="hot"
+                                                                           v-model="editingSKU.stock_type"
+                                                                           value="0"></i>
+                                    付款减库存
+                                </lable>
+                                <lable>
+                                    <i class='input_style radio_bg'><input type="radio" name="hot"
+                                                                           v-model="editingSKU.stock_type"
+                                                                           value="1"></i>
+                                    下单减库存
+                                </lable>
+                            </div>
+                        </div>
+
+                        <div class="category form-group">
+                            <label class="control-label col-sm-2 " for="sel1">是否包邮</label>
+                            <div class="formControls col-sm-8 ">
+                                <input type="checkbox" class="postage la_checkbox"/>
+                                <input type="hidden" class="postage" id="postage" v-model="editingSKU.postage"/>
+                            </div>
+                        </div>
+
+                        {{--<div class="form-group">--}}
+                        {{--<span class="control-label col-sm-2 ">排序</span>--}}
+                        {{--<input type="text" class="form-control" placeholder="">--}}
+                        {{--</div>--}}
+
+                        <div class="form-group">
+                            <span class="control-label col-sm-2 ">搜索关键词</span>
+                            <div class="formControls col-sm-8 ">
+                                <select class="form-control search_word_search_words_" style="width: 100%;"
+                                        multiple="multiple" data-placeholder="输入 搜索关键词" id="searchwords-select"
+                                >
+                                    {{--<option value="editingSKU.sku_name" selected>aaa</option>--}}
+                                    {{--<option v-for="word in editingSKU.search_word.search_words">@{{ word }}</option>--}}
+                                    {{--<option v-for="word in editingSKU.search_word.search_words"  selected>@{{ word }}</option>--}}
+                                </select>
+                                <input type="hidden" id="search_word" v-model="editingSKU.search_word.search_words"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="control-label col-sm-2 ">商品规格</div>
+                            <div class="formControls col-sm-8 ">
+                                @foreach($specs as $spec)
+                                    {{--@{{spu.spec_ids.indexOf('1')>=0}}--}}
+                                    <div class="form-group" v-if="spu.spec_ids.indexOf('{{$spec->id}}')>=0">
+                                        <label class="control-label col-sm-1 pull-left ">{{$spec->spec_name}}：</label>
+                                        <div class="formControls col-xs-11">
+                                            <select class="form-control" style="display: inline;width: 100%;"
+                                                    v-model="editingSKU.spec_value_ids"
+                                            >
+                                                <option value=""></option>
+                                                @foreach($spec->values as $value)
+                                                    <option value="{{$value->id}}">{{$value->value}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <span class="control-label col-sm-2 ">商品图片</span>
+                            <div class="formControls col-xs-8">
+                                <input type="file" multiple class="sku_thumb" id="sku_albums"
+                                       {{--v-bind="albums"--}}
+                                       {{--data-initial-preview="['{{$spu->thumb}}']"--}}
+                                       data-show-caption="true"
+                                        {{--data-initial-caption="{{basename($spu->thumb)}}"--}}
+                                >
+                            </div>
+                            <div class="col-xs-12">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-2 ">配套产品：</label>
+                            <div class="formControls col-xs-8">
+
+                                {{--<input type="hidden" name="cate_id" v-model="spu.cate_id"/>--}}
+
+                                <select class="form-control matched_skus" style="width: 100%;" multiple="multiple"
+                                        name="matched_skus[]" v-model="editingSKU.matched_sku_ids">
+                                    <option value=""></option>
+                                    @foreach($skus=\App\Models\GoodsSKU::all()->pluck('id','sku_name') as $name=>$id)
+                                        <option value="{{$id}}">{{$name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        {{--@{{ JSON.stringify(editingSKU.matched_sku_ids) }}--}}
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-2 ">相似产品：</label>
+                            <div class="formControls col-xs-8">
+
+                                {{--<input type="hidden" name="cate_id" v-model="spu.cate_id"/>--}}
+
+                                <select class="form-control similar_skus" style="width: 100%;" multiple="multiple"
+                                        name="similar_sku_ids[]"
+                                        v-model="editingSKU.similar_sku_ids">
+                                    <option value=""></option>
+                                    @foreach($skus=\App\Models\GoodsSKU::all()->pluck('id','sku_name') as $name=>$id)
+                                        <option value="{{$id}}">{{$name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        {{--@{{ JSON.stringify(editingSKU.similar_sku_ids) }}--}}
+
+                    </form>
+                </div>
+
+
+            {{--<div class="category form-group">--}}
+            {{--<label class="control-label col-sm-2 " for="sel1">是否包邮</label>--}}
+            {{--<div class="formControls col-sm-8 ">--}}
+            {{--嗷嗷嗷--}}
+            {{--</div>--}}
+            {{--</div>--}}
+
+            <!-- 模态框底部 -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" v-on:click="SKU_submit()">确认</button>
+                </div>
+            </div>
+
+
+            {{--<div class="modal-footer">--}}
+            {{--<button class="btn btn-primary">确定</button>--}}
+            {{--<button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>--}}
+            {{--</div>--}}
+        </div>
     </div>
 </div>
+</div>
 
+<script type="text/javascript" src="/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="/lib/jquery-ui/1.9.1/jquery-ui.min.js"></script>
+{{--<script type="text/javascript" src="/static/h-ui/js/H-ui.js"></script>--}}
+<script src="{{url("vendor/laravel-admin/AdminLTE/bootstrap/js/bootstrap.min.js")}}"></script>
+<script type="text/javascript" src="/lib/jquery.SuperSlide/2.1.1/jquery.SuperSlide.min.js"></script>
+<script type="text/javascript" src="/lib/jquery.validation/1.14.0/jquery.validate.min.js"></script>
+<script type="text/javascript" src="/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="/lib/jquery.validation/1.14.0/messages_zh.min.js"></script>
+<script src="{{url("vendor/laravel-admin/bootstrap-fileinput/js/plugins/canvas-to-blob.min.js?v=4.3.7")}}"></script>
+<script src="{{url("vendor/laravel-admin/bootstrap-fileinput/js/fileinput.min.js?v=4.3.7")}}"></script>
+<script src="{{url("vendor/laravel-admin/bootstrap-switch/dist/js/bootstrap-switch.min.js")}}"></script>
+<script src="{{url("vendor/ueditor/ueditor.config.js")}}"></script>
+<script src="{{url("vendor/ueditor/ueditor.all.js")}}"></script>
+<script src="{{url("vendor/laravel-admin/AdminLTE/plugins/select2/select2.full.min.js")}}"></script>
 <script>
-    var data = {!! $spu->toJson() !!}
-    console.log(data, data.skus[0])
-    new Vue({
-        el: '#app',
-        data: data
-    })
+    const newSKU = {
+        sku_no: '',
+        sku_name: '',
+        order: '',
+        postage: '1',
+        price: '',
+        spu_id: '',
+        stock: "0",
+        stock_type: "0",
+        spec_value_ids:[],
+        search_word: {
+            search_words: []
+        },
+        albums: [],
+        matched_sku_ids: [],
+        similar_sku_ids: []
+    }
+    var data = {
+        editingSKU: newSKU,
+        albums: ['{{$spu->thumb}}']
+    };
 
-    function addSKU() {
-        data.skus.push({
-            sku_no: '',
-            sku_name: '',
-            order: '',
-            postage: '',
-            price: '',
-            spu_id: '',
-            stock: "",
-            stock_type: ""
+
+    function putSKUToModal(sku) {
+        data.editingSKU = sku;
+        console.log("编辑", sku);
+        $("#searchwords-select").empty()
+        for (var i in sku.search_word.search_words) {
+            $("#searchwords-select").append("<option value=\"" + sku.search_word.search_words[i]
+                + "\" selected>" + sku.search_word.search_words[i] + "</option>");
+        }
+        initAlbums()
+        $(".matched_skus").select2("val", sku.matched_sku_ids);
+        $(".similar_skus").select2("val", sku.similar_sku_ids);
+        $("#modal-global").modal("show")
+    };
+    $(function () {
+        var spu = {!! $spu->toJson() !!};
+        if (!spu.detail) {
+            spu.detail = {content: ""}
+        }
+        var specs ={!! $specs->toJson() !!};
+        data.spu = spu;
+        data.specs = specs;
+        var new_spu_id = -1;
+
+
+        console.log(JSON.stringify(data), data.specs, data.spu.specs)
+        var vm = new Vue({
+            el: '#app',
+            data: data,
+            methods: {
+                deleteSKU: function (sku) {
+                    for (var i in spu.skus) {
+                        if (spu.skus[i].id == sku.id) {
+                            spu.skus.splice(i, 1);
+                            return;
+                        }
+                    }
+                },
+                editSKU: function (sku) {
+                    for (var i in spu.skus) {
+                        if (spu.skus[i].id == sku.id) {
+                            putSKUToModal(spu.skus[i])
+                        }
+                    }
+                },
+                SKU_submit: function () {
+                    console.log("编辑完成", data.editingSKU, $("#sku_albums").val())
+                }
+            }
+        })
+
+        $("#addSKU").on('click', function () {
+            putSKUToModal(newSKU)
+        });
+
+
+        $("input.thumb").fileinput({
+            "language": 'zh',
+            "overwriteInitial": true,
+            "initialPreviewAsData": true,
+            "browseLabel": "\u6d4f\u89c8",
+            "showRemove": false,
+            "showUpload": false,
+            "deleteExtraData": {
+                "thumb": "_file_del_",
+                "_file_del_": "",
+                "_token": "iu5l6nSoclwY25Ygw4MsH6rNOwQVBf4lG2Zlojak",
+                "_method": "PUT"
+            },
+            "deleteUrl": "http:\/\/www.calex-china.com\/admin\/",
+            "allowedFileTypes": ["image"]
+        });
+
+        $('.status.la_checkbox').bootstrapSwitch({
+            size: 'small',
+            state: (data.spu.status == 1),
+            width: 80,
+            onText: '上架',
+            offText: '下架',
+            onColor: 'primary',
+            offColor: 'default',
+            onSwitchChange: function (event, state) {
+                $(event.target).closest('.bootstrap-switch').next().val(state ? '1' : '0').change();
+            }
+        });
+
+        $('.postage.la_checkbox').bootstrapSwitch({
+            size: 'small',
+            state: (data.editingSKU.postage == 1),
+            onText: '是',
+            offText: '否',
+            onColor: 'primary',
+            offColor: 'default',
+            onSwitchChange: function (event, state) {
+                console.log("开关情况", state)
+                data.editingSKU.postage = (state ? '1' : '0')
+                // $(event.target).closest('.bootstrap-switch').next().val(state ? '1' : '0').change();
+            }
+        });
+
+        $("#add-spec-select")
+            .select2({
+                "multiple": true,
+                "allowClear": true,
+                "placeholder": {"id": "", "text": ""},
+
+            })
+            .on("change", function (e) {
+                console.log("add-spec-select", $(this).val(), typeof (data.spu.spec_ids))
+                data.spu.spec_ids = $(this).val();
+                data.spu.specs = specs.filter(function (item) {
+                    console.log("item", item, item.id, data.spu.spec_ids.indexOf("" + item.id))
+                    return data.spu.spec_ids.indexOf("" + item.id) >= 0;
+                });
+                console.log("规格", specs, data.spu.specs)
+            }).select2("val", data.spu.spec_ids);
+
+
+        $(".cate_id").select2({"allowClear": true, "placeholder": {"id": "", "text": ""}});
+
+        //配套产品
+        $(".matched_skus").select2({
+            "multiple": true,
+            "allowClear": true,
+            "placeholder": {"id": "", "text": ""}
+        }).on("change", function (e) {
+            console.log("matched_skus", $(this).val())
+            data.editingSKU.matched_sku_ids = $(this).val();
+        });
+        //相似产品
+        // $(".similar_skus").select2({"allowClear": true,});
+        $(".similar_skus").select2({
+            "multiple": true,
+            "allowClear": true,
+            "placeholder": {"id": "", "text": ""}
+        }).on("change", function (e) {
+            console.log("similar_skus值发生改变", $(this).val())
+            data.editingSKU.similar_sku_ids = $(this).val();
+        });
+
+        window.UEDITOR_CONFIG.serverUrl = '/ueditor/server';
+        UE.delEditor("detail_content");
+
+        var ue_detail_content = UE.getEditor('detail_content', {"initialFrameHeight": 400});
+        console.log("aaa")
+        ue_detail_content.ready(function () {
+            console.log("Editor is ready")
+            ue_detail_content.execCommand('serverparam', '_token', 'oO5LqwGRVaMfvwNy5aTnRsgZ48AOXJccvpksnbNP');
+        });
+
+        $(".search_word_search_words_").select2({
+            tags: true,
+            tokenSeparators: [',']
+        });
+
+        $("#searchwords-select").on("change", function () {
+            console.log("搜索词", $(this).val())
+            data.editingSKU.search_word.search_words = $(this).val();
+            $("#search_word").val($(this).val())
+        })
+
+
+    });
+
+    function initAlbums() {
+        var albs = data.editingSKU.albums.map(function (alb) {
+            if (isURL(alb.url))
+                return alb.url;
+            else
+                return "{{\Illuminate\Support\Facades\Storage::disk('admin')->url("/")}}" + alb.url;
+        })
+        console.log("初始值", albs)
+        $("input.sku_thumb").fileinput('destroy').fileinput({
+            "language": 'zh',
+            "uploadUrl": '/admin/upload', //上传的地址
+            'uploadExtraData': {
+                _token: "{{csrf_token()}}",
+                "_method": "PUT"
+            },
+            "overwriteInitial": true,
+            "initialPreviewAsData": true,
+            "browseLabel": "\u6d4f\u89c8",
+            "showRemove": false,
+            "showUpload": false,
+            "maxFilesNum": 10,//上传最大的文件数量
+            {{--"deleteExtraData": {--}}
+                    {{--"thumb": "_file_del_",--}}
+                    {{--"_file_del_": "",--}}
+                    {{--_token:"{{csrf_token()}}",--}}
+                    {{--"_method": "PUT"--}}
+                    {{--},--}}
+                    {{--"deleteUrl": "http:\/\/www.calex-china.com\/admin\/",--}}
+            "allowedFileTypes": ["image"],
+            'initialPreview': albs,
+
+        }).on('filepreupload', function (event, data, previewId, index) {     //上传中
+            var form = data.form, files = data.files, extra = data.extra,
+                response = data.response, reader = data.reader;
+            console.log('文件正在上传');
+        }).on("fileuploaded", function (event, data_r, previewId, index) {    //一个文件上传成功
+            console.log('文件上传成功！' + data_r.id, event, data, previewId, index);
+            if (data_r.response.result) {
+                data.editingSKU.albums.push({id: previewId, url: data_r.response.ret});
+            }
+        }).on('fileerror', function (event, data, msg) {  //一个文件上传失败
+            console.log('文件上传失败！' + data.id);
+        }).on('filebatchselected', function (event, data_1, msg) {//选择文件后处理事件
+            console.log('文件选择完毕', event, data_1, msg)
+            data.editingSKU.albums = [];
+            $(this).fileinput("upload")
+        }).on('filedeleted', function (event, key) {
+            console.log('已删除', enent, key);
+        }).on('filepredelete', function (event, key) {
+            console.log('预删除 ', event, key);
         });
     }
 
-    function submit() {
-        console.log(data);
-        $.ajax(window.location.href, {
-            data: data
-        })
+    function isURL(str_url) {// 验证url
+        var strRegex = "^((https|http|ftp|rtsp|mms)?://)"
+        // + "?(([0-9a-z_!~*'().&=+$%-]+: )?[0-9a-z_!~*'().&=+$%-]+@)?" // ftp的user@
+        // + "(([0-9]{1,3}\.){3}[0-9]{1,3}" // IP形式的URL- 199.194.52.184
+        // + "|" // 允许IP和DOMAIN（域名）
+        // + "([0-9a-z_!~*'()-]+\.)*" // 域名- www.
+        // + "([0-9a-z][0-9a-z-]{0,61})?[0-9a-z]\." // 二级域名
+        // + "[a-z]{2,6})" // first level domain- .com or .museum
+        // + "(:[0-9]{1,4})?" // 端口- :80
+        // + "((/?)|" // a slash isn't required if there is no file name
+        // + "(/[0-9a-z_!~*'().;?:@&=+$,%#-]+)+/?)$";
+        var re = new RegExp(strRegex);
+        return re.test(str_url);
     }
+
+
 </script>
 </body>
 </html>

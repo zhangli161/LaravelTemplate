@@ -24,10 +24,20 @@ class StatisticOrderController extends Controller
     use HasResourceActions;
 
     private $request;
-    public function __construct(Request $request)
-    {
-        $this->request=$request;
-    }
+    private $model;
+
+//    public function __construct(Request $request)
+//    {
+//        $this->type=$request->get("type");
+//        $this->region_id=$request->get("region_id");
+//        $this->date_from=$request->get("date_from");
+//        $this->date_to=$request->get("date_to");
+//
+//        $this->request = $request;
+//
+//        $this->model = self::getModel($request);
+////        dd($request);
+//    }
 
     /**
      * Index interface.
@@ -35,15 +45,18 @@ class StatisticOrderController extends Controller
      * @param Content $content
      * @return Content
      */
-    public function index(Content $content, Request $request)
+    public function index( Request $request)
     {
+        $content=new Content();
+//        $this->request=$request;
+//        dd($request->all());
         return $content
             ->header('订单统计')
-//            ->description('')
-            ->row($this->chartform("/admin/statistic/order"))
+            ->row($this->chartform($request,"/admin/statistic/order"))
             ->row($this->grid($request))
-            ->row($this->count_chart($content,$request))
-            ->row($this->payment_chart($content,$request));
+            ->row($this->count_chart($content, $request))
+            ->row($this->payment_chart($content, $request))
+            ->row("<script>disablePjax=true</script>");
     }
 
 
@@ -62,14 +75,17 @@ class StatisticOrderController extends Controller
 
         $titles = ['时间', '地区', "订单总数", "订单总金额"];
 
-        $region_id = $request->filled("provience") ?
-            $request->filled("city") ? $request->get("city") : $request->get("provience")
-            : "0";//request中获取或全国
+        $region_id = $request->get("region_id", '0');
+//            $request->filled("region_id") ? (
+//        $request->filled("city") ? $request->get("city") : $request->get("region_id"))
+//            : "0";//request中获取或全国
         $region = NativePalceReagionManager::getById($region_id);
 
+//        return dump($region_id);
         $rows = array();
         $type = $request->filled("type") ? $request->get("type") : 2;
 
+//        dd($region_id,$type);
         if ($type == "0") {
             $model_group = $model->groupBy(function ($item) {
                 return date("Y-m-d", strtotime($item->created_at));
@@ -88,7 +104,7 @@ class StatisticOrderController extends Controller
             });
             $dates = getDatesBetween($model->min('created_at'), $model->max('created_at'), 2);
             foreach ($dates as $key => $lable) {
-                array_push($rows,new Collection( [$lable,
+                array_push($rows, new Collection([$lable,
                     $region ? NativePalceReagionManager::getFullAddress($region->region_id) : "全国",
                     $model_group->get($lable, new Collection())->count(),
                     round($model_group->get($lable, new Collection())->sum('payment'), 2)]));
@@ -113,14 +129,14 @@ class StatisticOrderController extends Controller
 
     private static function getModel(Request $request)
     {
-        $query = Order::query()->where("status","5");
+        $query = Order::query()->where("status", "5");
 
         if ($request->filled("date_from") && $request->filled("date_to")) {
             $query->where("created_at", ">=", $request->get("date_from"));
             $query->where("created_at", '<=', $request->get("date_to"));
         }
-        $region_id = $request->filled("provience") ?
-            $request->filled("city") ? $request->get("city") : $request->get("provience")
+        $region_id = $request->filled("region_id") ?
+            $request->filled("city") ? $request->get("city") : $request->get("region_id")
             : "0";//request中获取或全国
         if ($region_id != "0")
             $query->whereIn("receiver_region_id",
@@ -135,7 +151,7 @@ class StatisticOrderController extends Controller
         $model = self::getModel($request);
         //如果未获取的数据
         if ($model->count() < 1)
-            return new Box('订单数量折线图',"未找到对应数据！");
+            return new Box('订单数量折线图', "未找到对应数据！");
 //            return $content
 //                ->header('订单数量折线图')
 ////			->description('折线图')
@@ -147,6 +163,7 @@ class StatisticOrderController extends Controller
         $dates = array();
         $datas = array();
         $type = $request->filled("type") ? $request->get("type") : 2;
+        $lables=[];
         if ($type == "0") {
             $model_group = $model->groupBy(function ($item) {
                 return date("Y-m-d", strtotime($item->created_at));
@@ -180,13 +197,13 @@ class StatisticOrderController extends Controller
 
             $description = "年统计";
         }
-        return new Box('订单数量折线图',ChartManager::line($lables, '订单数量', $datas,"count"));
+        return new Box('订单数量折线图', ChartManager::line($lables, '订单数量', $datas, "count"));
 
-        return $content
-            ->header('订单数量折线图')
-            ->description($description)
-            ->row(ChartManager::line($lables, '订单数量', $datas))
-            ->row($this->chartform("/admin/chart/order/count"));
+//        return $content
+//            ->header('订单数量折线图')
+//            ->description($description)
+//            ->row(ChartManager::line($lables, '订单数量', $datas))
+//            ->row($this->chartform("/admin/chart/order/count"));
     }
 
     public function payment_chart(Content $content, Request $request)
@@ -194,7 +211,7 @@ class StatisticOrderController extends Controller
         $model = self::getModel($request);
         //如果未获取的数据
         if ($model->count() < 1)
-            return new Box('订单金额折线图',"未找到对应数据");
+            return new Box('订单金额折线图', "未找到对应数据");
 //
 //        return $content
 //                ->header('订单金额折线图')
@@ -240,7 +257,7 @@ class StatisticOrderController extends Controller
 
             $description = "年统计";
         }
-        return new Box('订单金额折线图',ChartManager::line($lables, '订单金额', $datas,"payment"));
+        return new Box('订单金额折线图', ChartManager::line($lables, '订单金额', $datas, "payment"));
 
 //        return $content
 //            ->header('订单金额折线图')
@@ -249,7 +266,7 @@ class StatisticOrderController extends Controller
 //            ->row($this->chartform("/admin/chart/order/payment"));
     }
 
-    protected function chartform($action)
+    protected function chartform(Request $request,$action)
     {
         $form = new Form(new StatisticOrder);
         $form->setTitle("过滤");
@@ -276,21 +293,21 @@ class StatisticOrderController extends Controller
         $form->setAction($action);
         $form->select('type', '类型')
             ->options(["0" => "每日统计", "2" => "每月统计", "4" => "每年统计"])
-            ->default($this->request->filled("type")?$this->request->get("type"):2);
+            ->default($request->filled("type") ? $request->get("type") : 2);
 
-        $proviences = NativePalceReagionManager::getProviencesAndCitys();
+        $region_ids = NativePalceReagionManager::getProviencesAndCitys();
         $names = [];
-        foreach ($proviences as $region) {
+        foreach ($region_ids as $region) {
             array_push($names, NativePalceReagionManager::getFullAddress($region->region_id, " "));
         }
-        $options = array_combine($proviences->pluck("region_id")->toArray(), $names);
+        $options = array_combine($region_ids->pluck("region_id")->toArray(), $names);
         $options[0] = "全国";
         ksort($options);
 
 
-        $form->select('provience', '地区')
+        $form->select('region_id', '地区')
             ->options($options)
-            ->default(\request('provience') | 0);
+            ->default($request->get('region_id','0') );
 //            ->load('city', '/api/admin/region/getByParentid');
 //        $form->select('city', '市')
 //            ->options($options);
@@ -298,7 +315,23 @@ class StatisticOrderController extends Controller
         $form->date('date_from', "开始时间")->default(\request('date_from'));
         $form->date('date_to', "结束时间")->default(\request('date_to'));
 
+        $form->hidden('after-save')->default('1');
+        $form->saved(function (){
+            dd( "aaa");
+        });
+        $form->saving(function (){
+            dd("bbb");
+        });
 //        $form->text("aaaa","bbb")->default(json_encode($this->request->toArray()));
         return $form;
+    }
+
+    public function post(Request $request)
+    {
+//        return "hahaaha";
+//        dd($request->all());
+//        exit(1);
+        echo ($this->index($request)->render()) ;
+        exit(1);
     }
 }

@@ -220,7 +220,12 @@ function copyText(item) {
         $show->created_at('创建时间');
 //        $show->updated_at('上次修改时间');
         $show->skus("订单商品", function ($sku) {
-//            $sku->id("订单商品id");
+            $sku->disableCreateButton();//新增
+            $sku->disableExport();//导出
+            $sku->disableRowSelector();//CheckBox
+
+
+            $sku->id("订单商品id");
             $sku->sku_id("商品id");
             $sku->column("sku.sku_no", "SKU编号");
 
@@ -256,6 +261,13 @@ function copyText(item) {
                 "2" => "已收货",
             ]);
             $show->updated_at("物流更新时间");
+
+            $show->panel()
+                ->tools(function ($tools) {
+                    $tools->disableEdit();
+                    $tools->disableList();
+                    $tools->disableDelete();
+                });
         });
         $show->xcx_pay('支付信息', function ($show) {
             $show->total_fee("支付金额")->as(function ($fee) {
@@ -265,6 +277,13 @@ function copyText(item) {
             $show->trade_state("订单状态");
             $show->trade_state_desc("描述");
             $show->note("备注");
+
+            $show->panel()
+                ->tools(function ($tools) {
+                    $tools->disableEdit();
+                    $tools->disableList();
+                    $tools->disableDelete();
+                });
         });
 
 

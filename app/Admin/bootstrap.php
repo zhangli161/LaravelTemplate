@@ -19,6 +19,8 @@
  */
 use Encore\Admin\Facades\Admin;
 Encore\Admin\Form::forget(['map', 'editor']);
+Admin::disablePjax();
 Admin::navbar(function (\Encore\Admin\Widgets\Navbar $navbar) {
     $navbar->left(view("admin.totop"));
+//    $navbar->left("<script src=\"https://cdn.staticfile.org/vue/2.2.2/vue.min.js\"></script>");
 });

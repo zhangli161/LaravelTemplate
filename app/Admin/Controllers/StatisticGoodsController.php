@@ -47,6 +47,7 @@ class StatisticGoodsController extends Controller
             ->row($this->chartform("/admin/statistic/goods"))
             ->row($this->count_chart($content,$request))
             ->row($this->payment_chart($content,$request))
+            ->row("<script>disablePjax=true</script>")
             ;
     }
 

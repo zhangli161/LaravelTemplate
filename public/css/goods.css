@@ -1,0 +1,9 @@
+@charset "UTF-8";
+.bootstrap-switch-handle-off{
+    word-wrap: normal !important;
+    word-break: normal !important;
+}
+.bootstrap-switch-handle-on{
+    word-break: normal !important;
+    word-wrap: normal !important
+}

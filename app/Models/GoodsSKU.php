@@ -35,8 +35,7 @@ class GoodsSKU extends Model
     //规格值
     public function spec_values()
     {
-        return $this->belongsToMany(GoodsSpecValue::class, 'goods_sku_spec_value', 'sku_id', 'spec_value_id')
-            ->withTimestamps();
+        return $this->belongsToMany(GoodsSpecValue::class, 'goods_sku_spec_value', 'sku_id', 'spec_value_id');
     }
 
 

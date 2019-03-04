@@ -38,4 +38,9 @@ class ChartManager
             "width" => $width,
             "height" => $height]);
     }
+
+//    public static function form($url = '')
+//    {
+//        return view('admin.form');
+//    }
 }

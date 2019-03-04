@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\OrderRefund;
 use App\Http\Controllers\Controller;
 use App\Models\StatisticOrder;
+use App\User;
 use Encore\Admin\Controllers\HasResourceActions;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
@@ -103,6 +104,9 @@ class OrderRefundController extends Controller
 //                3 => " 退款完成",
                 4 => "驳回"
             ]);
+            $filter->date('created_at','申请时间');
+            $filter->equal('order.user_id',"订单所有者")
+                ->select(User::all()->pluck('name','id'));
         });
         $grid->id('Id');
         $grid->order_id('关联订单id');
