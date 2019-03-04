@@ -18,6 +18,7 @@ use App\Models\CouponDistributeMethod;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CouponController
 {
@@ -69,7 +70,7 @@ class CouponController
         $coupon = CouponBenefit::query()
             ->with(["coupon", "content"])
             ->findOrFail($request->get("id"));
-
+        $coupon->message_image=Storage::disk("admin")->url("$coupon->message_image");
         if ($coupon->date_form > now() || $coupon->date_to < now())
             return ApiResponse::makeResponse(false, "不在活动时间内", ApiResponse::UNKNOW_ERROR);
 
