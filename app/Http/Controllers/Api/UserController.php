@@ -117,7 +117,7 @@ class UserController extends Controller
 
     public static function credit_record()
     {
-        return ApiResponse::makeResponse(true, Auth::user()->credit_records, ApiResponse::SUCCESS_CODE);
+        return ApiResponse::makeResponse(true, Auth::user()->credit_records()->orderBy("created_at","desc")->get(), ApiResponse::SUCCESS_CODE);
     }
 
     public static function bindAgent(Request $request)

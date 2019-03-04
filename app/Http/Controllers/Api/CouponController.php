@@ -27,6 +27,7 @@ class CouponController
         $coupons = CouponDistributeMethod::query()
             ->where('method', 1)
             ->where("stock", "!=", "0")
+//            ->whereDate()
             ->with("coupon")
             ->paginate();
 
