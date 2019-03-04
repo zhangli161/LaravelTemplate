@@ -5,6 +5,7 @@ namespace App\Console;
 use App\Components\AgentManager;
 use App\Components\GoodsBenefitManager;
 use App\Components\OrderManager;
+use App\Components\UserCouponManager;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -41,6 +42,7 @@ class Kernel extends ConsoleKernel
         //每小时执行
         $schedule->call(function () {
             AgentManager::doCash_all();
+            UserCouponManager::checkCoupons();
         })->hourly();
 
         //每天凌晨3点执行

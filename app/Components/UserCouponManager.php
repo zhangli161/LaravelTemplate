@@ -191,4 +191,18 @@ class UserCouponManager
             $coupon->delete();
         }
     }
+
+    public static function checkCoupons(){
+        $coupons = Coupon::with('distribute_methods')
+            ->whereDate('expiry_date','<=',now())
+            ->get();
+        foreach ($coupons as $coupon) {
+//            $coupon = new  Coupon();
+            $coupon->distribute_methods()->each(function ($method) {
+                $method->update(['method' => 0]);
+                $method->save();
+//                dd($method);
+            });
+        }
+    }
 }

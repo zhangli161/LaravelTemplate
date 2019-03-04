@@ -124,7 +124,7 @@ class CouponController extends Controller
 		$show->created_at('创建时间');
 		$show->updated_at('上次修改时间');
 		$show->distribute_methods('发放方式', function ($grid) {
-			$grid->method('发放方式')->using([1 => '积分兑换']);
+			$grid->method('发放方式')->using([0=>"失效",1 => '积分兑换']);
 			$grid->price('价格');
 			
 			$grid->disableFilter();//筛选
@@ -170,7 +170,7 @@ class CouponController extends Controller
 		
 		})->tab('发放方式', function ($form) {
 			$form->hasMany('distribute_methods', '发放方式', function (Form\NestedForm $form) {
-				$form->select('method', '发放方式')->options([1 => '积分兑换'])->default(1);
+				$form->select('method', '发放方式')->options([0=>"失效",1 => '积分兑换'])->default(1);
 				$form->decimal('price', '价格');
 				$form->switch('send_message', '发送系统消息');
 				$form->number('stock', '库存限制')->help('-1为无限');
