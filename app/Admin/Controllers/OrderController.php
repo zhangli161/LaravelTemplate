@@ -251,8 +251,8 @@ function copyText(item) {
             $sku->id("退款信息")->display(function ($order_sku_id) {
 
 //                dd($refund);
-                return OrderRefund::where('order_sku_id',$order_sku_id)->notExists() ? '<lable class="label label-success">无</lable>' :
-                    '<a class="label label-danger" href="/admin/refund/order?order_sku_id='.$order_sku_id.'">有</a>';
+                return OrderRefund::where('order_sku_id',$order_sku_id)->exists() ?
+                    '<a class="label label-danger" href="/admin/refund/order?order_sku_id='.$order_sku_id.'">有</a>':'<lable class="label label-success">无</lable>' ;
             });
             $sku->thumb("商品图片")->lightbox(["width" => 200]);
             $sku->amount("数量");
