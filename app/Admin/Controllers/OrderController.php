@@ -10,6 +10,7 @@ use App\Components\PostageMananger;
 use App\Models\GoodsSKU;
 use App\Models\Order;
 use App\Http\Controllers\Controller;
+use App\Models\OrderRefund;
 use App\User;
 use Encore\Admin\Controllers\HasResourceActions;
 use Encore\Admin\Form;
@@ -245,8 +246,13 @@ function copyText(item) {
                 }
             });
 
-            $sku->refund("退款信息")->display(function ($refund) {
-                return empty($refund) ? '<lable class="label label-success">无</lable>' : '<a class="label label-danger" href="/admin/refund/order/order_id='.$refund->order_id.'">有</a>';
+//            $sku->id("订单商品id");
+//            $sku->column("refund","退款信息")->display(function ($refund) {
+            $sku->id("退款信息")->display(function ($order_sku_id) {
+
+//                dd($refund);
+                return OrderRefund::where('order_sku_id',$order_sku_id)->exists() ? '<lable class="label label-success">无</lable>' :
+                    '<a class="label label-danger" href="/admin/refund/order/order_sku_id='.$order_sku_id.'">有</a>';
             });
             $sku->thumb("商品图片")->lightbox(["width" => 200]);
             $sku->amount("数量");
