@@ -60,10 +60,38 @@ class GoodsController extends Controller
      */
     public function edit($id, Content $content)
     {
+        $spu = GoodsSPU::with([
+            'specs', 'detail', 'cate', 'sences',
+            'skus',
+            'skus.search_word', 'skus.albums',
+            'skus.matched_skus', 'skus.similar_skus',
+            "skus.spec_values"
+        ])->findOrFail($id);
+
+
+        $spu->spec_ids = $spu->specs->pluck("id");
+        $spu->sence_ids = $spu->sences->pluck("id");
+
+        foreach ($spu->skus as $sku) {
+            $sku->spec_value_ids = $sku->spec_values->pluck("id", 'spec_id');
+
+            $sku->matched_sku_ids = $sku->matched_skus->pluck('id');
+
+            $sku->similar_sku_ids = $sku->similar_skus->pluck('id');
+        }
+
+        $skus = GoodsSKU::all();
+
+//        dd($spu,$spu->toJson());
         return $content
-            ->header('商品')
-            ->description('SPU')
-            ->body($this->form()->edit($id));
+            ->header('创建')
+            ->description('')
+            ->body(view('admin.goods', [
+                    'spu' => $spu,
+                    'specs' => GoodsSpec::with('values')->get(),
+                    'skus' => $skus,
+                ])
+            );
     }
 
     /**
@@ -77,30 +105,33 @@ class GoodsController extends Controller
         $spu = GoodsSPU::with([
             'specs', 'detail', 'cate', 'sences',
             'skus',
-            'skus.search_word','skus.albums',
-            'skus.matched_skus','skus.similar_skus',
+            'skus.search_word', 'skus.albums',
+            'skus.matched_skus', 'skus.similar_skus',
             "skus.spec_values"
-        ])->findOrNew(1);
+        ])->findOrNew(-1);
 
-        $spu->spec_ids=$spu->specs->pluck('id');
+
+        $spu->spec_ids = $spu->specs->pluck("id");
         $spu->sence_ids = $spu->sences->pluck("id");
 
-        foreach ($spu->skus as $sku){
-            $sku->spec_value_ids = $sku->spec_values->pluck("id");
+        foreach ($spu->skus as $sku) {
+            $sku->spec_value_ids = $sku->spec_values->pluck("id", 'spec_id');
 
-            $sku->matched_sku_ids=$sku->matched_skus->pluck('id');;
+            $sku->matched_sku_ids = $sku->matched_skus->pluck('id');
 
-            $sku->similar_sku_ids=$sku->similar_skus->pluck('id');;
+            $sku->similar_sku_ids = $sku->similar_skus->pluck('id');
         }
 
-        $skus= GoodsSKU::all();
+        $skus = GoodsSKU::all();
+
+//        dd($spu,$spu->toJson());
         return $content
             ->header('创建')
             ->description('')
             ->body(view('admin.goods', [
                     'spu' => $spu,
-                    'specs'=>GoodsSpec::with('values')->get(),
-                    'skus'=>$skus,
+                    'specs' => GoodsSpec::with('values')->get(),
+                    'skus' => $skus,
                 ])
             );
     }
@@ -298,6 +329,81 @@ class GoodsController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->all());
+        $spu = GoodsSPU::with('specs')->findOrNew($request->get('id'));
+        $spu->update($request->all());
+
+        //规格
+        $spu->specs()->sync($request->get('spec_ids', []));
+
+        //图文
+        $content = $request->get('detail', ['content' => ''])['content'];
+        if ($spu->detail()->exists()) {
+            $spu->detail()->update(['content' => $content]);
+            $spu->detail->save();
+        } else {
+            $spu->detail()->create(['content' => $content]);
+        }
+
+        //场景分类
+        $spu->sences()->sync($request->get('sence_ids', []));
+
+        //skus
+//                $spu=new GoodsSPU();
+        $sku_datas = $request->get('skus');
+        foreach ($sku_datas as $sku_data) {
+            $sku_data['order'] = 0;
+            $sku = $spu->skus()->find(array_get($sku_data, 'id'));
+            if ($sku) {
+                $sku->update($sku_data);
+            } else {
+                $sku = new GoodsSKU($sku_data);
+                $sku = $spu->skus()->save($sku);
+            }
+
+            //skus.search_word
+            $sku->search_word()->updateOrCreate(["sku_id" => $sku->id], ['search_words' => array_get($sku_data, 'search_word.search_words')]);
+
+            //skus.albums
+            $album_ids = [];
+            foreach (array_get($sku_data, 'albums') as $album) {
+                $album_now = $sku->albums()
+                    ->updateOrCreate(['url' => array_get($album, 'url')]);
+                array_push($album_ids, $album_now->id);
+            };
+            $sku->albums()->whereNotIn('id', $album_ids)->delete();
+
+//            $sku = new GoodsSKU();
+            //matched_skus,similar_skus
+//            dd($sku->matched_skus);
+            $matched_sku_ids = array_get($sku_data, 'matched_sku_ids');
+            $sku->matched_skus()->sync($matched_sku_ids);
+//            $sku->matched_skus()->whereNotIn('id',$matched_sku_ids)->delete();
+
+            $similar_sku_ids = array_get($sku_data, 'similar_sku_ids');
+            $sku->similar_skus()->sync($similar_sku_ids);
+//            $sku->similar_skus()->whereNotIn('id'$similar_sku_ids)->delete();
+
+            $spec_value_ids = array_get($sku_data, "spec_value_ids");
+//            dd($spec_value_ids, array_values($spec_value_ids));
+            $spec_value_sync = [];
+            foreach ($spec_value_ids as $key => $id) {
+                $spec_value_sync[$id] = ['spec_id' => $key];
+            }
+            $sku->spec_values()->sync($spec_value_sync);
+            dd($sku, $sku->matched_skus, $sku->similar_skus, $sku->spec_values);
+        }
+        dd($spu->skus);
+//        $spu->cate()->sync($request->get('cate_ids', []));
+
+//        $detail = $spu->detail()->firstOrCreate(['content' => $request->get('.', '')]);
+//        $detail->update(['content' => $request->get('.', '')]);
+//        $spu=GoodsSPU::with('specs')->find($spu->id)->toArray();
+        dd($request->all(), $spu->detail);
+
+        //'specs', 'detail', 'cate', 'sences',
+        //            'skus',
+        //            'skus.search_word', 'skus.albums',
+        //            'skus.matched_skus', 'skus.similar_skus',
+        //            "skus.spec_values"
     }
 }

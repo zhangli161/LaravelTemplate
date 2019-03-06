@@ -52,16 +52,7 @@ class DemoController extends Controller
 
 
 
-        $spus=GoodsSPU::all();
-        foreach ($spus as $spu){
-            $skus=$spu->skus()->with("spec_values")->get();
-            $spec_values=$skus->pluck("spec_values")->collapse();
-            $spec_ids=$spec_values->pluck("spec_id")->unique();
-
-            $spu->specs()->sync($spec_ids);
-        }
-
-        dd("成功");
+        dd($request->all());
     }
 
     //Manager的用法

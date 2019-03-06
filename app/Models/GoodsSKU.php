@@ -11,7 +11,7 @@ class GoodsSKU extends Model
     protected $table = 'goods_sku';  //表名
     protected $dates = ['deleted_at'];  //软删除
     protected $fillable = [
-        'spu_no', 'sku_name', 'price', 'stock', 'stock_type', 'postage', 'order'
+        'sku_no', 'sku_name', 'price', 'stock', 'stock_type', 'postage', 'order'
     ];
 
 //	//快递方式关联
@@ -70,7 +70,8 @@ class GoodsSKU extends Model
 
     public function matched_skus()
     {
-        return $this->hasManyThrough(GoodsSKU::class, GoodsSKUMatched::class, "sku_id", "id", "id", "matched_sku_id");
+        return $this->belongsToMany(GoodsSKU::class,"goods_sku_matched"
+            , "sku_id","matched_sku_id");
     }
     public function matched_sku_throughs()
     {
@@ -78,8 +79,8 @@ class GoodsSKU extends Model
     }
     public function similar_skus()
     {
-        return $this->hasManyThrough(GoodsSKU::class, GoodsSKUSimilar::class, "sku_id", "id", "id", "similar_sku_id");
-    }
+        return $this->belongsToMany(GoodsSKU::class,"goods_sku_similars"
+            , "sku_id","similar_sku_id");    }
     public function similar_sku_throughs()
     {
         return $this->hasMany(GoodsSKUSimilar::class,  "sku_id");

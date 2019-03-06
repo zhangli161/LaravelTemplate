@@ -45,14 +45,14 @@ class StatisticOrderController extends Controller
      * @param Content $content
      * @return Content
      */
-    public function index( Request $request)
+    public function index(Request $request)
     {
-        $content=new Content();
+        $content = new Content();
 //        $this->request=$request;
 //        dd($request->all());
         return $content
-            ->header('订单统计')
-            ->row($this->chartform($request,"/admin/statistic/order"))
+            ->header('商品销售统计')
+            ->row($this->chartform($request, "/admin/statistic/order"))
             ->row($this->grid($request))
             ->row($this->count_chart($content, $request))
             ->row($this->payment_chart($content, $request))
@@ -135,9 +135,9 @@ class StatisticOrderController extends Controller
             $query->where("created_at", ">=", $request->get("date_from"));
             $query->where("created_at", '<=', $request->get("date_to"));
         }
-        $region_id = $request->filled("region_id") ?
-            $request->filled("city") ? $request->get("city") : $request->get("region_id")
-            : "0";//request中获取或全国
+        $region_id = $request->filled("region_id", 0);
+//            ? $request->filled("city") ? $request->get("city") : $request->get("region_id")
+//            : "0";//request中获取或全国
         if ($region_id != "0")
             $query->whereIn("receiver_region_id",
                 NativePalceReagionManager::getChildren($region_id)->pluck('region_id')->toArray()
@@ -163,7 +163,7 @@ class StatisticOrderController extends Controller
         $dates = array();
         $datas = array();
         $type = $request->filled("type") ? $request->get("type") : 2;
-        $lables=[];
+        $lables = [];
         if ($type == "0") {
             $model_group = $model->groupBy(function ($item) {
                 return date("Y-m-d", strtotime($item->created_at));
@@ -266,7 +266,7 @@ class StatisticOrderController extends Controller
 //            ->row($this->chartform("/admin/chart/order/payment"));
     }
 
-    protected function chartform(Request $request,$action)
+    protected function chartform(Request $request, $action)
     {
         $form = new Form(new StatisticOrder);
         $form->setTitle("过滤");
@@ -307,7 +307,7 @@ class StatisticOrderController extends Controller
 
         $form->select('region_id', '地区')
             ->options($options)
-            ->default($request->get('region_id','0') );
+            ->default($request->get('region_id', '0'));
 //            ->load('city', '/api/admin/region/getByParentid');
 //        $form->select('city', '市')
 //            ->options($options);
@@ -316,10 +316,10 @@ class StatisticOrderController extends Controller
         $form->date('date_to', "结束时间")->default(\request('date_to'));
 
         $form->hidden('after-save')->default('1');
-        $form->saved(function (){
-            dd( "aaa");
+        $form->saved(function () {
+            dd("aaa");
         });
-        $form->saving(function (){
+        $form->saving(function () {
             dd("bbb");
         });
 //        $form->text("aaaa","bbb")->default(json_encode($this->request->toArray()));
@@ -331,7 +331,7 @@ class StatisticOrderController extends Controller
 //        return "hahaaha";
 //        dd($request->all());
 //        exit(1);
-        echo ($this->index($request)->render()) ;
+        echo($this->index($request)->render());
         exit(1);
     }
 }

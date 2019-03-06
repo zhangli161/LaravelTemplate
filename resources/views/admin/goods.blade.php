@@ -42,20 +42,29 @@
 <div id="app" style="">
 
     <div class="panel panel-default">
-        <div class="panel-header">表单</div>
+        {{--<div class="panel-header">表单</div>--}}
         <div class="panel-body">
-            @{{ JSON.stringify(spu)}}
 
+            {{--<h1>{{$spu->skus[1]}}</h1>--}}
+            {{--<hr/>--}}
+            {{--<p>@{{ JSON.stringify(spu.specs)}}</p>--}}
+
+            {{--{{$spu->specs->pluck("id")}}--}}
+            {{--<div v-for="sku in spu.skus" class=" margin">--}}
+            {{--@{{ sku.sku_name }}--}}
+            {{--@{{ sku.spec_value_ids }}--}}
+
+            {{--</div>--}}
             <form action="{{url("/admin/goods")}}" method="post" class="form form-horizontal responsive" id="demoform">
                 {{csrf_field()}}
-                <div class="form-group">
-                    <label class="control-label col-sm-2 ">商品编号：</label>
-                    <div class="formControls col-xs-8">
-                        <input type="number" class="input-number form-control" placeholder="商品编号" name="spu_no"
-                               id="spu_no"
-                               autocomplete="off" v-model="spu.spu_no">
-                    </div>
-                </div>
+                {{--<div class="form-group">--}}
+                {{--<label class="control-label col-sm-2 ">商品编号：</label>--}}
+                {{--<div class="formControls col-xs-8">--}}
+                {{--<input type="number" class="input-number form-control" placeholder="商品编号" name="spu_no"--}}
+                {{--id="spu_no"--}}
+                {{--autocomplete="off" v-model="spu.spu_no">--}}
+                {{--</div>--}}
+                {{--</div>--}}
                 <div class="form-group">
                     <label class="control-label col-sm-2 ">商品名称：</label>
                     <div class="formControls col-xs-8">
@@ -74,7 +83,7 @@
                     <label class="control-label col-sm-2 ">封面图片：</label>
                     <div class="formControls col-xs-8">
                         <input type="file" class="form-control thumb" name="thumb" id="thumb" v-bind="spu.thumb"
-                               data-initial-preview="{{$spu->thumb}}" data-initial-caption="{{basename($spu->thumb)}}">
+                               data-initial-preview="" data-initial-caption="{{basename($spu->thumb)}}">
                     </div>
                 </div>
 
@@ -118,7 +127,7 @@
                 <div class="form-group">
                     <label class="control-label col-sm-2 ">图文详情：</label>
                     <div class="formControls col-xs-8">
-                        <textarea id="detail_content" name="detail[content]">@{{ spu.detail.content }}</textarea>
+                        <textarea id="detail_content" name="detail[content]" v-model="spu.detail.content">@{{ spu.detail.content }}</textarea>
                     </div>
                 </div>
 
@@ -130,6 +139,7 @@
                         {{--</div>--}}
 
                         <select id="add-spec-select" multiple class="form-control " style="display: inline;width: 100%;"
+                                v-model="spu.spec_ids"
                         >
                             {{--<option value=""></option>--}}
                             {{--<option v-for="spec in specs" v-show="spu.spec_ids.indexOf(spec.id)==-1"--}}
@@ -141,15 +151,15 @@
                                 </option>
                             @endforeach
                         </select>
-                        <input id="addSpec" class="btn radius btn-secondary pull-right form-control margin btn-xs"
-                               type="button" value="添加"/>
+                        {{--<input id="addSpec" class="btn radius btn-primary pull-right  margin"--}}
+                        {{--type="button" value="添加"/>--}}
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="control-label col-sm-2 ">子类商品：</label>
                     <div class="formControls col-xs-8">
-                        <input id="addSKU" class="btn radius btn-secondary pull-right form-control margin btn-xs"
+                        <input id="addSKU" class="btn radius btn-primary pull-right  margin"
                                type="button" value="添加SKU">
                         <table class="table table-bordered table-hover">
                             <tr class="text-danger">
@@ -158,7 +168,7 @@
                                 @foreach($specs as $spec)
                                     {{--@{{spu.spec_ids.indexOf('1')>=0}}--}}
                                     <th class="text-c"
-                                        v-if="spu.spec_ids.indexOf('{{$spec->id}}')>=0">{{$spec->spec_name}}</th>
+                                        v-if="array_in(spu.spec_ids,{{$spec->id}})">{{$spec->spec_name}}</th>
                                     {{--<div class="form-group" v-if="spu.spec_ids.indexOf('{{$spec->id}}')>=0">--}}
                                 @endforeach
                                 <th class="text-c">价格</th>
@@ -168,8 +178,11 @@
                             <tr class="text-c" v-for="sku in spu.skus">
                                 <td class="text-c">@{{ sku.sku_name }}</td>
                                 @foreach($specs as $spec)
-                                    <td class="text-c" v-if="spu.spec_ids.indexOf('{{$spec->id}}')>=0">
-                                        {{ $spec->spec_name }}
+                                    <td class="text-c" v-if="array_in(spu.spec_ids,{{$spec->id}})">
+                                        @foreach($spec->values as $value)
+                                            <label class="label label-primary"
+                                                   v-if="(sku.spec_value_ids)[{{$spec->id}}]=={{$value->id}}">{{$value->value}} </label>
+                                        @endforeach
                                     </td>
                                 @endforeach
                                 <td class="text-c">@{{ sku.price }}</td>
@@ -191,7 +204,7 @@
                 <div class="form-group">
                     <div class="col-xs-8 col-xs-offset-2">
                         <div class="btn-group pull-right">
-                            <button class="btn btn-primary">提交</button>
+                            <div class="btn btn-primary" onclick="submitSPU()">提交</div>
                         </div>
                     </div>
                 </div>
@@ -210,32 +223,36 @@
                 </div>
                 <div class="modal-body ">
                     <!-- 模态框头部 -->
-                    @{{ JSON.stringify(editingSKU) }}
+                    {{--@{{ JSON.stringify(editingSKU) }}--}}
                     <form class="form form-horizontal responsive">
 
 
                         <div class="form-group">
                             <span class="control-label col-sm-2 ">子商品编号</span>
                             <div class="formControls col-xs-8">
-                                <input type="number" class="form-control" placeholder="" v-model="editingSKU.sku_no">
+                                <input type="number" class="form-control" placeholder="" id="sku_no"
+                                       v-model="editingSKU.sku_no">
                             </div>
                         </div>
                         <div class="form-group">
                             <span class="control-label col-sm-2 ">子商品名称</span>
                             <div class="formControls col-xs-8">
-                                <input type="text" class="form-control" placeholder="" v-model="editingSKU.sku_name">
+                                <input type="text" class="form-control" placeholder="" id="sku_name"
+                                       v-model="editingSKU.sku_name">
                             </div>
                         </div>
                         <div class="form-group">
                             <span class="control-label col-sm-2 ">价格</span>
                             <div class="formControls col-xs-8">
-                                <input type="text" class="form-control" placeholder="" v-model="editingSKU.price">
+                                <input type="number" step="0.01" class="form-control" placeholder="" id="price"
+                                       v-model="editingSKU.price">
                             </div>
                         </div>
                         <div class="form-group">
                             <span class="control-label col-sm-2 ">库存</span>
                             <div class="formControls col-xs-8">
-                                <input type="text" class="form-control" placeholder="" v-model="editingSKU.stock">
+                                <input type="number" class="form-control" placeholder="" id="stock"
+                                       v-model="editingSKU.stock">
                             </div>
                         </div>
 
@@ -244,13 +261,13 @@
 
                             <div class="formControls col-xs-8">
                                 <lable>
-                                    <i class='input_style radio_bg'><input type="radio" name="hot"
+                                    <i class='input_style radio_bg'><input type="radio" name="hot" id="stock_type"
                                                                            v-model="editingSKU.stock_type"
                                                                            value="0"></i>
                                     付款减库存
                                 </lable>
                                 <lable>
-                                    <i class='input_style radio_bg'><input type="radio" name="hot"
+                                    <i class='input_style radio_bg'><input type="radio" name="hot" id="stock_type"
                                                                            v-model="editingSKU.stock_type"
                                                                            value="1"></i>
                                     下单减库存
@@ -261,8 +278,8 @@
                         <div class="category form-group">
                             <label class="control-label col-sm-2 " for="sel1">是否包邮</label>
                             <div class="formControls col-sm-8 ">
-                                <input type="checkbox" class="postage la_checkbox"/>
-                                <input type="hidden" class="postage" id="postage" v-model="editingSKU.postage"/>
+                                {{--<input type="checkbox" class="postage la_checkbox"/>--}}
+                                <input type="checkbox" class="postage" id="postage"/>
                             </div>
                         </div>
 
@@ -290,11 +307,12 @@
                             <div class="formControls col-sm-8 ">
                                 @foreach($specs as $spec)
                                     {{--@{{spu.spec_ids.indexOf('1')>=0}}--}}
-                                    <div class="form-group" v-if="spu.spec_ids.indexOf('{{$spec->id}}')>=0">
+                                    <div class="form-group" v-if="array_in(spu.spec_ids,{{$spec->id}})">
                                         <label class="control-label col-sm-1 pull-left ">{{$spec->spec_name}}：</label>
                                         <div class="formControls col-xs-11">
                                             <select class="form-control" style="display: inline;width: 100%;"
-                                                    v-model="editingSKU.spec_value_ids"
+                                                    id="spec_value_ids-{{$spec->id}}"
+                                                    v-model="editingSKU.spec_value_ids[{{$spec->id}}]"
                                             >
                                                 <option value=""></option>
                                                 @foreach($spec->values as $value)
@@ -344,9 +362,9 @@
                                 {{--<input type="hidden" name="cate_id" v-model="spu.cate_id"/>--}}
 
                                 <select class="form-control similar_skus" style="width: 100%;" multiple="multiple"
-                                        name="similar_sku_ids[]"
-                                        v-model="editingSKU.similar_sku_ids">
-                                    <option value=""></option>
+                                        name="similar_sku_ids[]" v-model="editingSKU.similar_sku_ids"
+                                >
+                                    {{--<option value=""></option>--}}
                                     @foreach($skus=\App\Models\GoodsSKU::all()->pluck('id','sku_name') as $name=>$id)
                                         <option value="{{$id}}">{{$name}}</option>
                                     @endforeach
@@ -368,7 +386,7 @@
 
             <!-- 模态框底部 -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    {{--<button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>--}}
                     <button type="button" class="btn btn-primary" v-on:click="SKU_submit()">确认</button>
                 </div>
             </div>
@@ -407,7 +425,7 @@
         spu_id: '',
         stock: "0",
         stock_type: "0",
-        spec_value_ids:[],
+        spec_value_ids: [],
         search_word: {
             search_words: []
         },
@@ -430,22 +448,47 @@
                 + "\" selected>" + sku.search_word.search_words[i] + "</option>");
         }
         initAlbums()
-        $(".matched_skus").select2("val", sku.matched_sku_ids);
-        $(".similar_skus").select2("val", sku.similar_sku_ids);
+        // $(".matched_skus");
+        // $(".similar_skus").val(sku.similar_sku_ids);
+        //配套产品
+        $(".matched_skus").val(sku.matched_sku_ids).select2({
+            "multiple": true,
+            "allowClear": true,
+            "placeholder": {"id": "", "text": ""}
+        }).on("change", function (e) {
+            console.log("matched_skus", $(this).val())
+            data.editingSKU.matched_sku_ids = $(this).val();
+        });
+        //相似产品
+        $(".similar_skus").val(sku.similar_sku_ids).select2({
+            "multiple": true,
+            "allowClear": true,
+            "placeholder": {"id": "", "text": ""}
+        }).on("change", function (e) {
+            console.log("similar_skus值发生改变", $(this).val())
+            data.editingSKU.similar_sku_ids = $(this).val();
+        });
+        $('#postage').bootstrapSwitch('state', (data.editingSKU.postage == '1' || data.editingSKU.postage == 1));
         $("#modal-global").modal("show")
     };
     $(function () {
+
         var spu = {!! $spu->toJson() !!};
+        // console.log("规格测试", spu.spec_ids,spu.spec_ids.indexOf("1"),1=="1")
         if (!spu.detail) {
             spu.detail = {content: ""}
         }
+        if (!isURL(spu.thumb))
+            spu.thumb = "{{\Illuminate\Support\Facades\Storage::disk('admin')->url("/")}}" + spu.thumb;
+
         var specs ={!! $specs->toJson() !!};
         data.spu = spu;
         data.specs = specs;
         var new_spu_id = -1;
 
 
-        console.log(JSON.stringify(data), data.specs, data.spu.specs)
+        console.log(spu.thumb)
+        // console.log(JSON.stringify(data), data.specs, data.spu.specs)
         var vm = new Vue({
             el: '#app',
             data: data,
@@ -459,14 +502,54 @@
                     }
                 },
                 editSKU: function (sku) {
-                    for (var i in spu.skus) {
-                        if (spu.skus[i].id == sku.id) {
+                    console.log('sku', sku)
+                    for (var i in data.spu.skus) {
+                        if (data.spu.skus[i].id == sku.id) {
                             putSKUToModal(spu.skus[i])
                         }
                     }
                 },
                 SKU_submit: function () {
-                    console.log("编辑完成", data.editingSKU, $("#sku_albums").val())
+                    console.log("编辑完成", data.editingSKU, $("#sku_albums").val());
+
+                    var require_fileds = ['sku_no', 'sku_name', 'price', 'stock', 'stock_type']
+                    for (var i in require_fileds) {
+                        if (isEmpty(data.editingSKU[require_fileds[i]] + "")) {
+                            console.log("filed " + require_fileds[i] + "", data.editingSKU[require_fileds[i]])
+                            $("#" + require_fileds[i]).focus()
+                            return;
+                        }
+                    }
+                    if (isEmpty(data.editingSKU.search_word.search_words)) {
+                        data.editingSKU.search_word.search_words = [data.editingSKU.sku_name]
+                    }
+
+                    if (isEmpty(data.editingSKU.albums)) {
+                        alert('请上传商品图片');
+                        return;
+                    }
+                    console.log("规格", data.spu.spec_ids, data.editingSKU.spec_value_ids,)
+
+                    for (var i in data.spu.spec_ids) {
+
+                        console.log("规格", data.editingSKU.spec_value_ids[data.spu.spec_ids[i]])
+                        if (isEmpty(data.editingSKU.spec_value_ids[data.spu.spec_ids[i]])) {
+                            $("#spec_value_ids-" + data.spu.spec_ids[i]).focus()
+                            return;
+                        }
+                    }
+
+
+                    $("#modal-global").modal("hide")
+                    for (var i in data.spu.skus) {
+                        if (data.spu.skus[i].id == data.editingSKU.id) {
+                            console.log("编辑完成", data.spu.skus[i].sku_name)
+                            return
+                        }
+                    }
+                    data.spu.skus.push(data.editingSKU)
+
+
                 }
             }
         })
@@ -478,6 +561,7 @@
 
         $("input.thumb").fileinput({
             "language": 'zh',
+            "uploadUrl": '/admin/upload', //上传的地址
             "overwriteInitial": true,
             "initialPreviewAsData": true,
             "browseLabel": "\u6d4f\u89c8",
@@ -506,15 +590,15 @@
             }
         });
 
-        $('.postage.la_checkbox').bootstrapSwitch({
+        $('#postage').bootstrapSwitch({
             size: 'small',
-            state: (data.editingSKU.postage == 1),
+            state: (data.editingSKU.postage == '1' || data.editingSKU.postage == 1),
             onText: '是',
             offText: '否',
             onColor: 'primary',
             offColor: 'default',
             onSwitchChange: function (event, state) {
-                console.log("开关情况", state)
+                console.log("开关情况", state, data.editingSKU.postage == '1')
                 data.editingSKU.postage = (state ? '1' : '0')
                 // $(event.target).closest('.bootstrap-switch').next().val(state ? '1' : '0').change();
             }
@@ -528,37 +612,22 @@
 
             })
             .on("change", function (e) {
-                console.log("add-spec-select", $(this).val(), typeof (data.spu.spec_ids))
+                console.log(data.spu.spec_ids, "add-spec-select", $(this).val(), typeof (data.spu.spec_ids))
                 data.spu.spec_ids = $(this).val();
                 data.spu.specs = specs.filter(function (item) {
-                    console.log("item", item, item.id, data.spu.spec_ids.indexOf("" + item.id))
-                    return data.spu.spec_ids.indexOf("" + item.id) >= 0;
+                    // console.log("item", item, item.id, data.spu.spec_ids.indexOf("" + item.id))
+                    return array_in(data.spu.spec_ids, item.id);
                 });
                 console.log("规格", specs, data.spu.specs)
-            }).select2("val", data.spu.spec_ids);
+            });
 
 
-        $(".cate_id").select2({"allowClear": true, "placeholder": {"id": "", "text": ""}});
+        $(".cate_id").select2({"allowClear": true, "placeholder": {"id": "", "text": ""}})
+            .on("change", function (e) {
+                console.log("cate_id", $(this).val())
+                data.spu.cate_id = $(this).val();
+            });
 
-        //配套产品
-        $(".matched_skus").select2({
-            "multiple": true,
-            "allowClear": true,
-            "placeholder": {"id": "", "text": ""}
-        }).on("change", function (e) {
-            console.log("matched_skus", $(this).val())
-            data.editingSKU.matched_sku_ids = $(this).val();
-        });
-        //相似产品
-        // $(".similar_skus").select2({"allowClear": true,});
-        $(".similar_skus").select2({
-            "multiple": true,
-            "allowClear": true,
-            "placeholder": {"id": "", "text": ""}
-        }).on("change", function (e) {
-            console.log("similar_skus值发生改变", $(this).val())
-            data.editingSKU.similar_sku_ids = $(this).val();
-        });
 
         window.UEDITOR_CONFIG.serverUrl = '/ueditor/server';
         UE.delEditor("detail_content");
@@ -569,6 +638,11 @@
             console.log("Editor is ready")
             ue_detail_content.execCommand('serverparam', '_token', 'oO5LqwGRVaMfvwNy5aTnRsgZ48AOXJccvpksnbNP');
         });
+        ue_detail_content.addListener("contentChange", function (e, detail) {
+            var content = ue_detail_content.getContent();
+            data.spu.detail.content = content;
+            console.log("UE内容变更", e, content)
+        })
 
         $(".search_word_search_words_").select2({
             tags: true,
@@ -652,6 +726,32 @@
         return re.test(str_url);
     }
 
+    function isEmpty(obj) {
+        if (typeof obj == "undefined" || obj == null || obj == "" || obj == []) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function submitSPU() {
+        console.log(data)
+        var post_data = data.spu;
+        post_data._token = "{{csrf_token()}}";
+        $.post("{{url("/admin/goods")}}", post_data, function (result) {
+            $("body").append(result)
+        })
+    }
+
+    function array_in(array, item) {
+        // console.log("查找",array,item)
+        for (var i in array) {
+            if (array[i] == item)
+                return true;
+        }
+        // console.log("不存在")
+        return false;
+    }
 
 </script>
 </body>
