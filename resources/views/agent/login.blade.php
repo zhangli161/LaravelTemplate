@@ -19,7 +19,7 @@
     body {
         background: #000;
         color: #333;
-        background-image: url("{{url(" images/Login_bg.jpg ")}}");
+        background-image: url(" /images/Login_bg.jpg ");
         background-repeat: no-repeat;
         background-size: 100%;
     }
