@@ -103,8 +103,8 @@ class StatisticGoodsSalesController extends Controller
         $query = Order::query()->where("status", "5");
 
         if ($request->filled("date_from") && $request->filled("date_to")) {
-            $query->where("created_at", ">=", $request->get("date_from"));
-            $query->where("created_at", '<=', $request->get("date_to"));
+            $query->whereDate("created_at", ">=", $request->get("date_from"));
+            $query->whereDate("created_at", '<=', $request->get("date_to"));
         }
 //        $region_id = $request->filled("provience") ?
 //            $request->filled("city") ? $request->get("city") : $request->get("provience")

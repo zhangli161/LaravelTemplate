@@ -72,7 +72,6 @@ class StatisticOrderController extends Controller
         if ($model->count() < 1) {
             return "未找到数据";
         }
-
         $titles = ['时间', '地区', "订单总数", "订单总金额"];
 
         $region_id = $request->get("region_id", '0');
@@ -85,7 +84,6 @@ class StatisticOrderController extends Controller
         $rows = array();
         $type = $request->filled("type") ? $request->get("type") : 2;
 
-//        dd($region_id,$type);
         if ($type == "0") {
             $model_group = $model->groupBy(function ($item) {
                 return date("Y-m-d", strtotime($item->created_at));
@@ -103,6 +101,7 @@ class StatisticOrderController extends Controller
                 return date("Y-m", strtotime($item->created_at));
             });
             $dates = getDatesBetween($model->min('created_at'), $model->max('created_at'), 2);
+//            dd($model->min('created_at'), $model->max('created_at'),$model_group,$dates);
             foreach ($dates as $key => $lable) {
                 array_push($rows, new Collection([$lable,
                     $region ? NativePalceReagionManager::getFullAddress($region->region_id) : "全国",
@@ -132,18 +131,21 @@ class StatisticOrderController extends Controller
         $query = Order::query()->where("status", "5");
 
         if ($request->filled("date_from") && $request->filled("date_to")) {
-            $query->where("created_at", ">=", $request->get("date_from"));
-            $query->where("created_at", '<=', $request->get("date_to"));
+            $query->whereDate("created_at", ">=", $request->get("date_from"));
+            $query->whereDate("created_at", '<=', $request->get("date_to"));
         }
-        $region_id = $request->filled("region_id", 0);
+        $region_id = $request->get("region_id", 0);
 //            ? $request->filled("city") ? $request->get("city") : $request->get("region_id")
 //            : "0";//request中获取或全国
+        $region_ids = NativePalceReagionManager::getChildren($region_id)->pluck('region_id')->toArray();
+
+//        dd($region_ids);
+        array_push($region_ids,$region_id);
         if ($region_id != "0")
-            $query->whereIn("receiver_region_id",
-                NativePalceReagionManager::getChildren($region_id)->pluck('region_id')->toArray()
-            );
+            $query->whereIn("receiver_region_id", $region_ids);
         $model = $query->orderBy('created_at', 'asc')->get();
         return $model;
+//        dd($model);
     }
 
     public function count_chart(Content $content, Request $request)

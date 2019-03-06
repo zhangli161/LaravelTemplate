@@ -142,16 +142,16 @@ class StatisticFinanceController extends Controller
 //        $query3 = Order::query();
 
         if ($request->filled("date_from")) {
-            $query1->where("created_at", ">=", $request->get("date_from"));
-            $query2->where("created_at", ">=", $request->get("date_from"));
-//            $query3->where("created_at", ">=", $request->get("date_from"));
-//            $query3->where("created_at", '<=', $request->get("date_to"));
+            $query1->whereDate("created_at", ">=", $request->get("date_from"));
+            $query2->whereDate("created_at", ">=", $request->get("date_from"));
+//            $query3->whereDate("created_at", ">=", $request->get("date_from"));
+//            $query3->whereDate("created_at", '<=', $request->get("date_to"));
         }
         if ($request->filled("date_to")) {
-            $query1->where("created_at", '<=', $request->get("date_to"));
-            $query2->where("created_at", '<=', $request->get("date_to"));
-//            $query3->where("created_at", ">=", $request->get("date_from"));
-//            $query3->where("created_at", '<=', $request->get("date_to"));
+            $query1->whereDate("created_at", '<=', $request->get("date_to"));
+            $query2->whereDate("created_at", '<=', $request->get("date_to"));
+//            $query3->whereDate("created_at", ">=", $request->get("date_from"));
+//            $query3->whereDate("created_at", '<=', $request->get("date_to"));
         }
 
         $model1 = $query1->orderBy('created_at', 'asc')->get();

@@ -38,7 +38,7 @@ function getDatesBetween($start_date_str, $end_date_str, int $type = 0, $format 
                 break;
             case 2:
                 array_push($ret, date($format ? $format : 'Y-m', $t_timestemp));
-                $t_timestemp = strtotime(" next month", $t_timestemp);
+                $t_timestemp = strtotime(date('Y-m',strtotime(" next month", $t_timestemp)));
                 break;
             case 3:
                 $date1 = date($format ? $format : 'Y-m', $t_timestemp);
@@ -54,8 +54,11 @@ function getDatesBetween($start_date_str, $end_date_str, int $type = 0, $format 
                 $t_timestemp = $t_timestemp_next;
                 break;
             case 4:
-                array_push($ret, date($format ? $format : 'Y', $t_timestemp));
-                $t_timestemp = strtotime(" next year", $t_timestemp);
+                $t_date=date($format ? $format : 'Y', $t_timestemp);
+                array_push($ret, $t_date);
+//                $t_timestemp = strtotime(date('Y',strtotime("  next year", $t_timestemp)));
+
+                $t_timestemp = strtotime(date(($t_date+1).'-01-01'));
                 break;
             default:
                 break 2;

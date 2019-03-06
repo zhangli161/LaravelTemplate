@@ -34,15 +34,15 @@ class UserController extends Controller
                 $this_week = Carbon::today()->startOfWeek();
 //            ->lastOfMonth();
                 $this_month = Carbon::today()->startOfMonth();
-                $box0 = new Box("本日用户增长", User::where("created_at", ">=", $today)->count() . " 名");
+                $box0 = new Box("本日用户增长", User::whereDate("created_at", ">=", $today)->count() . " 名");
                 $box0->style("small-box bg-aqua");
                 $row->column(4, $box0);
 
-                $box1 = new Box("本周用户增长", User::where("created_at", ">=", $this_week)->count() . " 名");
+                $box1 = new Box("本周用户增长", User::whereDate("created_at", ">=", $this_week)->count() . " 名");
                 $box1->style("small-box bg-aqua");
                 $row->column(4, $box1);
 
-                $box2 = new Box("本月用户增长", User::where("created_at", ">=", $this_month)->count() . " 名");
+                $box2 = new Box("本月用户增长", User::whereDate("created_at", ">=", $this_month)->count() . " 名");
                 $box2->style("small-box bg-aqua");
                 $row->column(4, $box2);
 //                $row->column(4, 'baz');

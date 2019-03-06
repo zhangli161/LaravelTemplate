@@ -53,7 +53,7 @@ class NativePalceReagionManager extends Manager
 	public static function getChildren($region_ids){
 
         if(gettype($region_ids)!=="array")
-            $region_ids=array($region_ids);
+            $region_ids=[$region_ids];
 	    $regions=NativePlaceRegion::query()
             ->whereIn("parentid",$region_ids)->get();
 

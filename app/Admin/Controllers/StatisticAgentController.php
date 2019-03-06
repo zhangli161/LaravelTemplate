@@ -104,7 +104,7 @@ class StatisticAgentController extends Controller
 
                 $agent->order_agent = $agent->order_agent()
                     ->where("status", "1")
-                    ->where("created_at", ">=", $request->get("date_from"))
+                    ->whereDate("created_at", ">=", $request->get("date_from"))
                     ->get();
 
                 $order_ids = $agent->order_agent->pluck("order_id")->toArray();
@@ -198,8 +198,8 @@ class StatisticAgentController extends Controller
             ->findOrFail($request->get("agent_id"));
         if ($request->filled("date_from") && $request->filled("date_to")) {
             $model = $agent->order_agent()->where("status","1")
-                ->where("created_at", ">=", $request->get("date_from"))
-                ->where("created_at", "<=", $request->get("date_to"))
+                ->whereDate("created_at", ">=", $request->get("date_from"))
+                ->whereDate("created_at", "<=", $request->get("date_to"))
                 ->get();
 
         } else {
