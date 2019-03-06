@@ -227,7 +227,7 @@ function copyText(item) {
             $sku->disableRowSelector();//CheckBox
 
 
-            $sku->id("订单商品id");
+//            $sku->id("订单商品id");
             $sku->sku_id("商品id");
             $sku->column("sku.sku_no", "SKU编号");
 
@@ -252,7 +252,7 @@ function copyText(item) {
 
 //                dd($refund);
                 return OrderRefund::where('order_sku_id',$order_sku_id)->exists() ? '<lable class="label label-success">无</lable>' :
-                    '<a class="label label-danger" href="/admin/refund/order/order_sku_id='.$order_sku_id.'">有</a>';
+                    '<a class="label label-danger" href="/admin/refund/order?order_sku_id='.$order_sku_id.'">有</a>';
             });
             $sku->thumb("商品图片")->lightbox(["width" => 200]);
             $sku->amount("数量");
