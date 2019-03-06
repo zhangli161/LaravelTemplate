@@ -217,6 +217,7 @@ function copyText(item) {
 <div>电话:$order->receiver_phone</div>";
             return $html;
         })->unescape();
+        $show->note('商家备注');
         $show->created_at('创建时间');
 //        $show->updated_at('上次修改时间');
         $show->skus("订单商品", function ($sku) {
@@ -245,11 +246,13 @@ function copyText(item) {
             });
 
             $sku->refund("退款信息")->display(function ($refund) {
-                return empty($refund) ? '<lable class="label label-success">无</lable>' : '<lable class="label label-danger">有</lable>';
+                return empty($refund) ? '<lable class="label label-success">无</lable>' : '<a class="label label-danger" href="/admin/refund/order/order_id='.$refund->order_id.'">有</a>';
             });
             $sku->thumb("商品图片")->lightbox(["width" => 200]);
             $sku->amount("数量");
-            $sku->average_price("商品均价");
+            $sku->price("商品价格");
+            $sku->total_price("支付金额");
+            $sku->average_price("支付单价");
         });
         $show->wuliu('物流信息', function ($show) {
             $show->postage_name("快递名称")->using(PostageMananger::$codes);
@@ -325,7 +328,7 @@ function copyText(item) {
 
         $form->select("wuliu.postage_name", '快递名称')->options(PostageMananger::$codes);
         $form->text("wuliu.postage_code", '快递单号');
-
+        $form->text('note', '商家备注');
         return $form;
     }
 

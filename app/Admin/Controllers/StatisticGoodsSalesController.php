@@ -4,8 +4,10 @@ namespace App\Admin\Controllers;
 
 use App\Components\ChartManager;
 use App\Components\NativePalceReagionManager;
+use App\Models\GoodsSKU;
 use App\Models\NativePlaceRegion;
 use App\Models\Order;
+use App\Models\OrderSKU;
 use App\Models\StatisticOrder;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
@@ -24,9 +26,10 @@ class StatisticGoodsSalesController extends Controller
     use HasResourceActions;
 
     private $request;
+
     public function __construct(Request $request)
     {
-        $this->request=$request;
+        $this->request = $request;
     }
 
     /**
@@ -61,7 +64,7 @@ class StatisticGoodsSalesController extends Controller
             return "未找到数据";
         }
 
-        $titles = ['时间', '地区', "订单总数", "订单总金额"];
+        $titles = ['商品编号(SKU)', '品名', "实际金额", "销量", '销售额', '退款数量', '退款金额'];
 
         $region_id = $request->filled("provience") ?
             $request->filled("city") ? $request->get("city") : $request->get("provience")
@@ -69,185 +72,50 @@ class StatisticGoodsSalesController extends Controller
         $region = NativePalceReagionManager::getById($region_id);
 
         $rows = array();
-        $type = $request->filled("type") ? $request->get("type") : 2;
 
-        if ($type == "0") {
-            $model_group = $model->groupBy(function ($item) {
-                return date("Y-m-d", strtotime($item->created_at));
-            });
-            $dates = getDatesBetween($model->min('created_at'), $model->max('created_at'));
-            foreach ($dates as $key => $lable) {
-                array_push($rows, new Collection([$lable,
-                    $region ? NativePalceReagionManager::getFullAddress($region->region_id) : "全国",
-                    $model_group->get($lable, new Collection())->count(),
-                    round($model_group->get($lable, new Collection())->sum('payment'), 2)]));
-            }
+        $model = $model->groupBy('sku_id');
 
-        } elseif ($type == "2") {
-            $model_group = $model->groupBy(function ($item) {
-                return date("Y-m", strtotime($item->created_at));
-            });
-            $dates = getDatesBetween($model->min('created_at'), $model->max('created_at'), 2);
-            foreach ($dates as $key => $lable) {
-                array_push($rows,new Collection( [$lable,
-                    $region ? NativePalceReagionManager::getFullAddress($region->region_id) : "全国",
-                    $model_group->get($lable, new Collection())->count(),
-                    round($model_group->get($lable, new Collection())->sum('payment'), 2)]));
-            }
-        } elseif ($type == "4") {
-            $model_group = $model->groupBy(function ($item) {
-                return date("Y", strtotime($item->created_at));
-            });
-            $dates = getDatesBetween($model->min('created_at'), $model->max('created_at'), 4);
-            foreach ($dates as $key => $lable) {
-                array_push($rows, new Collection([$lable,
-                    $region ? NativePalceReagionManager::getFullAddress($region->region_id) : "全国",
-                    $model_group->get($lable, new Collection())->count(),
-                    round($model_group->get($lable, new Collection())->sum('payment'), 2)
-                ]));
+        foreach ($model as $sku_id => $datas) {
+            $sku = GoodsSKU::query()->find($sku_id);
+            $datas = $datas->groupBy('average_price');
+            foreach ($datas as $price => $orderskus) {
+                $refund_amount = 0;
+                foreach ($orderskus as $ordersku) {
+                    $refund_amount += $ordersku->refund->whereIn('status', [1, 2, 3])->sum("payment");
+                }
+                array_push($rows, [
+                    $sku ? $sku->sku_no : "商品丢失",//'商品编号(SKU)',
+                    $sku ? $sku->sku_name : "商品丢失",// '品名'
+                    $price,//"实际金额",
+                    $orderskus->sum('amount'),//"销量",
+                    $orderskus->sum('total_price'),//'销售额',
+                    $orderskus->sum('refund_amount'),//'退款数量',
+                    $refund_amount,//'退款金额'
+                ]);
             }
         }
-//        dd($model_group,$titles,$dates,$rows);
 
         return view('admin.table.index', ['titles' => $titles, "rows" => $rows]);
     }
 
     private static function getModel(Request $request)
     {
-        $query = Order::query()->where("status","5");
+        $query = Order::query()->where("status", "5");
 
         if ($request->filled("date_from") && $request->filled("date_to")) {
             $query->where("created_at", ">=", $request->get("date_from"));
             $query->where("created_at", '<=', $request->get("date_to"));
         }
-        $region_id = $request->filled("provience") ?
-            $request->filled("city") ? $request->get("city") : $request->get("provience")
-            : "0";//request中获取或全国
-        if ($region_id != "0")
-            $query->whereIn("receiver_region_id",
-                NativePalceReagionManager::getChildren($region_id)->pluck('region_id')->toArray()
-            );
-        $model = $query->orderBy('created_at', 'asc')->get();
+//        $region_id = $request->filled("provience") ?
+//            $request->filled("city") ? $request->get("city") : $request->get("provience")
+//            : "0";//request中获取或全国
+//        if ($region_id != "0")
+//            $query->whereIn("receiver_region_id",
+//                NativePalceReagionManager::getChildren($region_id)->pluck('region_id')->toArray()
+//            );
+        $order_ids = $query->pluck('id');
+        $model = OrderSKU::with('refund')->whereIn('order_id', $order_ids)->get();
         return $model;
-    }
-
-    public function count_chart(Content $content, Request $request)
-    {
-        $model = self::getModel($request);
-        //如果未获取的数据
-        if ($model->count() < 1)
-            return new Box('订单数量折线图',"未找到对应数据！");
-//            return $content
-//                ->header('订单数量折线图')
-////			->description('折线图')
-//                ->row("未找到对应数据！")
-//                ->row($this->chartform("/admin/chart/order/count"));
-
-
-        $description = "";
-        $dates = array();
-        $datas = array();
-        $type = $request->filled("type") ? $request->get("type") : 2;
-        if ($type == "0") {
-            $model_group = $model->groupBy(function ($item) {
-                return date("Y-m-d", strtotime($item->created_at));
-            });
-            $lables = getDatesBetween($model->min('created_at'), $model->max('created_at'));
-//            $lables=$model->keys()->toArray();
-            foreach ($lables as $key => $lable) {
-                $datas[$key] = $model_group->get($lable, new Collection())->count();
-            }
-
-            $description = "日统计";
-        } elseif ($type == "2") {
-            $model_group = $model->groupBy(function ($item) {
-                return date("Y-m", strtotime($item->created_at));
-            });
-//            $lables=$model_group->keys()->toArray();
-            $lables = getDatesBetween($model->min('created_at'), $model->max('created_at'), 2);
-            foreach ($lables as $key => $lable) {
-                $datas[$key] = $model_group->get($lable, new Collection())->count();
-            }
-
-            $description = "月统计";
-        } elseif ($type == "4") {
-            $model_group = $model->groupBy(function ($item) {
-                return date("Y", strtotime($item->created_at));
-            });
-            $lables = getDatesBetween($model->min('created_at'), $model->max('created_at'), 4);
-            foreach ($lables as $key => $lable) {
-                $datas[$key] = $model_group->get($lable, new Collection())->count();
-            }
-
-            $description = "年统计";
-        }
-        return new Box('订单数量折线图',ChartManager::line($lables, '订单数量', $datas,"count"));
-
-        return $content
-            ->header('订单数量折线图')
-            ->description($description)
-            ->row(ChartManager::line($lables, '订单数量', $datas))
-            ->row($this->chartform("/admin/chart/order/count"));
-    }
-
-    public function payment_chart(Content $content, Request $request)
-    {
-        $model = self::getModel($request);
-        //如果未获取的数据
-        if ($model->count() < 1)
-            return new Box('订单金额折线图',"未找到对应数据");
-//
-//        return $content
-//                ->header('订单金额折线图')
-////			->description('折线图')
-//                ->row("未找到对应数据！")
-//                ->row($this->chartform("/admin/chart/order/payment"));
-
-
-        $description = "";
-        $lables = array();
-        $datas = array();
-        $type = $request->filled("type") ? $request->get("type") : 2;
-        if ($type == "0") {
-            $model_group = $model->groupBy(function ($item) {
-                return date("Y-m-d", strtotime($item->created_at));
-            });
-            $lables = getDatesBetween($model->min('created_at'), $model->max('created_at'));
-//            $lables=$model->keys()->toArray();
-            foreach ($lables as $key => $lable) {
-                $datas[$key] = round($model_group->get($lable, new Collection())->sum('payment'), 2);
-            }
-
-            $description = "日统计";
-        } elseif ($type == "2") {
-            $model_group = $model->groupBy(function ($item) {
-                return date("Y-m", strtotime($item->created_at));
-            });
-//            $lables=$model_group->keys()->toArray();
-            $lables = getDatesBetween($model->min('created_at'), $model->max('created_at'), 2);
-            foreach ($lables as $key => $lable) {
-                $datas[$key] = round($model_group->get($lable, new Collection())->sum('payment'), 2);
-            }
-
-            $description = "月统计";
-        } elseif ($type == "4") {
-            $model_group = $model->groupBy(function ($item) {
-                return date("Y", strtotime($item->created_at));
-            });
-            $lables = getDatesBetween($model->min('created_at'), $model->max('created_at'), 4);
-            foreach ($lables as $key => $lable) {
-                $datas[$key] = round($model_group->get($lable, new Collection())->sum('payment'));
-            }
-
-            $description = "年统计";
-        }
-        return new Box('订单金额折线图',ChartManager::line($lables, '订单金额', $datas,"payment"));
-
-//        return $content
-//            ->header('订单金额折线图')
-////			->description('折线图')
-//            ->row(ChartManager::line($lables, '订单金额', $datas))
-//            ->row($this->chartform("/admin/chart/order/payment"));
     }
 
     protected function chartform($action)

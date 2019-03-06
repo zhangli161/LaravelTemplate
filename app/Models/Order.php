@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
 	protected $fillable = ['payment', 'payment_type', 'postage','post_fee', 'user_id','buyer_nick',"buyer_message",
-		'receiver_name','receiver_phone','receiver_region_id','receiver_address'];
+		'receiver_name','receiver_phone','receiver_region_id','receiver_address','note'];
 	
 	public function user(){
 		return $this->belongsTo(User::class,'user_id');

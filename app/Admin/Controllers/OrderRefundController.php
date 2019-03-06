@@ -104,6 +104,8 @@ class OrderRefundController extends Controller
 //                3 => " 退款完成",
                 4 => "驳回"
             ]);
+            $filter->equal('order_id','订单id');
+
             $filter->date('created_at','申请时间');
             $filter->equal('order.user_id',"订单所有者")
                 ->select(User::all()->pluck('name','id'));

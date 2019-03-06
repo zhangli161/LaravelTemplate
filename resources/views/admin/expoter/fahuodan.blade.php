@@ -103,12 +103,13 @@
         <td style="border-top:none"></td>
         <td style="border-top:none"></td>
         <td style="border-top:none"></td>
-        <td style="border-top:none">{{$order->amount}}</td>
+        <td style="border-top:none">{{$order->skus->sum('amount')}}</td>
         <td style="border-top:none;border-left:none">
             只
         </td>
         <td style="border-top:none;border-left:none">{{$order->payment}}</td>
         <td style="border-top:none;border-left:none"></td>
     </tr>
+    <tr><td colspan="8">备注: {{$order->note?$order->note:"无"}}</td></tr>
     </tbody>
 </table>
