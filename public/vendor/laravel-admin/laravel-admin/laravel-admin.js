@@ -35,8 +35,8 @@ $(document).on('pjax:timeout', function (event) {
 })
 
 $(document).on('submit', 'form[pjax-container]', function (event) {
-    if (disablePjax) {
-        return
+    if ( typeof disablePjax != "undefined") {
+        return;
     } else
         $.pjax.submit(event, '#pjax-container')
 });

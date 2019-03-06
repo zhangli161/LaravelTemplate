@@ -96,7 +96,7 @@ Route::group([
 //       dd($request->all(),$request->allFiles()) ;
         $file = $request->file("file_data");
 
-        $file_path = \Illuminate\Support\Facades\Storage::disk("admin")->putFile("uploads", $file);
+        $file_path = \Illuminate\Support\Facades\Storage::disk("admin")->putFile("images", $file);
         if ($file_path) {
 //            return $file_path;
             return \App\Http\Helpers\ApiResponse::makeResponse(true,

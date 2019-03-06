@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class GoodsSKU extends Model
 {
@@ -13,7 +15,7 @@ class GoodsSKU extends Model
     protected $fillable = [
         'sku_no', 'sku_name', 'price', 'stock', 'stock_type', 'postage', 'order'
     ];
-
+    protected $appends = ['thumbs'];
 //	//快递方式关联
 //	public function sku_postages()
 //	{
@@ -70,19 +72,42 @@ class GoodsSKU extends Model
 
     public function matched_skus()
     {
-        return $this->belongsToMany(GoodsSKU::class,"goods_sku_matched"
-            , "sku_id","matched_sku_id");
+        return $this->belongsToMany(GoodsSKU::class, "goods_sku_matched"
+            , "sku_id", "matched_sku_id");
     }
+
     public function matched_sku_throughs()
     {
-        return $this->hasMany(GoodsSKUMatched::class,  "sku_id");
+        return $this->hasMany(GoodsSKUMatched::class, "sku_id");
     }
+
     public function similar_skus()
     {
-        return $this->belongsToMany(GoodsSKU::class,"goods_sku_similars"
-            , "sku_id","similar_sku_id");    }
+        return $this->belongsToMany(GoodsSKU::class, "goods_sku_similars"
+            , "sku_id", "similar_sku_id");
+    }
+
     public function similar_sku_throughs()
     {
-        return $this->hasMany(GoodsSKUSimilar::class,  "sku_id");
+        return $this->hasMany(GoodsSKUSimilar::class, "sku_id");
+    }
+
+    public function getThumbsAttribute()
+    {
+        return $this->albums()->pluck('url');
+    }
+
+    public function setThumbsAttribute(array $values)
+    {
+
+        $album_ids = [];
+        $storage_url=Storage::disk('admin')->url('/');
+        foreach ($values as $album) {
+            $url=str_replace($storage_url,'',$album);
+            $album_now = $this->albums()
+                ->updateOrCreate(['url' => $url]);
+            array_push($album_ids, $album_now->id);
+        };
+        $this->albums()->whereNotIn('id', $album_ids)->delete();
     }
 }

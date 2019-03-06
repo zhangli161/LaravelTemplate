@@ -228,7 +228,7 @@ class GoodsSKUController extends Controller
             $grid->url('图片')->lightbox();
 
             $grid->disableFilter();//筛选
-//		$grid->disableCreateButton();//新增
+            $grid->disableCreateButton();//新增
             $grid->disableExport();//导出
 
             $grid->disableActions();//行操作
@@ -330,20 +330,24 @@ class GoodsSKUController extends Controller
 //				}
 //				$form->select('postage_id', '邮寄方式')->options($options);
 //			});
-        })->tab('商品图片', function ($Form) {
+        })->tab('商品图片', function (Form $Form) {
+            $Form->multipleImage('thumbs', "图片");
 
-            $Form->hasMany('albums', '商品图片', function (Form\NestedForm $form) use ($Form) {
-                $form->image('url', '图片');
-                $form->number('order', '排序');
+//            $Form->text('thumbs');
+//            $Form->multipleImage('albums','图片');
 
-                $options = array();
-                if ($Form->model()) {
-                    $skus = GoodsSKU::query()->where('spu_id', $Form->model()->id)->get();
-                    foreach ($skus as $sku) {
-                        $options[$sku->id] = $sku->sku_name;
-                    }
-                }
-            });
+//            $Form->hasMany('albums', '商品图片', function (Form\NestedForm $form) use ($Form) {
+//                $form->image('url', '图片');
+//                $form->number('order', '排序');
+//
+//                $options = array();
+//                if ($Form->model()) {
+//                    $skus = GoodsSKU::query()->where('spu_id', $Form->model()->id)->get();
+//                    foreach ($skus as $sku) {
+//                        $options[$sku->id] = $sku->sku_name;
+//                    }
+//                }
+//            });
 
         })->tab('相似产品', function ($Form) {
             $Form->hasMany('similar_sku_throughs', '相似产品', function (Form\NestedForm $form) use ($Form) {
