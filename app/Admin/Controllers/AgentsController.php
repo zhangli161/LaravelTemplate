@@ -396,7 +396,7 @@ function Download(imgdata){
     public static function getQR($id)
     {
         $agent = Agent::findOrFail($id);
-        $qr = QRManager::getAgentXCXQR($id);
+        $qr = QRManager::getAgentXCXQR($id,"pages/start/start");
         $agent->update(['xcx_qr' => $qr]);
         $agent->xcx_qr = $qr;
         $agent->save();

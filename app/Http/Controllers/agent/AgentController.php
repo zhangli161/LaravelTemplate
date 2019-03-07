@@ -66,7 +66,7 @@ class AgentController extends Controller
     {
         $agent = Auth::guard("agent")->user();
 
-        $qr = QRManager::getAgentXCXQR($agent->id);
+        $qr = QRManager::getAgentXCXQR($agent->id,"pages/start/start");
         $agent->xcx_qr = $qr;
         $agent->save();
         return redirect()->back();

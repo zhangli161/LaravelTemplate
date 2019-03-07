@@ -58,7 +58,7 @@ class LoginController extends Controller
         if (Auth::guard('agent')->attempt($user)) { // 登陆验证
             $agent=Agent::where("name",$user['name'])->first();
             if (empty($agent->xcx_qr)){
-                $qr = QRManager::getAgentXCXQR($agent->id);
+                $qr = QRManager::getAgentXCXQR($agent->id,"pages/start/start");
                 $agent->xcx_qr = $qr;
                 $agent->save();
             }
