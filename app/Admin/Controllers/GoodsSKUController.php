@@ -221,8 +221,8 @@ class GoodsSKUController extends Controller
 //			$grid->disableRowSelector();//CheckBox
 //		});
 
-        $show->albums('相册', function ($grid) {
-
+        $show->albums('相册', function (Grid $grid) {
+            $grid->setResource('/admin/albums/delete');
             $grid->id();
             $grid->order('排序');
             $grid->url('图片')->lightbox();
@@ -231,7 +231,12 @@ class GoodsSKUController extends Controller
             $grid->disableCreateButton();//新增
             $grid->disableExport();//导出
 
-            $grid->disableActions();//行操作
+//            $grid->disableActions();//行操作
+            $grid->actions(function ($actions) {
+//                $actions->disableDelete();
+                $actions->disableEdit();
+                $actions->disableView();
+            });
             $grid->disableRowSelector();//CheckBox
         });
 

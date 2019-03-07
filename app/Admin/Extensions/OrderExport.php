@@ -22,9 +22,9 @@ class OrderExport implements FromView
     public function view(): View
     {
         $order=\App\Models\Order::with("skus")->findOrFail($this->id);
-        foreach ($order->skus as $order_sku){
-            $order_sku->sku=\App\Components\GoodsSKUManager::getSpecValuesStr($order_sku->sku);
-        }
+//        foreach ($order->skus as $order_sku){
+//            $order_sku->sku=\App\Components\GoodsSKUManager::getSpecValuesStr($order_sku->sku);
+//        }
         return view("admin.expoter.fahuodan", [
             'order' => $order
         ]);

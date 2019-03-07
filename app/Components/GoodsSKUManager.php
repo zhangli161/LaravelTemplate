@@ -61,7 +61,7 @@ class GoodsSKUManager extends Manager
 
             }
         };
-        $sku = self::getSpecValuesStr($sku);
+//        $sku = self::getSpecValuesStr($sku);
 
         return $sku;
     }

@@ -58,6 +58,9 @@ Route::group([
     //商品销售统计
     $router->any('statistic/good-sales', "StatisticGoodsSalesController@index");
 
+    //商品销售统计
+    $router->any('statistic/order-sales', "StatisticOrderSalesController@index");
+
     //财务统计
     $router->any('statistic/finance', "StatisticFinanceController@index");
     $router->any('chart/finance/income', "StatisticFinanceController@income_chart");
@@ -104,6 +107,12 @@ Route::group([
                 \App\Http\Helpers\ApiResponse::SUCCESS_CODE);
         }
         return \App\Http\Helpers\ApiResponse::makeResponse(false, "存储失败", \App\Http\Helpers\ApiResponse::UNKNOW_ERROR);
+
+    });
+
+    $router->delete('albums/delete/{id}',function ($id){
+        return \App\Http\Helpers\ApiResponse::makeResponse(false,$id);
+//       dd($id) ;
 
     });
 });

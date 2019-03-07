@@ -15,7 +15,7 @@ class GoodsSKU extends Model
     protected $fillable = [
         'sku_no', 'sku_name', 'price', 'stock', 'stock_type', 'postage', 'order'
     ];
-    protected $appends = ['thumbs'];
+    protected $appends = ['thumbs','spec_value_strs'];
 //	//快递方式关联
 //	public function sku_postages()
 //	{
@@ -101,13 +101,21 @@ class GoodsSKU extends Model
     {
 
         $album_ids = [];
-        $storage_url=Storage::disk('admin')->url('/');
+        $storage_url = Storage::disk('admin')->url('/');
         foreach ($values as $album) {
-            $url=str_replace($storage_url,'',$album);
+            $url = str_replace($storage_url, '', $album);
             $album_now = $this->albums()
                 ->updateOrCreate(['url' => $url]);
             array_push($album_ids, $album_now->id);
         };
         $this->albums()->whereNotIn('id', $album_ids)->delete();
+    }
+
+    public function getSpecValueStrsAttribute()
+    {
+
+        return $this->spec_values->map(function ($spec_value, $key) {
+            return $spec_value->spec->spec_name . ':' . $spec_value->value;
+        });
     }
 }
