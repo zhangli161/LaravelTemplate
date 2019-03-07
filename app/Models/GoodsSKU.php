@@ -115,7 +115,10 @@ class GoodsSKU extends Model
     {
         if ($this->spec_values()->exists())
             return $this->spec_values->map(function ($spec_value, $key) {
-                return $spec_value->spec->spec_name . ':' . $spec_value->value;
+                if ($spec_value->spec)
+                    return $spec_value->spec->spec_name . ':' . $spec_value->value;
+                else
+                    return "规格丢失";
             });
         else
             return [];
