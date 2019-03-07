@@ -87,8 +87,14 @@
                 <div class="form-group">
                     <label class="control-label col-sm-2 ">封面图片：</label>
                     <div class="formControls col-xs-8">
-                        <input type="file" class="form-control thumb" name="thumb" id="thumb" v-bind="spu.thumb"
-                               data-initial-preview="" data-initial-caption="{{basename($spu->thumb)}}">
+                        <div class="layui-upload">                
+                            <div class="layui-upload-list">
+                                <img class="layui-upload-img addImg" style="height: 300px;" :src="data.spu.thumb"
+                                     id="demo1"/>
+                            </div>
+                            <button type="button" class="btn btn-primary pull-left margin" id="test1">选择</button>
+
+                        </div>
                     </div>
                 </div>
 
@@ -141,7 +147,8 @@
                         {{--<span class="control-label" v-for="spec in spu.specs">@{{ spec.spec_name }}</span>--}}
                         {{--</div>--}}
 
-                        <select id="add-spec-select" multiple class="form-control " style="display: inline;width: 100%;"
+                        <select id="add-spec-select" multiple class="form-control "
+                                style="display: inline;width: 100%;"
                                 v-model="spu.spec_ids"
                         >
                             {{--<option value=""></option>--}}
@@ -561,7 +568,7 @@
                         data.editingSKU.search_word.search_words = [data.editingSKU.sku_name]
                     }
 
-                    if (isEmpty(data.editingSKU.albums)) {
+                    if (isEmpty(data.editingSKU.thumbs)) {
                         alert('请上传商品图片');
                         return;
                     }
@@ -677,7 +684,7 @@
         window.UEDITOR_CONFIG.serverUrl = '/ueditor/server';
         UE.delEditor("detail_content");
 
-         var ue_detail_content = UE.getEditor('detail_content', {"initialFrameHeight": 400});
+        var ue_detail_content = UE.getEditor('detail_content', {"initialFrameHeight": 400});
         console.log("aaa")
         ue_detail_content.ready(function () {
             console.log("Editor is ready")
@@ -703,6 +710,45 @@
         layui.use('upload', function () {
             var $ = layui.jquery
                 , upload = layui.upload;
+
+            //普通图片上传
+            var uploadInst = upload.render({
+                elem: '#test1',
+                url: '/admin/upload',
+                field: 'file_data',
+                data: {
+                    _token: "{{csrf_token()}}",
+                    _method: "PUT"
+                }
+// ,auto: false
+//,multiple: true
+// ,bindAction: '#test9'
+                , before: function (obj) {
+//预读本地文件示例，不支持ie8
+                    obj.preview(function (index, file, result) {
+//$('#demo1').attr('src', result); //图片链接（base64）
+                    });
+                }
+                , done: function (res) {
+//如果上传失败
+                    console.log("res", res)
+                    if (!res.result) {
+                        layer.msg('上传失败');
+                    }
+                    if (res.result) {
+                        data.spu.thumb = res.ret;
+                    }
+//上传成功
+                }
+                , error: function () {
+//演示失败状态，并实现重传
+                    var demoText = $('#demoText');
+                    demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a >');
+                    demoText.find('.demo-reload').on('click', function () {
+                        uploadInst.upload();
+                    });
+                }
+            });
 
             //多图片上传
             upload.render({
@@ -745,6 +791,10 @@
             else
                 return "{{\Illuminate\Support\Facades\Storage::disk('admin')->url("/")}}" + alb.url;
         })
+        var albums = [];
+        for (var i in data.editingSKU.albums) {
+            // if ()
+        }
         data.editingSKU.thumbs = albs;
         console.log("初始值", albs)
         $("input.sku_thumb").fileinput('destroy').fileinput({
@@ -834,7 +884,7 @@
                 return;
             }
         }
-        if (isEmpty(data.spu.detail.content)){
+        if (isEmpty(data.spu.detail.content)) {
             alert("请填写图文详情")
         }
 

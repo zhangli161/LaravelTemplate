@@ -365,7 +365,11 @@ class GoodsController extends Controller
                 }
 
                 //skus.search_word
-                $sku->search_word()->updateOrCreate(["sku_id" => $sku->id], ['search_words' => array_get($sku_data, 'search_word.search_words')]);
+                $search_words= array_get($sku_data, 'search_word.search_words');
+                if (gettype($search_words)!="array" or count($search_words)==0)
+                    $search_words=[array_get($sku_data, 'sku_name')];
+                $sku->search_word()->updateOrCreate(["sku_id" => $sku->id],
+                    ['search_words' =>$search_words]);
 
                 //skus.albums
 //            $album_ids = [];
