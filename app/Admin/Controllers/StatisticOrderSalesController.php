@@ -81,7 +81,7 @@ class StatisticOrderSalesController extends Controller
                     $order->created_at,//"订单发生时间",
                     $order_sku->sku->sku_no,//'商品编号(SKU)',
                     $order_sku->sku->sku_name,//'品名',
-                    implode(",  ", $order_sku->sku->spec_value_strs->toArray()),//"规格",
+                    implode(",  ", $order_sku->sku->spec_value_strs),//"规格",
                     $order_sku->amount,//"数量",
                     $order_sku->amount * $order_sku->price,//'金额 ',
                     $order_sku->total_price,//'实际支付金额'
