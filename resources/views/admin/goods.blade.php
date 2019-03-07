@@ -97,18 +97,16 @@
                     <div class="formControls col-xs-8">
 
                         <input type="checkbox" class="status la_checkbox"/>
-                        <input type="hidden" class="status" name="status" v-model="spu.status"/>
+                        <input type="hidden" class="status" name="status" id="status" v-model="spu.status"/>
                     </div>
 
                 </div>
                 <div class="form-group">
                     <label class="control-label col-sm-2 ">商品分类：</label>
                     <div class="formControls col-xs-8">
+                        <select class="form-control cate_id" style="width: 100%;" name="cate_id" id="cate_id"
+                                v-model="spu.cate_id">
 
-                        {{--<input type="hidden" name="cate_id" v-model="spu.cate_id"/>--}}
-
-                        <select class="form-control cate_id" style="width: 100%;" name="cate_id" v-model="spu.cate_id">
-                            <option value=""></option>
                             @foreach($cates=\App\Models\Category::where('parentid', '1')->get()->pluck('id','name') as $name=>$id)
                                 <option value="{{$id}}">{{$name}}</option>
                             @endforeach
@@ -343,10 +341,16 @@
                                     <button type="button" class="layui-btn" id="test2">产品轮播图上传(可多选)</button>
                                     <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
                                         预览图：
-                                        <div class="layui-upload-list" id="demo2">
-                                            <img v-for='item in data.editingSKU.thumbs'
-                                                 style='width: 170px; height: 200px;' :src="item"
-                                                 class="layui-upload-img addImgs">
+                                        <div class="layui-upload-list row" id="demo2">
+                                            <div style='padding: 20px;' v-for='(item,ind) in editingSKU.thumbs'
+                                                 :key='ind' class="col-xs-4">
+                                                <img
+                                                        style='width: 100%; height: auto;' :src="item"
+                                                        class="layui-upload-img addImgs">
+                                                <i @click='delImgClick(ind)'
+                                                   class='btn btn-danger pull-right margin'>删除</i>
+                                            </div>
+
                                         </div>
                                     </blockquote>
                                 </div>
@@ -459,8 +463,10 @@
         },
         albums: [],
         matched_sku_ids: [],
-        similar_sku_ids: []
+        similar_sku_ids: [],
+        thumbs: []
     }
+
     var data = {
         editingSKU: newSKU,
         albums: ['{{$spu->thumb}}']
@@ -536,6 +542,9 @@
                             putSKUToModal(spu.skus[i])
                         }
                     }
+                },
+                delImgClick: function (ind) {
+                    data.editingSKU.thumbs.splice(ind, 1)
                 },
                 SKU_submit: function () {
                     console.log("编辑完成", data.editingSKU, $("#sku_albums").val());
@@ -613,14 +622,16 @@
 
         $('.status.la_checkbox').bootstrapSwitch({
             size: 'small',
-            state: (data.spu.status == 1),
+            state: (data.spu.status == "1"),
             width: 80,
             onText: '上架',
             offText: '下架',
             onColor: 'primary',
             offColor: 'default',
             onSwitchChange: function (event, state) {
-                $(event.target).closest('.bootstrap-switch').next().val(state ? '1' : '0').change();
+                console.log("开关", state)
+                data.spu.status = state ? '1' : '0';
+                // $(event.target).closest('.bootstrap-switch').next().val(state ? '1' : '0').change();
             }
         });
 
@@ -666,7 +677,7 @@
         window.UEDITOR_CONFIG.serverUrl = '/ueditor/server';
         UE.delEditor("detail_content");
 
-        var ue_detail_content = UE.getEditor('detail_content', {"initialFrameHeight": 400});
+         var ue_detail_content = UE.getEditor('detail_content', {"initialFrameHeight": 400});
         console.log("aaa")
         ue_detail_content.ready(function () {
             console.log("Editor is ready")
@@ -811,11 +822,32 @@
     }
 
     function submitSPU() {
-        console.log(data)
+        console.log(data);
+        var require_fileds = ['spu_name', 'desc', 'thumb', 'cate_id']
+        for (var i in require_fileds) {
+            // console.log("filed " + require_fileds[i] + "", data.spu[require_fileds[i]])
+
+            if (isEmpty(data.spu[require_fileds[i]])) {
+                console.log("filed " + require_fileds[i] + "", data.spu[require_fileds[i]])
+                $("#" + require_fileds[i]).focus()
+                alert("请完整填写")
+                return;
+            }
+        }
+        if (isEmpty(data.spu.detail.content)){
+            alert("请填写图文详情")
+        }
+
         var post_data = data.spu;
         post_data._token = "{{csrf_token()}}";
-        $.post("{{url("/admin/goods")}}", post_data, function (result) {
-            $("body").append(result)
+        post_data.status = post_data.status ? "1" : "0"
+        $.post("{{url("/admin/goods")}}", post_data, function (res) {
+            console.log("提交返回", res);
+            if (res.result) {
+                window.location.href = "{{url('admin/goods')}}"
+            } else {
+                alert("")
+            }
         })
     }
 

@@ -328,8 +328,12 @@ class GoodsController extends Controller
 
     public function store(Request $request)
     {
-        $spu = GoodsSPU::with('specs')->findOrNew($request->get('id'));
-        $spu->update($request->all());
+        $spu = GoodsSPU::with('specs')->find($request->get('id'));
+        if ($spu)
+            $spu->update($request->all());
+        else
+            $spu = GoodsSPU::create($request->all());
+        $spu->save();
 
         //规格
         $spu->specs()->sync($request->get('spec_ids', []));
@@ -340,7 +344,7 @@ class GoodsController extends Controller
             $spu->detail()->update(['content' => $content]);
             $spu->detail->save();
         } else {
-            $spu->detail()->create(['content' => $content]);
+            $spu->detail()->updateOrCreate(['content' => $content]);
         }
 
         //场景分类
@@ -349,20 +353,21 @@ class GoodsController extends Controller
         //skus
 //                $spu=new GoodsSPU();
         $sku_datas = $request->get('skus');
-        foreach ($sku_datas as $sku_data) {
-            $sku_data['order'] = 0;
-            $sku = $spu->skus()->find(array_get($sku_data, 'id'));
-            if ($sku) {
-                $sku->update($sku_data);
-            } else {
-                $sku = new GoodsSKU($sku_data);
-                $sku = $spu->skus()->save($sku);
-            }
+        if ($request->filled('skus'))
+            foreach ($sku_datas as $sku_data) {
+                $sku_data['order'] = 0;
+                $sku = $spu->skus()->find(array_get($sku_data, 'id'));
+                if ($sku) {
+                    $sku->update($sku_data);
+                } else {
+                    $sku = new GoodsSKU($sku_data);
+                    $sku = $spu->skus()->save($sku);
+                }
 
-            //skus.search_word
-            $sku->search_word()->updateOrCreate(["sku_id" => $sku->id], ['search_words' => array_get($sku_data, 'search_word.search_words')]);
+                //skus.search_word
+                $sku->search_word()->updateOrCreate(["sku_id" => $sku->id], ['search_words' => array_get($sku_data, 'search_word.search_words')]);
 
-            //skus.albums
+                //skus.albums
 //            $album_ids = [];
 //            foreach (array_get($sku_data, 'albums') as $album) {
 //                $album_now = $sku->albums()
@@ -373,23 +378,23 @@ class GoodsController extends Controller
 
 //            $sku = new GoodsSKU();
 
-            //matched_skus,similar_skus
-            $matched_sku_ids = array_get($sku_data, 'matched_sku_ids');
-            $sku->matched_skus()->sync($matched_sku_ids);
+                //matched_skus,similar_skus
+                $matched_sku_ids = array_get($sku_data, 'matched_sku_ids');
+                $sku->matched_skus()->sync($matched_sku_ids);
 //            $sku->matched_skus()->whereNotIn('id',$matched_sku_ids)->delete();
 
-            $similar_sku_ids = array_get($sku_data, 'similar_sku_ids');
-            $sku->similar_skus()->sync($similar_sku_ids);
+                $similar_sku_ids = array_get($sku_data, 'similar_sku_ids');
+                $sku->similar_skus()->sync($similar_sku_ids);
 //            $sku->similar_skus()->whereNotIn('id'$similar_sku_ids)->delete();
 
-            $spec_value_ids = array_get($sku_data, "spec_value_ids");
+                $spec_value_ids = array_get($sku_data, "spec_value_ids");
 //            dd($spec_value_ids, array_values($spec_value_ids));
-            $spec_value_sync = [];
-            foreach ($spec_value_ids as $key => $id) {
-                $spec_value_sync[$id] = ['spec_id' => $key];
+                $spec_value_sync = [];
+                foreach ($spec_value_ids as $key => $id) {
+                    $spec_value_sync[$id] = ['spec_id' => $key];
+                }
+                $sku->spec_values()->sync($spec_value_sync);
             }
-            $sku->spec_values()->sync($spec_value_sync);
-        }
 
         return ApiResponse::makeResponse(true, $spu);
     }
