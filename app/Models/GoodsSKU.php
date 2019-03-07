@@ -15,7 +15,7 @@ class GoodsSKU extends Model
     protected $fillable = [
         'sku_no', 'sku_name', 'price', 'stock', 'stock_type', 'postage', 'order'
     ];
-    protected $appends = ['thumbs','spec_value_strs'];
+    protected $appends = ['thumbs', 'spec_value_strs'];
 //	//快递方式关联
 //	public function sku_postages()
 //	{
@@ -113,9 +113,11 @@ class GoodsSKU extends Model
 
     public function getSpecValueStrsAttribute()
     {
-
-        return $this->spec_values->map(function ($spec_value, $key) {
-            return $spec_value->spec->spec_name . ':' . $spec_value->value;
-        });
+        if ($this->spec_values()->exists())
+            return $this->spec_values->map(function ($spec_value, $key) {
+                return $spec_value->spec->spec_name . ':' . $spec_value->value;
+            });
+        else
+            return [];
     }
 }
