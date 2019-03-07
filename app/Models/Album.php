@@ -12,4 +12,5 @@ class Album extends Model
 	}
 	
 	protected $fillable = ['url', 'sku_id', 'order'];
+
 }

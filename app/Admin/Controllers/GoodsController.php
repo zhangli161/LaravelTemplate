@@ -83,7 +83,6 @@ class GoodsController extends Controller
 
         $skus = GoodsSKU::all();
 
-//        dd($spu,$spu->toJson());
         return $content
             ->header('创建')
             ->description('')
@@ -125,7 +124,6 @@ class GoodsController extends Controller
 
         $skus = GoodsSKU::all();
 
-//        dd($spu,$spu->toJson());
         return $content
             ->header('创建')
             ->description('')
@@ -312,7 +310,7 @@ class GoodsController extends Controller
 
         $form->saving(function (Form $form) {
             $exist = GoodsSPU::where("spu_no", $form->spu_no)->first();
-//		    dd($form->spu_no,$form->model()->id);
+
             if ($exist)
                 if ($exist->id != $form->model()->id) {
 
@@ -374,8 +372,8 @@ class GoodsController extends Controller
 //            $sku->albums()->whereNotIn('id', $album_ids)->delete();
 
 //            $sku = new GoodsSKU();
+
             //matched_skus,similar_skus
-//            dd($sku->matched_skus);
             $matched_sku_ids = array_get($sku_data, 'matched_sku_ids');
             $sku->matched_skus()->sync($matched_sku_ids);
 //            $sku->matched_skus()->whereNotIn('id',$matched_sku_ids)->delete();
