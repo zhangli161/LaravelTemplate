@@ -364,13 +364,13 @@ class GoodsController extends Controller
             $sku->search_word()->updateOrCreate(["sku_id" => $sku->id], ['search_words' => array_get($sku_data, 'search_word.search_words')]);
 
             //skus.albums
-            $album_ids = [];
-            foreach (array_get($sku_data, 'albums') as $album) {
-                $album_now = $sku->albums()
-                    ->updateOrCreate(['url' => array_get($album, 'url')]);
-                array_push($album_ids, $album_now->id);
-            };
-            $sku->albums()->whereNotIn('id', $album_ids)->delete();
+//            $album_ids = [];
+//            foreach (array_get($sku_data, 'albums') as $album) {
+//                $album_now = $sku->albums()
+//                    ->updateOrCreate(['url' => array_get($album, 'url')]);
+//                array_push($album_ids, $album_now->id);
+//            };
+//            $sku->albums()->whereNotIn('id', $album_ids)->delete();
 
 //            $sku = new GoodsSKU();
             //matched_skus,similar_skus
