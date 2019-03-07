@@ -75,7 +75,7 @@ class StatisticOrderSalesController extends Controller
 
 
         foreach ($model as $order) {
-            foreach ($order->skus as $order_sku)
+            foreach ($order->skus as $order_sku) {
                 array_push($rows, [
                     $order->id,//"订单编号",
                     $order->created_at,//"订单发生时间",
@@ -86,6 +86,7 @@ class StatisticOrderSalesController extends Controller
                     $order_sku->amount * $order_sku->price,//'金额 ',
                     $order_sku->total_price,//'实际支付金额'
                 ]);
+            }
         }
 
         return view('admin.table.index', ['titles' => $titles, "rows" => $rows]);

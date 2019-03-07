@@ -119,7 +119,7 @@ class GoodsSKU extends Model
                     return $spec_value->spec->spec_name . ':' . $spec_value->value;
                 else
                     return "规格丢失";
-            });
+            })->toArray();
         else
             return [];
     }
