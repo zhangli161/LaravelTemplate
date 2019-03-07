@@ -31,7 +31,8 @@
         .ui-sortable .panel-header {
             cursor: move
         }
-        .addImgs{
+
+        .addImgs {
             width: 160px;
             height: 100px;
         }
@@ -331,19 +332,21 @@
                         <div class="form-group">
                             <span class="control-label col-sm-2 ">商品图片</span>
                             <div class="formControls col-xs-8">
-                                <!-- <input type="file" multiple class="sku_thumb" id="sku_albums"
+                            <!-- <input type="file" multiple class="sku_thumb" id="sku_albums"
                                        {{--v-bind="albums"--}}
-                                       {{--data-initial-preview="['{{$spu->thumb}}']"--}}
-                                       data-show-caption="true"
-                                        {{--data-initial-caption="{{basename($spu->thumb)}}"--}}
-                                > -->
+                            {{--data-initial-preview="['{{$spu->thumb}}']"--}}
+                                    data-show-caption="true"
+{{--data-initial-caption="{{basename($spu->thumb)}}"--}}
+                                    > -->
                                 <!-- 选择图片 -->
-                                <div  class="layui-upload">
-                                    <button type="button" class="layui-btn" id="test2">产品轮播图上传(可多选)</button> 
+                                <div class="layui-upload">
+                                    <button type="button" class="layui-btn" id="test2">产品轮播图上传(可多选)</button>
                                     <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
                                         预览图：
                                         <div class="layui-upload-list" id="demo2">
-                                            <img v-for='item in data.editingSKU.thumbs' style='width: 170px; height: 200px;' :src="item" class="layui-upload-img addImgs">
+                                            <img v-for='item in data.editingSKU.thumbs'
+                                                 style='width: 170px; height: 200px;' :src="item"
+                                                 class="layui-upload-img addImgs">
                                         </div>
                                     </blockquote>
                                 </div>
@@ -418,7 +421,7 @@
 <script type="text/javascript" src="/lib/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript" src="/lib/jquery-ui/1.9.1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/layui/layui.all.js"></script>
-<link rel="stylesheet" href="/layui/css/layui.css"  media="all">
+<link rel="stylesheet" href="/layui/css/layui.css" media="all">
 {{--<script type="text/javascript" src="/static/h-ui/js/H-ui.js"></script>--}}
 <script src="{{url("vendor/laravel-admin/AdminLTE/bootstrap/js/bootstrap.min.js")}}"></script>
 <script type="text/javascript" src="/lib/jquery.SuperSlide/2.1.1/jquery.SuperSlide.min.js"></script>
@@ -433,13 +436,13 @@
 <script src="{{url("vendor/laravel-admin/AdminLTE/plugins/select2/select2.full.min.js")}}"></script>
 <style type="text/css">
 
-        .addImgs{
-            width: 160px;
-            height: 100px;
-        }
+    .addImgs {
+        width: 160px;
+        height: 100px;
+    }
 
 
-    </style>
+</style>
 <script>
     const newSKU = {
         sku_no: '',
@@ -513,9 +516,9 @@
 
 
         console.log(spu.thumb)
-        console.log('data',data)
+        console.log('data', data)
         var vm = new Vue({
-            el: '#app', 
+            el: '#app',
             data: data,
             methods: {
                 deleteSKU: function (sku) {
@@ -577,10 +580,10 @@
 
                 }
             },
-            watch:{
-              this:function(){
-                console.log('监听data改变',this);
-              }
+            watch: {
+                this: function () {
+                    console.log('监听data改变', this);
+                }
             }
 
         })
@@ -686,39 +689,41 @@
             $("#search_word").val($(this).val())
         });
 
-        layui.use('upload', function(){
-  var $ = layui.jquery
-  ,upload = layui.upload;
+        layui.use('upload', function () {
+            var $ = layui.jquery
+                , upload = layui.upload;
 
-   //多图片上传
-  upload.render({
-    elem: '#test2'
-    ,url: '/admin/upload'
-    ,field:'file_data'
-    ,data: {
-        _token: "{{csrf_token()}}",
-        _method: "PUT"
-    }
-    ,multiple: true
-    // ,auto: false
-    // ,bindAction: '#test9'
-    ,before: function(obj){
-      //预读本地文件示例，不支持ie8
-      obj.preview(function(index, file, result){
-        // $('#demo2').append('')
-      });
-    }
-    ,done: function(res){
-      //上传完毕
-      console.log(res)
-      if(res.result){
-        data.editingSKU.albums.push({url: res.ret});
-      }
-    }
-  });
+            //多图片上传
+            upload.render({
+                elem: '#test2'
+                , url: '/admin/upload'
+                , field: 'file_data'
+                , data: {
+                    _token: "{{csrf_token()}}",
+                    _method: "PUT"
+                }
+                , multiple: true
+                // ,auto: false
+                // ,bindAction: '#test9'
+                , before: function (obj) {
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function (index, file, result) {
+                        // $('#demo2').append('')
+                    });
+                }
+                , done: function (res) {
+                    //上传完毕
+                    console.log(res)
+                    if (res.result) {
+                        // data.editingSKU.albums.push({url: res.ret});
 
-  });
-        
+                        data.editingSKU.thumbs.push(res.ret);
+                    }
+                }
+            });
+
+        });
+
     });
 
 
@@ -729,7 +734,7 @@
             else
                 return "{{\Illuminate\Support\Facades\Storage::disk('admin')->url("/")}}" + alb.url;
         })
-        data.editingSKU.thumbs=albs;
+        data.editingSKU.thumbs = albs;
         console.log("初始值", albs)
         $("input.sku_thumb").fileinput('destroy').fileinput({
             "language": 'zh',
@@ -745,7 +750,7 @@
             "showUpload": false,
             "maxFileCount": 10,//上传最大的文件数量
             "showBrowse": true,
-             "browseOnZoneClick": true,
+            "browseOnZoneClick": true,
             {{--"deleteExtraData": {--}}
                     {{--"thumb": "_file_del_",--}}
                     {{--"_file_del_": "",--}}
@@ -755,9 +760,9 @@
                     {{--"deleteUrl": "http:\/\/www.calex-china.com\/admin\/",--}}
             "allowedFileTypes": ["image"],
             'initialPreview': albs,
-            slugCallback : function(filename) {
-            return filename.replace('(', '_').replace(']', '_');
-        }
+            slugCallback: function (filename) {
+                return filename.replace('(', '_').replace(']', '_');
+            }
         }).on('filepreupload', function (event, data, previewId, index) {     //上传中
             var form = data.frm, files = data.files, extra = data.extra,
                 response = data.response, reader = data.reader;
