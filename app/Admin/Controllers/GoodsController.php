@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers;
 
+use App\Http\Helpers\ApiResponse;
 use App\Models\Category;
 use App\Models\GoodsSKU;
 use App\Models\GoodsSpec;
@@ -390,20 +391,8 @@ class GoodsController extends Controller
                 $spec_value_sync[$id] = ['spec_id' => $key];
             }
             $sku->spec_values()->sync($spec_value_sync);
-            dd($sku, $sku->matched_skus, $sku->similar_skus, $sku->spec_values);
         }
-        dd($spu->skus);
-//        $spu->cate()->sync($request->get('cate_ids', []));
 
-//        $detail = $spu->detail()->firstOrCreate(['content' => $request->get('.', '')]);
-//        $detail->update(['content' => $request->get('.', '')]);
-//        $spu=GoodsSPU::with('specs')->find($spu->id)->toArray();
-        dd($request->all(), $spu->detail);
-
-        //'specs', 'detail', 'cate', 'sences',
-        //            'skus',
-        //            'skus.search_word', 'skus.albums',
-        //            'skus.matched_skus', 'skus.similar_skus',
-        //            "skus.spec_values"
+        return ApiResponse::makeResponse(true, $spu);
     }
 }
