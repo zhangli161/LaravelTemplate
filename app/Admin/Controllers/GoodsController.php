@@ -147,7 +147,7 @@ class GoodsController extends Controller
         $grid->model()->orderBy("created_at", "desc");
 
         $grid->id('Id')->sortable();
-        $grid->spu_no('Spu编号')->sortable();
+//        $grid->spu_no('Spu编号')->sortable();
         $grid->spu_name('商品名称')->editable();
         $grid->desc('描述');
         $grid->status('上架状态')->using(['0' => '下架', '1' => '上架']);
@@ -177,7 +177,7 @@ class GoodsController extends Controller
             // 在这里添加字段过滤器
             $filter->like('spu_name', '商品名称');
 
-            $filter->equal('spu_no', 'SPU编号');
+//            $filter->equal('spu_no', 'SPU编号');
             $options = array();
             $categories = Category::where('parentid', '1')->get();
             foreach ($categories as $category) {
@@ -215,7 +215,7 @@ class GoodsController extends Controller
         $show = new Show($item);
 
         $show->id('Id');
-        $show->spu_no('Spu编号');
+//        $show->spu_no('Spu编号');
         $show->spu_name('商品名称');
         $show->desc('描述');
         $show->status('上架状态')
@@ -266,7 +266,7 @@ class GoodsController extends Controller
 
         $form->tab('基本信息', function ($form) {
 
-            $form->number('spu_no', 'Spu编号')->rules('required');
+//            $form->number('spu_no', 'Spu编号')->rules('required');
             $form->text('spu_name', '商品名称')->rules('required');
             $form->textarea('desc', '描述')->rules('required');
             $form->switch('status', '上架状态')->rules('required');
