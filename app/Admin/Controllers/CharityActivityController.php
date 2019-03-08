@@ -112,7 +112,7 @@ class CharityActivityController extends Controller
         $show->now('当前金额');
         $show->reciver('善款接收机构');
         $show->date_to('结束时间');
-        $show->status('活动状态')->using([['1'=>"进行中","2"=>"已完成",3=>"未完成"]]);
+        $show->status('活动状态')->using(['1'=>"进行中","2"=>"已完成",3=>"未完成"]);
         $show->created_at('创建时间');
 //        $show->updated_at('Updated at');
 
