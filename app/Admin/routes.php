@@ -40,6 +40,9 @@ Route::group([
     //***********//
     $router->resource("rebate/agent", AgentRebateController::class);
 
+    $router->resource('charity_activity', "CharityActivityController");
+
+
     //订单统计
     $router->any('statistic/order', "StatisticOrderController@index");
 

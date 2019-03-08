@@ -117,6 +117,11 @@ Route::group(['middleware' => 'auth:api', 'namespace' => 'Api'], function () {
 
     Route::get('/module/all', 'ModuleController@getList');//首页模块
 
+    Route::get('/charity_activity/getById', 'CharityActivityController@getById');//首页模块
+    Route::post('/charity_activity/donate', 'CharityActivityController@donate');//首页模块
+
+
+
     Route::post('/upload/image', function (Request $request) {
         $file = $request->file("image");
 //        dd($file);
