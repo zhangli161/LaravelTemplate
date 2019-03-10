@@ -35,7 +35,9 @@ class UserCouponManager
                 or (
                     ($limit_per_user == -1 or $user_coupons->count()< $limit_per_user)//校验领取上限
                     and
-                    (date(strtotime("   +$cooldown   hour",$lasttime)) < time())//校验领取间隔
+                    (date(strtotime("   +$cooldown   hour",$lasttime)) < time()
+                    or is_null($lasttime)
+                    )//校验领取间隔
                 )
             ) {
                 return true;
