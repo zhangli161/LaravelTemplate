@@ -26,7 +26,7 @@ class UserCouponManager
             ->where("get_way_id", $coupon_DM->id)->withTrashed()
             ->where('coupon_id', $coupon_DM->coupon_id)->get();
         $lasttime = $user_coupons->max('created_at');
-dd($lasttime);
+
         Log::info("领取优惠券方式：$coupon_DM ，已领取" . $user_coupons->count() . "领取上限:$limit_per_user ");
         if ($coupon_DM->method == 1 //校验能否购买
             and $coupon_DM->stock != 0 //校验库存
@@ -38,7 +38,7 @@ dd($lasttime);
                     (
                         is_null($lasttime)
                         or
-                        date(strtotime("   +$cooldown   hour", $lasttime)) < time()
+                        date(strtotime("   +$cooldown   hour", $lasttime->timestamp)) < time()
                     )//校验领取间隔
                 )
             ) {
