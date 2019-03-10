@@ -22,21 +22,23 @@ class UserCouponManager
     {
         $limit_per_user = $coupon_DM->limit_per_user;
         $cooldown = $coupon_DM->cooldown;
-        $user_coupons = $user->coupons()->where("get_way","0")
-            ->where("get_way_id",$coupon_DM->id)->withTrashed()
+        $user_coupons = $user->coupons()->where("get_way", "0")
+            ->where("get_way_id", $coupon_DM->id)->withTrashed()
             ->where('coupon_id', $coupon_DM->coupon_id)->get();
         $lasttime = $user_coupons->max('created_at');
 
-        Log::info("领取优惠券方式：$coupon_DM ，已领取".$user_coupons->count()."领取上限:$limit_per_user ");
+        Log::info("领取优惠券方式：$coupon_DM ，已领取" . $user_coupons->count() . "领取上限:$limit_per_user ");
         if ($coupon_DM->method == 1 //校验能否购买
             and $coupon_DM->stock != 0 //校验库存
         )
             if ($user_coupons->count() == 0  //未领取该类型优惠券
                 or (
-                    ($limit_per_user == -1 or $user_coupons->count()< $limit_per_user)//校验领取上限
+                    ($limit_per_user == -1 or $user_coupons->count() < $limit_per_user)//校验领取上限
                     and
-                    (date(strtotime("   +$cooldown   hour",$lasttime)) < time()
-                    or is_null($lasttime)
+                    (
+                        is_null($lasttime)
+                        or
+                        date(strtotime("   +$cooldown   hour", $lasttime)) < time()
                     )//校验领取间隔
                 )
             ) {
@@ -68,16 +70,14 @@ class UserCouponManager
             'user_id' => $user->id,
             'coupon_id' => $coupon_id,
             'expiry_date' => $expiry_date,
-            "get_way"=>"0",
-            "get_way_id"=>$coupon_DM->id
+            "get_way" => "0",
+            "get_way_id" => $coupon_DM->id
         ]);
 
-        if ($coupon_DM->stock!=0)
-        {
-            $coupon_DM->stock-=1;
+        if ($coupon_DM->stock != 0) {
+            $coupon_DM->stock -= 1;
             $coupon_DM->save();
-        }
-        else
+        } else
             return false;
         if (UserCreditManager::changeCredit($user, [
             'amount' => -$coupon_DM->price,
@@ -161,8 +161,9 @@ class UserCouponManager
         return $payment;
     }
 
-    public static function benefitGetCoupon(User $user, $coupon_benefit){
-        $coupon_id=$coupon_benefit->coupon_id;
+    public static function benefitGetCoupon(User $user, $coupon_benefit)
+    {
+        $coupon_id = $coupon_benefit->coupon_id;
 
         $coupon = Coupon::findOrFail($coupon_id);
         $expiry_date = null;
@@ -179,24 +180,26 @@ class UserCouponManager
             'user_id' => $user->id,
             'coupon_id' => $coupon_id,
             'expiry_date' => $expiry_date,
-            "get_way"=>"1",
-            "get_way_id"=>$coupon_benefit->id
+            "get_way" => "1",
+            "get_way_id" => $coupon_benefit->id
         ]);
         $user_coupon->save();
 
         return true;
     }
 
-    public static function checkUserCoupon(User $user){
-        $coupons=$user->coupons()->whereDate('expiry_date','<',now())->get();
-        foreach ($coupons as $coupon){
+    public static function checkUserCoupon(User $user)
+    {
+        $coupons = $user->coupons()->whereDate('expiry_date', '<', now())->get();
+        foreach ($coupons as $coupon) {
             $coupon->delete();
         }
     }
 
-    public static function checkCoupons(){
+    public static function checkCoupons()
+    {
         $coupons = Coupon::with('distribute_methods')
-            ->whereDate('expiry_date','<=',now())
+            ->whereDate('expiry_date', '<=', now())
             ->get();
         foreach ($coupons as $coupon) {
 //            $coupon = new  Coupon();
