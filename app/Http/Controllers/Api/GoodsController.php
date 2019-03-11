@@ -128,7 +128,7 @@ class GoodsController extends Controller
                 $query->whereIn('sku_id', $sku_ids);
             }
             if ($request->filled('sence_cate_id')) {
-                $spu_ids=GoodsSPUSence::whereIn("sence_cate_id",$request->get("sence_cate_id"))->pluck("spu_id");
+                $spu_ids=GoodsSPUSence::whereIn("sence_cate_id",$request->get("sence_cate_id"))->pluck("spu_id")->toArray();
                 $query->where('id', $spu_ids->toArray());
                 $spus = GoodsSPU::query()
                 ->where('id', $spu_ids->toArray())

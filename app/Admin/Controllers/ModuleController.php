@@ -128,7 +128,9 @@ class ModuleController extends Controller
         $form->hasMany('module_skus', "显示的商品",function (Form\NestedForm $form) {
             $skus = GoodsSKU::all();
             $options = array_combine($skus->pluck('id')->toArray()
-                , $skus->pluck('sku_name')->toArray());
+                , $skus->map(function ($item){
+                    return "【".$item->sku_name."】  ".$item->sku_no;
+                })->toArray());
             $form->select("sku_id","商品名称")
                 ->options($options);
         });
