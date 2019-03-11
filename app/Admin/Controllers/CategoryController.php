@@ -23,10 +23,10 @@ class CategoryController extends Controller
      */
     public function index(Content $content)
     {
-	    return Admin::content(function (Content $content) {
-		    $content->header('分类');
-		    $content->body(Category::tree());
-	    });
+        return Admin::content(function (Content $content) {
+            $content->header('分类');
+            $content->body(Category::tree());
+        });
     }
 
     /**
@@ -81,7 +81,7 @@ class CategoryController extends Controller
     protected function grid()
     {
         $grid = new Grid(new Category);
-        $grid->model()->orderBy("created_at","desc");
+        $grid->model()->orderBy("created_at", "desc");
 
         $grid->id('Id');
         $grid->created_at('创建时间');
@@ -126,10 +126,18 @@ class CategoryController extends Controller
 
         $form->text('name', '类别名称');
 //        $form->number('order', '排序');
-	    $form->image('icon',"图标");
-	    $form->image('image',"图片");
+        $form->image('icon', "图标");
+        $form->image('image', "图片");
         $form->select('parentid', '父级类别')->options('/api/admin/category');
+        $form->embeds('attr', '附加信息', function ($form) {
+            $form->text("url","跳转链接");
+//			$form->number('info_id', '关联信息id')->rules('required');
+//		    $form->email('extra2')->rules('required');
+//		    $form->mobile('extra3');
+//		    $form->datetime('extra4');
 
+//			$form->dateRange('time_from', 'time_to', '生效时间')->help('不填写则永久有效');;
+        });
         return $form;
     }
 }

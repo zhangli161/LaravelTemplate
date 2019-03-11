@@ -15,14 +15,17 @@ use Encore\Admin\Traits\ModelTree;
 
 class Category extends Model
 {
-	use SoftDeletes,ModelTree,AdminBuilder;
-	protected $table = 'category';  //表名
-	public function __construct(array $attributes = [])
-	{
-		parent::__construct($attributes);
-		
-		$this->setParentColumn('parentid');
-		$this->setOrderColumn('order');
-		$this->setTitleColumn('name');
-	}
+    use SoftDeletes, ModelTree, AdminBuilder;
+    protected $table = 'category';  //表名
+    protected $casts = ['attr' => 'json'];
+    protected $guarded=[];
+
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        $this->setParentColumn('parentid');
+        $this->setOrderColumn('order');
+        $this->setTitleColumn('name');
+    }
 }
