@@ -40,7 +40,7 @@ class GoodsController extends Controller
             $spu_ids=GoodsSPUSence::where("sence_cate_id",$request->get("sence_cate_id"))
                 ->pluck("spu_id");
 
-            $query->where('id', $spu_ids->toArray());
+            $query->whereIn('id', $spu_ids->toArray());
 
         }
         $goods = $query->get();
