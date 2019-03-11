@@ -129,7 +129,7 @@ class ModuleController extends Controller
             $skus = GoodsSKU::all();
             $options = array_combine($skus->pluck('id')->toArray()
                 , $skus->pluck('sku_name')->toArray());
-            $form->select("sku_id")
+            $form->select("sku_id","商品名称")
                 ->options($options);
         });
 
