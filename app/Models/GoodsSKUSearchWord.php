@@ -9,10 +9,10 @@ class GoodsSKUSearchWord extends Model
     protected $table = 'goods_sku_search_words';
     protected $fillable = ['search_words'];
     protected $primaryKey = 'sku_id';
-    protected $casts = ['search_words' => 'array'];
+    protected $appends = ['search_words_array'];
 
-    public function sku()
+    public function getSearchWordsArrayAttribute()
     {
-        return $this->belongsTo(GoodsSKU::class, 'sku_id');
+        return explode(',', $this->search_words);
     }
 }

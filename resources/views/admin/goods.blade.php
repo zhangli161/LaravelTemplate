@@ -308,7 +308,8 @@
                                     {{--<option v-for="word in editingSKU.search_word.search_words">@{{ word }}</option>--}}
                                     {{--<option v-for="word in editingSKU.search_word.search_words"  selected>@{{ word }}</option>--}}
                                 </select>
-                                <input type="hidden" id="search_word" v-model="editingSKU.search_word.search_words"/>
+                                <input type="hidden" id="search_word"
+                                       v-model="editingSKU.search_word.search_words_array"/>
                             </div>
                         </div>
 
@@ -482,12 +483,13 @@
 
     function putSKUToModal(sku) {
         data.editingSKU = sku;
-        data.editingSKU.spec_value_ids = {};
+        if (!data.editingSKU.spec_value_ids)
+            data.editingSKU.spec_value_ids = {};
         console.log("编辑", sku);
         $("#searchwords-select").empty()
-        for (var i in sku.search_word.search_words) {
-            $("#searchwords-select").append("<option value=\"" + sku.search_word.search_words[i]
-                + "\" selected>" + sku.search_word.search_words[i] + "</option>");
+        for (var i in sku.search_word.search_words_array) {
+            $("#searchwords-select").append("<option value=\"" + sku.search_word.search_words_array[i]
+                + "\" selected>" + sku.search_word.search_words_array[i] + "</option>");
         }
         initAlbums()
         // $(".matched_skus");
@@ -565,8 +567,8 @@
                             return;
                         }
                     }
-                    if (isEmpty(data.editingSKU.search_word.search_words)) {
-                        data.editingSKU.search_word.search_words = [data.editingSKU.sku_name]
+                    if (isEmpty(data.editingSKU.search_word.search_words_array)) {
+                        data.editingSKU.search_word.search_words_array = [data.editingSKU.sku_name]
                     }
 
                     if (isEmpty(data.editingSKU.thumbs)) {
@@ -704,7 +706,7 @@
 
         $("#searchwords-select").on("change", function () {
             console.log("搜索词", $(this).val())
-            data.editingSKU.search_word.search_words = $(this).val();
+            data.editingSKU.search_word.search_words_array = $(this).val();
             $("#search_word").val($(this).val())
         });
 
