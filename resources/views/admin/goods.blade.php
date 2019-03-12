@@ -324,7 +324,7 @@
                                                     id="spec_value_ids-{{$spec->id}}"
                                                     v-model="editingSKU.spec_value_ids[{{$spec->id}}]"
                                             >
-                                                <option value=""></option>
+                                                {{--<option value=""></option>--}}
                                                 @foreach($spec->values as $value)
                                                     <option value="{{$value->id}}">{{$value->value}}</option>
                                                 @endforeach
@@ -482,6 +482,7 @@
 
     function putSKUToModal(sku) {
         data.editingSKU = sku;
+        data.editingSKU.spec_value_ids={};
         console.log("编辑", sku);
         $("#searchwords-select").empty()
         for (var i in sku.search_word.search_words) {

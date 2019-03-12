@@ -368,6 +368,7 @@ class GoodsController extends Controller
                 $search_words= array_get($sku_data, 'search_word.search_words');
                 if (gettype($search_words)!="array" or count($search_words)==0)
                     $search_words=[array_get($sku_data, 'sku_name')];
+                $search_words=implode(',',$search_words);
                 $sku->search_word()->updateOrCreate(["sku_id" => $sku->id],
                     ['search_words' =>$search_words]);
 
