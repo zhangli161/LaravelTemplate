@@ -97,6 +97,11 @@ class CouponController extends Controller
 		$grid->updated_at('上次修改时间');
 
 		$grid->disableExport();
+        $grid->actions(function ($actions) {
+            $actions->disableDelete();
+//            $actions->disableEdit();
+//            $actions->disableView();
+        });
 		return $grid;
 	}
 	
