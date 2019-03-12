@@ -28,7 +28,7 @@ Admin::navbar(function (\Encore\Admin\Widgets\Navbar $navbar) {
 //    $navbar->left("<script src=\"https://cdn.staticfile.org/vue/2.2.2/vue.min.js\"></script>");
 });
 
-Grid::init(function (Grid $grid) {
-
-//    $grid->disableRowSelector();
-});
+//Grid::init(function (Grid $grid) {
+//
+////    $grid->disableRowSelector();
+//});
