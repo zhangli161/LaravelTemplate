@@ -384,7 +384,8 @@ class GoodsController extends Controller
 //            $sku = new GoodsSKU();
                 $sku->thumbs= array_get($sku_data, 'thumbs',[]);
                 $sku->save();
-                
+                return array($sku->thumbs,array_get($sku_data, 'thumbs',[]),$sku->albums()->get());
+
                 //matched_skus,similar_skus
                 $matched_sku_ids = array_get($sku_data, 'matched_sku_ids');
                 $sku->matched_skus()->sync($matched_sku_ids);

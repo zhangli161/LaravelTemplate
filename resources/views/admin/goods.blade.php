@@ -794,11 +794,15 @@
                     return "{{\Illuminate\Support\Facades\Storage::disk('admin')->url("/")}}" + alb.url;
             })
             var albums = [];
-            for (var i in data.editingSKU.albums) {
-                // if ()
-            }
+
             data.editingSKU.thumbs = albs;
             console.log("初始值", albs)
+        } else {
+            for (var i in data.editingSKU.thumbs) {
+                if (!isURL(data.editingSKU.thumbs[i]))
+                    data.editingSKU.thumbs[i] = "{{\Illuminate\Support\Facades\Storage::disk('admin')->url("/")}}" + data.editingSKU.thumbs[i];
+
+            }
         }
 
         $("input.sku_thumb").fileinput('destroy').fileinput({
