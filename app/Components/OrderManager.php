@@ -146,8 +146,8 @@ class OrderManager extends Manager
             $order->save();
         }
         $order->can_use_coupon = $canuseCoupon;
-        $order->pay_value=(is_numeric( $order->post_fee)?$order->post_fee:0)
-            +$order->payment;
+        $order->pay_value = (is_numeric($order->post_fee) ? $order->post_fee : 0)
+            + $order->payment;
         return $order;
     }
 
@@ -269,6 +269,8 @@ class OrderManager extends Manager
         }
 
         $order->save();
+        $order->pay_value = (is_numeric($order->post_fee) ? $order->post_fee : 0)
+            + $order->payment;
         return $order;
     }
 
