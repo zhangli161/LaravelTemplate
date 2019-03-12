@@ -92,6 +92,8 @@ class GoodsSKUController extends Controller
         $grid = new Grid(new GoodsSKU);
         $grid->model()->orderBy("created_at", "desc");
 
+        $grid->disableCreateButton();//新增
+
         $spu_id = request('spu_id');
         if ($spu_id)
             $grid->model()->where('spu_id', '=', $spu_id);
