@@ -75,9 +75,9 @@ class OrderManager extends Manager
         }
         //以上为创建订单主体部分
 
-
+        $canuseCoupon=true;//是否可以使用优惠券
         foreach ($sku_opts as $sku_opt) {
-            $sku = GoodsSKU::findOrFail($sku_opt['sku_id']);
+            $sku = GoodsSKU::with('benefit')->findOrFail($sku_opt['sku_id']);
             $amount = $sku_opt['amount'] or 1;
             $total_price = $amount * $sku->price;
             $payment += $total_price;
@@ -91,6 +91,10 @@ class OrderManager extends Manager
                 'total_price' => $total_price,
             ]);
 
+            if ($sku->benefits()
+                ->where('status', '>', 0)->exists()){
+                $canuseCoupon=false;//有特惠商品则不能用优惠券
+            };
             if ($sku->postage == "1") {
                 //包邮时所有的商品都包邮
                 $postage = 1;
@@ -111,7 +115,7 @@ class OrderManager extends Manager
         //以上为结算邮费
 
 
-        if ($coupon_id) {
+        if ($coupon_id&$canuseCoupon) {
             if (UserCouponManager::canUseCoupon($user, $coupon_id, $order->payment)["result"]) {
                 //不保存的情况下结算优惠券，将不消耗优惠券
                 if (!$save)
@@ -137,6 +141,7 @@ class OrderManager extends Manager
         if ($save) {
             $order->save();
         }
+        $order->can_use_coupon=$canuseCoupon;
         return $order;
     }
 
@@ -175,6 +180,7 @@ class OrderManager extends Manager
         $order = Order::create($create);
 
         $order_skus = array();
+        $canuseCoupon=true;//是否可以使用优惠券
         foreach ($sku_opts as $sku_opt) {
             $sku = GoodsSKU::findOrFail($sku_opt['sku_id']);
 
@@ -191,6 +197,10 @@ class OrderManager extends Manager
                 'total_price' => $total_price,
             ]);
 
+            if ($sku->benefits()
+                ->where('status', '>', 0)->exists()){
+                $canuseCoupon=false;//有特惠商品则不能用优惠券
+            };
             //不包邮时计算邮费
             if (!$sku->postage) {
 //				$sku_postage = $sku->postages()->findOrFail($sku_opt['postage_id']);
@@ -241,7 +251,7 @@ class OrderManager extends Manager
         $order->post_fee = $postage == 0 ? $post_fee : 0;
         $order->postage = $postage;
 
-        if ($coupon_id) {
+        if ($coupon_id and $canuseCoupon) {
             if (UserCouponManager::canUseCoupon($user, $coupon_id, $order->payment)["result"]) {
                 $payment = UserCouponManager::useCoupon($user, $coupon_id, $payment = $order->payment, $order->id);
                 $order->used_user_coupon_id = $coupon_id;

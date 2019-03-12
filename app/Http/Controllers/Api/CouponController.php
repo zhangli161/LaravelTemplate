@@ -15,7 +15,9 @@ use App\Http\Helpers\ApiResponse;
 use App\Models\Coupon;
 use App\Models\CouponBenefit;
 use App\Models\CouponDistributeMethod;
+use App\Models\UserCoupon;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -54,14 +56,22 @@ class CouponController
         UserCouponManager::checkUserCoupon(Auth::user());
         if ($request->orderBy)
             $coupons = Auth::user()->coupons()
+                ->withTrashed()
                 ->with('coupon')
+                ->whereDate("expiry_date",'>=',Carbon::now()->addDays(-7))
+                ->orWhere("expiry_date",null)
                 ->orderby($request->orderBy)
                 ->paginate();
         else
             $coupons = Auth::user()->coupons()
+                ->withTrashed()
+                ->with('coupon')
+                ->whereDate("expiry_date",'>=',Carbon::now()->addDays(-7))
+                ->orWhere("expiry_date",null)
                 ->paginate();
-        foreach ($coupons as $coupon)
-            $coupon->coupon;
+        foreach ($coupons as $coupon){
+            $coupon->trashed=$coupon->trashed();
+        }
         return ApiResponse::makeResponse(true, $coupons, ApiResponse::SUCCESS_CODE);
     }
 

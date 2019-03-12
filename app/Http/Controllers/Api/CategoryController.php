@@ -18,7 +18,7 @@ class CategoryController extends Controller
 {
     public function category()
     {
-        $cates = $this->getCategory(0);
+        $cates = $this->getCategory(0,'-----');
         array_unshift($cates, ['id' => 0, 'text' => '根类别']);
         return $cates;
     }
@@ -29,7 +29,7 @@ class CategoryController extends Controller
         $categories = Category::where('parentid', $parentid)->orderBy('order')->get();
         foreach ($categories as $category) {
             array_push($result, ['id' => $category->id, 'text' => $pre . $category->name]);
-            $result = array_merge($result, $this->getCategory($category->id, $pre . '             '));
+            $result = array_merge($result, $this->getCategory($category->id, $pre . $pre));
         }
         return $result;
     }

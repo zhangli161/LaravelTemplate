@@ -25,7 +25,19 @@ class CategoryController extends Controller
     {
         return Admin::content(function (Content $content) {
             $content->header('分类');
-            $content->body(Category::tree());
+            $content->body(Category::tree(function ($tree) {
+                $tree->branch(function ($branch) {
+                    $src = "aaa";
+//                    $logo = "<img src='$src' style='max-width:30px;max-height:30px' class='img'/>";
+//                    $div = "<div class='margin pull-right' style=''></div>";
+                    if ($branch['parentid'] == 0)
+                        return "<span class='label label-success'>{$branch['id']} - {$branch['name']}</span>
+                        <i class='margin pull-right'></i>
+                        ";
+                    else
+                        return "<span class='label label-primary'>{$branch['id']} - {$branch['name']}</span>";
+                });
+            }));
         });
     }
 
@@ -130,7 +142,7 @@ class CategoryController extends Controller
         $form->image('image', "图片");
         $form->select('parentid', '父级类别')->options('/api/admin/category');
         $form->embeds('attr', '附加信息', function ($form) {
-            $form->text("url","跳转链接");
+            $form->text("url", "跳转链接");
 //			$form->number('info_id', '关联信息id')->rules('required');
 //		    $form->email('extra2')->rules('required');
 //		    $form->mobile('extra3');

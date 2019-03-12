@@ -145,7 +145,7 @@ class OrderController extends Controller
         if (!$order->xcx_pay) {
             $ret = $data->unifiedOrder([
                 'out_trade_no' => "XCX_" . $order->id,           // 订单号
-                'total_fee' => (int)($order->payment * 100),              // 订单金额，**单位：分**
+                'total_fee' => (int)($order->payment +$order->post_fee)* 100,              // 订单金额，**单位：分**
                 'body' => '测试订单',                   // 订单描述
                 'openid' => $order->user->WX->openId               // 支付人的 openID
             ]);

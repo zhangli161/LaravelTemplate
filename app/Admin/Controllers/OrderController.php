@@ -233,18 +233,7 @@ function copyText(item) {
 
             $sku->sku_name("商品名称");
 
-            $sku->column("sku.id", "规格")->display(function ($id) {
-                $sku = GoodsSKU::find($id);
-                if (empty($sku)) {
-                    return "商品丢失";
-                } else {
-                    $strs = $sku->spec_value_strs;
-                    $html = "";
-                    foreach ($strs as $str)
-                        $html .= "<div>$str</div>";
-                    return $html;
-                }
-            });
+            $sku->column("sku.spec_value_strs", "规格")->label();
 
 //            $sku->id("订单商品id");
 //            $sku->column("refund","退款信息")->display(function ($refund) {

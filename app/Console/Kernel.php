@@ -49,7 +49,7 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             //订单快递状态检测
             OrderManager::check_postage_all();
-        })->dailyAt('3');
+        })->everyMinute();
     }
 
     /**
