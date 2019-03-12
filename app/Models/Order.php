@@ -9,7 +9,7 @@ class Order extends Model
 {
 	protected $fillable = ['payment', 'payment_type', 'postage','post_fee', 'user_id','buyer_nick',"buyer_message",
 		'receiver_name','receiver_phone','receiver_region_id','receiver_address','note'];
-	
+    protected $appends = ['pay_value'];
 	public function user(){
 		return $this->belongsTo(User::class,'user_id');
 	}
@@ -38,5 +38,8 @@ class Order extends Model
 
     public function order_agent(){
 	    return $this->hasOne(OrderAgent::class,"order_id");
+    }
+    public function getPayValueAttribute(){
+	    return $this->post_fee+$this->payment;
     }
 }
