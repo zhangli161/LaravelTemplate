@@ -30,5 +30,5 @@ Admin::navbar(function (\Encore\Admin\Widgets\Navbar $navbar) {
 
 Grid::init(function (Grid $grid) {
 
-    $grid->disableRowSelector();
+//    $grid->disableRowSelector();
 });
