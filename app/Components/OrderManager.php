@@ -49,7 +49,11 @@ class OrderManager extends Manager
         if ($user_address_id)
             $user_address = $user->addresses()->findOrFail($user_address_id);
         $payment = 0.0;
-        $post_fee = isset($user_address) ? PostageMananger::getPostageFee($user_address->region_id) : 0;
+        if (isset($user_address)) {
+            $post_fee = PostageMananger::getPostageFee($user_address->region_id);
+        } else {
+            $post_fee = '请选择地址';
+        }
         $postage = 0;
 
         $order_arr = [
@@ -75,7 +79,7 @@ class OrderManager extends Manager
         }
         //以上为创建订单主体部分
 
-        $canuseCoupon=true;//是否可以使用优惠券
+        $canuseCoupon = true;//是否可以使用优惠券
         foreach ($sku_opts as $sku_opt) {
             $sku = GoodsSKU::with('benefits')->findOrFail($sku_opt['sku_id']);
             $amount = $sku_opt['amount'] or 1;
@@ -92,8 +96,8 @@ class OrderManager extends Manager
             ]);
 
             if ($sku->benefits()
-                ->where('status', '>', 0)->exists()){
-                $canuseCoupon=false;//有特惠商品则不能用优惠券
+                ->where('status', '>', 0)->exists()) {
+                $canuseCoupon = false;//有特惠商品则不能用优惠券
             };
             if ($sku->postage == "1") {
                 //包邮时所有的商品都包邮
@@ -110,12 +114,12 @@ class OrderManager extends Manager
         //以上为循环添加所有的sku到订单内
 
         $order->payment = $payment;
-        $order->post_fee = $postage == 0 ? $post_fee : 0;
+        $order->post_fee = $postage == '0' ? $post_fee : 0;
         $order->postage = $postage;
         //以上为结算邮费
 
 
-        if ($coupon_id&$canuseCoupon) {
+        if ($coupon_id & $canuseCoupon) {
             if (UserCouponManager::canUseCoupon($user, $coupon_id, $order->payment)["result"]) {
                 //不保存的情况下结算优惠券，将不消耗优惠券
                 if (!$save)
@@ -141,7 +145,7 @@ class OrderManager extends Manager
         if ($save) {
             $order->save();
         }
-        $order->can_use_coupon=$canuseCoupon;
+        $order->can_use_coupon = $canuseCoupon;
         return $order;
     }
 
@@ -180,7 +184,7 @@ class OrderManager extends Manager
         $order = Order::create($create);
 
         $order_skus = array();
-        $canuseCoupon=true;//是否可以使用优惠券
+        $canuseCoupon = true;//是否可以使用优惠券
         foreach ($sku_opts as $sku_opt) {
             $sku = GoodsSKU::with('benefits')->findOrFail($sku_opt['sku_id']);
 
@@ -198,8 +202,8 @@ class OrderManager extends Manager
             ]);
 
             if ($sku->benefits()
-                ->where('status', '>', 0)->exists()){
-                $canuseCoupon=false;//有特惠商品则不能用优惠券
+                ->where('status', '>', 0)->exists()) {
+                $canuseCoupon = false;//有特惠商品则不能用优惠券
             };
             //不包邮时计算邮费
             if (!$sku->postage) {
