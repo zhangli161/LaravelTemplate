@@ -482,7 +482,7 @@
 
     function putSKUToModal(sku) {
         data.editingSKU = sku;
-        data.editingSKU.spec_value_ids={};
+        data.editingSKU.spec_value_ids = {};
         console.log("编辑", sku);
         $("#searchwords-select").empty()
         for (var i in sku.search_word.search_words) {
@@ -786,18 +786,21 @@
 
 
     function initAlbums() {
-        var albs = data.editingSKU.albums.map(function (alb) {
-            if (isURL(alb.url))
-                return alb.url;
-            else
-                return "{{\Illuminate\Support\Facades\Storage::disk('admin')->url("/")}}" + alb.url;
-        })
-        var albums = [];
-        for (var i in data.editingSKU.albums) {
-            // if ()
+        if (!data.editingSKU.thumbs) {
+            var albs = data.editingSKU.albums.map(function (alb) {
+                if (isURL(alb.url))
+                    return alb.url;
+                else
+                    return "{{\Illuminate\Support\Facades\Storage::disk('admin')->url("/")}}" + alb.url;
+            })
+            var albums = [];
+            for (var i in data.editingSKU.albums) {
+                // if ()
+            }
+            data.editingSKU.thumbs = albs;
+            console.log("初始值", albs)
         }
-        data.editingSKU.thumbs = albs;
-        console.log("初始值", albs)
+
         $("input.sku_thumb").fileinput('destroy').fileinput({
             "language": 'zh',
             "uploadUrl": '/admin/upload', //上传的地址
