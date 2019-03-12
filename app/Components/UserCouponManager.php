@@ -85,6 +85,8 @@ class UserCouponManager
             'note' => '优惠券id:' . $coupon_id,
             'editor' => 'user'
         ])) {
+            if ($user_coupon->expiry_date==null)
+                $user_coupon->expiry_date=Carbon::now()->addCenturies(1);
             $user_coupon->save();
             return true;
         }
