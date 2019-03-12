@@ -77,7 +77,7 @@ class OrderManager extends Manager
 
         $canuseCoupon=true;//是否可以使用优惠券
         foreach ($sku_opts as $sku_opt) {
-            $sku = GoodsSKU::with('benefit')->findOrFail($sku_opt['sku_id']);
+            $sku = GoodsSKU::with('benefits')->findOrFail($sku_opt['sku_id']);
             $amount = $sku_opt['amount'] or 1;
             $total_price = $amount * $sku->price;
             $payment += $total_price;
@@ -182,7 +182,7 @@ class OrderManager extends Manager
         $order_skus = array();
         $canuseCoupon=true;//是否可以使用优惠券
         foreach ($sku_opts as $sku_opt) {
-            $sku = GoodsSKU::findOrFail($sku_opt['sku_id']);
+            $sku = GoodsSKU::with('benefits')->findOrFail($sku_opt['sku_id']);
 
             $amount = $sku_opt['amount'] or 1;
             $total_price = $amount * $sku->price;
