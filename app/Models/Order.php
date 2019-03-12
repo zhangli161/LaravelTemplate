@@ -48,6 +48,6 @@ class Order extends Model
 
     public function getPayValueAttribute()
     {
-        return (is_null($this->post_fee)? $this->post_fee: 0) + (is_null($this->payment)? $this->payment: 0) ;
+        return (is_numeric($this->post_fee)? $this->post_fee: 0) + (is_numeric($this->payment)? $this->payment: 0) ;
     }
 }
