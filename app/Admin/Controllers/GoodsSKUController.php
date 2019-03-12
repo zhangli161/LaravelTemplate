@@ -298,9 +298,10 @@ class GoodsSKUController extends Controller
             $form->number('stock', '库存')->rules('required');
 //        $form->number('shop_id', 'Shop id');
             $spus = GoodsSPU::all();
-            $options = $spus->mapWithKeys(function ($item) {
-                return [$item['id'] => $item['spu_name']];
-            });
+//            $options = $spus->mapWithKeys(function ($item) {
+//                return [$item['id'] => $item['spu_name']];
+//            });
+            $options=$spus->pluck('spu_name','id');
 
             $form->select('spu_id', '所属商品')->options($options)->default(request('spu_id'))->rules('required');
             $form->radio('stock_type', '减库存时间')
@@ -475,5 +476,10 @@ class GoodsSKUController extends Controller
             }
         }
         return redirect()->to('/admin/benefit');
+    }
+
+    public function store(Request $request)
+    {
+        dd($request->all());
     }
 }

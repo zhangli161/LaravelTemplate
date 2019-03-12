@@ -188,6 +188,8 @@ class UserCouponManager
             "get_way" => "1",
             "get_way_id" => $coupon_benefit->id
         ]);
+        if ($user_coupon->expiry_date==null)
+            $user_coupon->expiry_date=Carbon::now()->addCenturies(1);
         $user_coupon->save();
 
         return true;

@@ -391,8 +391,9 @@ class GoodsController extends Controller
                 $sku->similar_skus()->sync($similar_sku_ids);
 //            $sku->similar_skus()->whereNotIn('id'$similar_sku_ids)->delete();
 
-                $spec_value_ids = array_get($sku_data, "spec_value_ids");
+                $spec_value_ids = array_get($sku_data, "spec_value_ids",[]);
 //            dd($spec_value_ids, array_values($spec_value_ids));
+//                if ()
                 $spec_value_sync = [];
                 foreach ($spec_value_ids as $key => $id) {
                     $spec_value_sync[$id] = ['spec_id' => $key];
