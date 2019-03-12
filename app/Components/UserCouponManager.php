@@ -97,17 +97,20 @@ class UserCouponManager
         if ($user_coupon) {//优惠券存在
             $expiry_date = strtotime($user_coupon->expiry_date . " +1 day");
             $today = time();
+            if (!$user_coupon->coupon){
+                return['result'=>false,'reason'=>'优惠券丢失'];
+            }
             if (strtotime($user_coupon->expiry_date) > $today) {//未失效
                 if ($payment >= $user_coupon->coupon->min_cost) {//到达门槛价格
-                    return ["result" => true, "reson" => null];
+                    return ["result" => true, "reason" => null];
                 } else {
-                    return ["result" => false, "reson" => "未达到门槛价格"];
+                    return ["result" => false, "reason" => "未达到门槛价格"];
                 }
             } else {
-                return ["result" => false, "reson" => "优惠券已过期"];
+                return ["result" => false, "reason" => "优惠券已过期"];
             }
         }
-        return ["result" => false, "reson" => "优惠券不存在"];
+        return ["result" => false, "reason" => "优惠券不存在"];
     }
 
     //返回打折后金额
