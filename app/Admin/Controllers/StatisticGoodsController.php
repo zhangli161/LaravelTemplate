@@ -42,9 +42,9 @@ class StatisticGoodsController extends Controller
     {
         return $content
             ->header('商品统计')
-//            ->description('')
-            ->row($this->grid($request))
             ->row($this->chartform("/admin/statistic/goods"))
+            //            ->description('')
+            ->row($this->grid($request))
             ->row($this->count_chart($content,$request))
             ->row($this->payment_chart($content,$request))
             ->row("<script>disablePjax=true</script>")

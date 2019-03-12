@@ -41,7 +41,7 @@ class StatisticOrderSalesController extends Controller
     public function index(Content $content, Request $request)
     {
         return $content
-            ->header('销售详情统计')
+            ->header('商品/订单销售统计')
 //            ->description('')
             ->row($this->chartform("/admin/statistic/order-sales"))
             ->row($this->grid($request))
