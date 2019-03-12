@@ -121,6 +121,11 @@ class GoodsSKUController extends Controller
         $grid->created_at('创建时间')->sortable();
         $grid->updated_at('更新时间');
 //        $grid->deleted_at('Deleted at');
+
+        $grid->actions(function ($actions){
+
+            $actions->disableEdit();
+        });
         $grid->tools(function ($tools) {
             $tools->batch(function ($batch) {
                 $batch->disableDelete();
