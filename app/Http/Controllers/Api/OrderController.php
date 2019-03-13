@@ -46,9 +46,15 @@ class OrderController extends Controller
                 $request->get("buyer_message")
             );
 
-            $coupons = $user->coupons;
-            foreach ($coupons as $coupon) {
-                $coupon->can_use = UserCouponManager::canUseCoupon($user, $coupon->id, $order->payment);
+            $coupons = array();
+            if ($order->can_use_coupon) {
+                $all_coupons = $user->coupons;
+                foreach ($all_coupons as $coupon) {
+                    $coupon->can_use = UserCouponManager::canUseCoupon($user, $coupon->id, $order->payment);
+                    if ($coupon->can_use) {
+                        array_push($coupons, $coupon);
+                    }
+                }
             }
 //			$order->skus;
             return ApiResponse::makeResponse(true, [
@@ -74,9 +80,8 @@ class OrderController extends Controller
                 $request->get("coupon_id"),
                 $request->get("buyer_message")
             );
-            if ($order==null)
-            {
-                return ApiResponse::makeResponse(false,"生成订单失败");
+            if ($order == null) {
+                return ApiResponse::makeResponse(false, "生成订单失败");
             }
             $order->skus;
             return ApiResponse::makeResponse(true, $order, ApiResponse::SUCCESS_CODE);
@@ -99,7 +104,7 @@ class OrderController extends Controller
 
 //        dd($datas->count(),OrderRefund::all()->count());
 //            OrderSKU::whereIn('order_id', $status_5_ids)->where("is_buyer_rated", 0)->count();
-        $refund_count = OrderRefund::whereIn('order_id', $datas)->where("status",'0')->count();
+        $refund_count = OrderRefund::whereIn('order_id', $datas)->where("status", '0')->count();
         return ApiResponse::makeResponse(true, [$status_1_count, $status_2_3_4_count, $commentable_count, $refund_count
             , Auth::user()->orders()->count(), Auth::user()
         ], ApiResponse::SUCCESS_CODE);
@@ -150,7 +155,7 @@ class OrderController extends Controller
         if (!$order->xcx_pay) {
             $ret = $data->unifiedOrder([
                 'out_trade_no' => "XCX_" . $order->id,           // 订单号
-                'total_fee' => (int)(($order->payment +$order->post_fee)* 100),              // 订单金额，**单位：分**
+                'total_fee' => (int)(($order->payment + $order->post_fee) * 100),              // 订单金额，**单位：分**
                 'body' => '测试订单',                   // 订单描述
                 'openid' => $order->user->WX->openId               // 支付人的 openID
             ]);
@@ -225,7 +230,7 @@ class OrderController extends Controller
     {
         if ($request->filled(['order_id', 'order_sku_id', "amount"])) {
             $order = Order::
-            whereIn('status', ['2','3','4'])-> //只寻找交易成功的订单
+            whereIn('status', ['2', '3', '4'])-> //只寻找交易成功的订单
             findOrFail($request->get("order_id"));
             if (!$order)
                 return ApiResponse::makeResponse(false, "订单不存在或未完成", ApiResponse::UNKNOW_ERROR);
