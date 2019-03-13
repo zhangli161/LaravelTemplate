@@ -191,7 +191,7 @@ class GoodsController extends Controller
                 'user_id' => Auth::user()->id,
                 'spu_id' => $spu->id,
                 'sku_id' => $sku->id,
-            ])->save();
+            ]);
             $cart->amount = $cart->amount ? $cart->amount : 0;
             $cart->amount += $request->filled('amount') ? $request->get('amount') : 1;
 
