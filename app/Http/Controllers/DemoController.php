@@ -49,10 +49,14 @@ class DemoController extends Controller
 //	static $worker=SnowFlakeIDWorker(1);
     public static function test(Request $request)
     {
+        $agents = Agent::all();
+        foreach ($agents as $agent) {
+            $agent->history_balance = $agent->order_agent()->sum("payment");
+            $agent->save();
+        }
 
 
-
-        dd($request->all());
+        dd($agents);
     }
 
     //Manager的用法
