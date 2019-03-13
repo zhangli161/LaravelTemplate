@@ -51,7 +51,7 @@ class DemoController extends Controller
     {
         $agents = Agent::get();
         foreach ($agents as $agent) {
-            $agent->history_balance = $agent->order_agent()->sum("payment");
+            $agent->history_balance = $agent->order_agent()->where('status',1)->sum("payment");
             $agent->save();
         }
 
