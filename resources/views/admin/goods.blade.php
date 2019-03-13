@@ -103,7 +103,6 @@
                     <div class="formControls col-xs-8">
 
                         <input type="checkbox" class="status la_checkbox"/>
-                        <input type="hidden" class="status" name="status" id="status" v-model="spu.status"/>
                     </div>
 
                 </div>
@@ -133,12 +132,7 @@
                         @endforeach
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="control-label col-sm-2 ">图文详情：</label>
-                    <div class="formControls col-xs-8">
-                        <textarea id="detail_content" name="detail[content]" v-model="spu.detail.content">@{{ spu.detail.content }}</textarea>
-                    </div>
-                </div>
+
 
                 <div class="form-group">
                     <label class="control-label col-sm-2 ">规格：</label>
@@ -209,12 +203,18 @@
                         </table>
                     </div>
                 </div>
-
+                <div class="form-group">
+                    <label class="control-label col-sm-2 ">图文详情：</label>
+                    <div class="formControls col-xs-8">
+                        <textarea id="detail_content" name="detail[content]" v-model="spu.detail.content">@{{ spu.detail.content }}</textarea>
+                    </div>
+                </div>
+                <input type="" class="status" name="status" id="status" v-model="spu.status"/>
 
                 <div class="form-group">
                     <div class="col-xs-8 col-xs-offset-2">
                         <div class="btn-group pull-right">
-                            <div class="btn btn-primary" onclick="submitSPU()">提交</div>
+                            <div class="btn btn-primary" v-on:click="submitSPU()">提交</div>
                         </div>
                     </div>
                 </div>
@@ -595,8 +595,36 @@
                         }
                     }
                     data.spu.skus.push(data.editingSKU)
+                },
+                submitSPU: function () {
+                    console.log(data.spu.status)
+                    console.log(data);
+                    var require_fileds = ['spu_name', 'desc', 'thumb', 'cate_id']
+                    for (var i in require_fileds) {
+                        // console.log("filed " + require_fileds[i] + "", data.spu[require_fileds[i]])
 
+                        if (isEmpty(data.spu[require_fileds[i]])) {
+                            console.log("filed " + require_fileds[i] + "", data.spu[require_fileds[i]])
+                            $("#" + require_fileds[i]).focus()
+                            alert("请完整填写")
+                            return;
+                        }
+                    }
+                    if (isEmpty(data.spu.detail.content)) {
+                        alert("请填写图文详情")
+                    }
 
+                    var post_data = data.spu;
+                    post_data._token = "{{csrf_token()}}";
+                    post_data.status = post_data.status ?  post_data.status : "0"
+                    $.post("{{url("/admin/goods")}}", post_data, function (res) {
+                        console.log("提交返回", res);
+                        if (res.result) {
+                            window.location.href = "{{url('admin/goods')}}"
+                        } else {
+                            alert("")
+                        }
+                    })
                 }
             },
             watch: {
@@ -881,35 +909,6 @@
         }
     }
 
-    function submitSPU() {
-        console.log(data);
-        var require_fileds = ['spu_name', 'desc', 'thumb', 'cate_id']
-        for (var i in require_fileds) {
-            // console.log("filed " + require_fileds[i] + "", data.spu[require_fileds[i]])
-
-            if (isEmpty(data.spu[require_fileds[i]])) {
-                console.log("filed " + require_fileds[i] + "", data.spu[require_fileds[i]])
-                $("#" + require_fileds[i]).focus()
-                alert("请完整填写")
-                return;
-            }
-        }
-        if (isEmpty(data.spu.detail.content)) {
-            alert("请填写图文详情")
-        }
-
-        var post_data = data.spu;
-        post_data._token = "{{csrf_token()}}";
-        post_data.status = post_data.status ? "1" : "0"
-        $.post("{{url("/admin/goods")}}", post_data, function (res) {
-            console.log("提交返回", res);
-            if (res.result) {
-                window.location.href = "{{url('admin/goods')}}"
-            } else {
-                alert("")
-            }
-        })
-    }
 
     function array_in(array, item) {
         // console.log("查找",array,item)

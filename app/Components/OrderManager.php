@@ -10,6 +10,7 @@ namespace App\Components;
 
 
 use App\Http\Controllers\PayController;
+use App\Http\Helpers\ApiResponse;
 use App\Models\Agent;
 use App\Models\GoodsSKU;
 use App\Models\Order;
@@ -165,6 +166,9 @@ class OrderManager extends Manager
         $user_address = $user->addresses()->findOrFail($user_address_id);
         $payment = 0.0;
         $post_fee = PostageMananger::getPostageFee($user_address->region_id);
+        if ($post_fee==false){
+            return null;
+        }
         $postage = 0;
 
         $create = [

@@ -74,6 +74,10 @@ class OrderController extends Controller
                 $request->get("coupon_id"),
                 $request->get("buyer_message")
             );
+            if ($order==null)
+            {
+                return ApiResponse::makeResponse(false,"生成订单失败");
+            }
             $order->skus;
             return ApiResponse::makeResponse(true, $order, ApiResponse::SUCCESS_CODE);
         } else {

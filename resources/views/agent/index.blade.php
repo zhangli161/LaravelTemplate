@@ -6,21 +6,24 @@
     <title>凯莱克斯代理商管理后台</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        body{
+        body {
             background: #fff;
         }
-        *{
+
+        * {
             margin: 0;
             padding: 0;
         }
-        .user{
+
+        .user {
             background: #00c0ef;
             color: #fff;
             font-size: 18px;
             padding: 16px;
             text-align: center
         }
-        .commission{
+
+        .commission {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -30,36 +33,39 @@
             padding: 20px;
             line-height: 32px;
         }
-        .but{
+
+        .but {
             border: 1.4px solid #fff;
             background: #00c0ef;
             font-size: 16px;
             color: #fff;
-            padding:4px 10px;
+            padding: 4px 10px;
             border-radius: 6px;
         }
 
-        .menu{
+        .menu {
             width: 100%;
             display: flex;
             justify-content: space-around;
             align-items: center;
             background: #fff;
         }
-        .supplier_information{
+
+        .supplier_information {
             width: 50%;
             text-align: center;
             padding: 20px 10px;
             border-left: 1.4px solid #f2f2f2;
             border-bottom: 1.4px solid #f2f2f2
         }
-        .title{
+
+        .title {
             margin-top: 10px;
             font-size: 16px;
             color: #666666;
         }
 
-        .statistical_chart{
+        .statistical_chart {
             display: flex;
             justify-content: space-around;
             font-size: 16px;
@@ -68,7 +74,7 @@
             color: #333333;
         }
 
-        .select{
+        .select {
             color: #00c0ef;
             border-bottom: 1.4px solid #00c0ef;
         }
@@ -77,15 +83,19 @@
 <body>
 <div class="user">欢迎您！{{$agent->real_name}}</div>
 <div class="commission">
-    <div>
-        <div>可提现佣金</div>
-        <div style=" font-size: 20px;">￥{{$agent->balance}}</div>
+    <div class="row">
+        <div class="col-xs-5">可提现佣金</div>
+        <div class="col-xs-5" style=" font-size: 20px;">￥{{$agent->balance}}</div>
+
     </div>
-    <div>
+    <div class="row">
+        <div class="col-xs-5">已提现佣金</div>
+        <div class="col-xs-5" style=" font-size: 20px;">￥{{$agent->cashed}}</div>
+    </div>
+    <div >
         <input class="but" type="button" value="提现" id="cash_withdrawal">
     </div>
 </div>
-
 
 
 <div>
@@ -124,32 +134,31 @@
 <div id="main" style="width: 100%;height:250px;background: #fff"></div>
 
 
-
 <script src="/js/echarts.simple.min.js"></script>
 <script src="/js/jquery-3.3.1.min.js"></script>
 <script type="text/javascript">
     //提现
-    $("#cash_withdrawal").click(function(){
+    $("#cash_withdrawal").click(function () {
         window.location.href = "{{url('agent/cash')}}"
     })
     // 代理商
-    $("#information").click(function(){
+    $("#information").click(function () {
         window.location.href = "{{url('agent/info')}}"
     })
     // 财务流水
-    $("#financial_flow").click(function(){
-        window.location.href =  "{{url('agent/finance')}}"
+    $("#financial_flow").click(function () {
+        window.location.href = "{{url('agent/finance')}}"
     })
     // 提现记录
-    $("#record").click(function(){
+    $("#record").click(function () {
         window.location.href = "{{url('agent/record')}}"
     })
     // 推广二维码
-    $("#Code").click(function(){
+    $("#Code").click(function () {
         window.location.href = "{{url("agent/qr")}}"
     })
     //切换统计图
-    $(".selected").on("click",function(){
+    $(".selected").on("click", function () {
         $(".selected").removeClass('select')
         $(this).addClass('select')
     })
@@ -158,7 +167,7 @@
     var myChart = echarts.init(document.getElementById('main'));
     // 指定图表的配置项和数据
 
-    var option1= {
+    var option1 = {
         xAxis: {
             type: 'category',
             data: {!! json_encode(array_keys($fans_orders)) !!}

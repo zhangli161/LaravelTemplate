@@ -44,6 +44,7 @@ class StatisticUserController extends Controller
     {
         return $content
             ->header('消费者统计')
+            ->description('消费者统计')
             ->row(function (Row $row) {
                 $today = $this_week = Carbon::today();
                 $this_week = Carbon::today()->startOfWeek();

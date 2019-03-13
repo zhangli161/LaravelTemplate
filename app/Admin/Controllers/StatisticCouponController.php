@@ -43,7 +43,7 @@ class StatisticCouponController extends Controller
     {
         return $content
             ->header('优惠券统计')
-//            ->description('')
+            ->description('优惠券统计')
             ->row($this->grid($request))
             ->row("<script>disablePjax=true</script>");
 //            ->row($this->chartform("/admin/statistic/goods"));

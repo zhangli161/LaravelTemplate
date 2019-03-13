@@ -233,7 +233,7 @@ function Download(imgdata){
             return $html;
         });
         $show->balance('待返现金额');
-        $show->history_balance('历史返现金额');
+        $show->cashed('已提现金额');
         $this_week = Carbon::today()->startOfWeek();
 //            ->lastOfMonth();
         $this_month = Carbon::today()->startOfMonth();

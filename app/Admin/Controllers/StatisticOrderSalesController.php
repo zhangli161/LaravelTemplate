@@ -41,8 +41,8 @@ class StatisticOrderSalesController extends Controller
     public function index(Content $content, Request $request)
     {
         return $content
-            ->header('商品/订单销售统计')
-//            ->description('')
+            ->header('订单销售统计')
+            ->description('订单销售统计')
             ->row($this->chartform("/admin/statistic/order-sales"))
             ->row($this->grid($request))
             ->row("<script>disablePjax=true</script>");
@@ -64,7 +64,8 @@ class StatisticOrderSalesController extends Controller
             return "未找到数据";
         }
 
-        $titles = ["订单编号", "订单发生时间", '商品编号(SKU)', '品名', "规格", "数量", '金额 ', '实际支付金额'];
+        $titles = ["Order Number", "Order Occurrence Time ", 'Article code(SKU)', 'Article name',
+            "Description", "Quantity", 'Unit','Unit Price ','Total Price','Actual Unit Price', 'Actual Total Price'];
 
         $region_id = $request->filled("provience") ?
             $request->filled("city") ? $request->get("city") : $request->get("provience")
@@ -83,7 +84,10 @@ class StatisticOrderSalesController extends Controller
                     $order_sku->sku->sku_name,//'品名',
                     implode(",  ", $order_sku->sku->spec_value_strs),//"规格",
                     $order_sku->amount,//"数量",
+                    "PC",
+                    $order_sku->price,
                     $order_sku->amount * $order_sku->price,//'金额 ',
+                    $order_sku->average_price,
                     $order_sku->total_price,//'实际支付金额'
                 ]);
             }

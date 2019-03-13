@@ -247,8 +247,8 @@ class OrderRefundController extends Controller
     {
 //        return $request->all();
         return $content
-            ->header('Index')
-            ->description('')
+            ->header('退款统计')
+            ->description('退款统计')
             ->row($this->statistic_grid($request))
             ->row($this->chartform("/admin/statistic/refund"));
     }

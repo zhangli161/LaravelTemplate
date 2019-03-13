@@ -41,8 +41,8 @@ class StatisticGoodsSalesController extends Controller
     public function index(Content $content, Request $request)
     {
         return $content
-            ->header('销售详情统计')
-//            ->description('')
+            ->header('商品销售统计')
+            ->description('商品销售统计')
             ->row($this->chartform("/admin/statistic/good-sales"))
             ->row($this->grid($request))
             ->row("<script>disablePjax=true</script>");
@@ -64,7 +64,9 @@ class StatisticGoodsSalesController extends Controller
             return "未找到数据";
         }
 
-        $titles = ['商品编号(SKU)', '品名', "实际金额", "销量", '销售额', '退款数量', '退款金额'];
+        $titles = ['Article code(SKU)', 'Article name',
+            'Description', "Quantity",'Unit','Unit Price','Total Price',
+            "Actual Unit Pric", 'Actual Total Price', 'Quantity of refunded goods', 'Refund amount'];
 
         $region_id = $request->filled("provience") ?
             $request->filled("city") ? $request->get("city") : $request->get("provience")
@@ -86,8 +88,12 @@ class StatisticGoodsSalesController extends Controller
                 array_push($rows, [
                     $sku ? $sku->sku_no : "商品丢失",//'商品编号(SKU)',
                     $sku ? $sku->sku_name : "商品丢失",// '品名'
-                    $price,//"实际金额",
+                    $sku ? implode(',',$sku->spec_value_strs) : "商品丢失",// '规格'
                     $orderskus->sum('amount'),//"销量",
+                    "PC",
+                    $orderskus->first()->price,//原价
+                    $orderskus->sum('amount')* $orderskus->first()->price,//"原价总价",
+                    $price,//"实际金额",
                     $orderskus->sum('total_price'),//'销售额',
                     $orderskus->sum('refund_amount'),//'退款数量',
                     $refund_amount,//'退款金额'

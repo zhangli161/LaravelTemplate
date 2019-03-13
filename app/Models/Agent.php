@@ -32,10 +32,10 @@ class Agent extends Authenticatable
         "password"
     ];
     protected $hidden = [
-         'remember_token',
+        'remember_token',
     ];
     protected $casts = ['store' => 'json',];//内嵌字段
-
+    protected $appends = ['cashed'];
 //    public function admin()
 //    {
 //        return $this->belongsTo(Administrator::class, 'admin_id');
@@ -68,12 +68,17 @@ class Agent extends Authenticatable
 
     public function finances()
     {
-        return $this->hasMany(AgentFinance::class, "agent_id")->orderby('created_at','desc');
+        return $this->hasMany(AgentFinance::class, "agent_id")->orderby('created_at', 'desc');
     }
 
-    public function cashes(){
-        return $this->hasMany(AgentCash::class,"agent_id")->orderby('created_at','desc');
+    public function cashes()
+    {
+        return $this->hasMany(AgentCash::class, "agent_id")->orderby('created_at', 'desc');
     }
 
-    //累计销售金额
+    //已提现金额
+    public function getCashedAttribute()
+    {
+        return $this->finances()->sum('expenditure');
+    }
 }

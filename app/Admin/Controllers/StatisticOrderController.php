@@ -52,6 +52,7 @@ class StatisticOrderController extends Controller
 //        dd($request->all());
         return $content
             ->header('订单统计')
+            ->description('订单统计')
             ->row($this->chartform($request, "/admin/statistic/order"))
             ->row($this->grid($request))
             ->row($this->count_chart($content, $request))

@@ -43,7 +43,7 @@ class StatisticAgentController extends Controller
     {
         return $content
             ->header('代理商统计')
-            ->description('')
+            ->description('代理商统计')
             ->row($this->grid($request))
             ->row($this->gridForm("/admin/statistic/agent"))
             ->row("<script>disablePjax=true</script>");
