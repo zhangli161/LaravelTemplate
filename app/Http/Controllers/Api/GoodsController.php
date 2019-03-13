@@ -194,7 +194,7 @@ class GoodsController extends Controller
             ]);
             $cart->amount = $cart->amount ? $cart->amount : 0;
             $cart->amount += $request->filled('amount') ? $request->get('amount') : 1;
-
+            $cart->save();
             if ($request->has('remove'))
                 $cart->delete();
             return ApiResponse::makeResponse(true, $cart, ApiResponse::SUCCESS_CODE);
