@@ -83,7 +83,7 @@ class OrderController extends Controller
 
     public static function getCount()
     {
-        $datas = Auth::user()->orders()->pulck('id');
+        $datas = Auth::user()->orders()->pluck('id');
 
         $status_1_count = Auth::user()->orders()->where('status', 1)->count();
         $status_2_3_4_count = Auth::user()->orders()->whereIn('status', [2, 3, 4])->count();
@@ -93,8 +93,9 @@ class OrderController extends Controller
         $commentable_count = OrderSKU::whereIn("order_id", $status_5_ids)
             ->doesntHave("comment")->doesntHave("refund")->orderBy("created_at", 'desc')->count();
 
+//        dd($datas->count(),OrderRefund::all()->count());
 //            OrderSKU::whereIn('order_id', $status_5_ids)->where("is_buyer_rated", 0)->count();
-        $refund_count = OrderRefund::whereIn('order_id', $datas)->whereIn("status",['0'])->count();
+        $refund_count = OrderRefund::whereIn('order_id', $datas)->where("status",'0')->count();
         return ApiResponse::makeResponse(true, [$status_1_count, $status_2_3_4_count, $commentable_count, $refund_count
             , Auth::user()->orders()->count(), Auth::user()
         ], ApiResponse::SUCCESS_CODE);
