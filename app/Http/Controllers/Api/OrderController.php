@@ -48,7 +48,7 @@ class OrderController extends Controller
 
             $coupons = array();
             if ($order->can_use_coupon) {
-                $all_coupons = $user->coupons;
+                $all_coupons = $user->coupons()->with('coupon')->get();
                 foreach ($all_coupons as $coupon) {
                     $coupon->can_use = UserCouponManager::canUseCoupon($user, $coupon->id, $order->payment);
                     if ($coupon->can_use) {
