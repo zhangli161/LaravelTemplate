@@ -49,7 +49,7 @@ class DemoController extends Controller
 //	static $worker=SnowFlakeIDWorker(1);
     public static function test(Request $request)
     {
-        $agents = Agent::all();
+        $agents = Agent::get();
         foreach ($agents as $agent) {
             $agent->history_balance = $agent->order_agent()->sum("payment");
             $agent->save();
