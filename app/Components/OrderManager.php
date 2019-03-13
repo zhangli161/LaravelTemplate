@@ -124,7 +124,7 @@ class OrderManager extends Manager
             if (UserCouponManager::canUseCoupon($user, $coupon_id, $order->payment)["result"]) {
                 //不保存的情况下结算优惠券，将不消耗优惠券
                 if (!$save)
-                    $payment = UserCouponManager::paymentAfterUsingCoupon($coupon_id,$order->payment);
+                    $payment = UserCouponManager::useCoupon($user, $coupon_id, $payment = $order->payment, $order->id,false);
                 else
                     $payment = UserCouponManager::useCoupon($user, $coupon_id, $payment = $order->payment, $order->id);
 

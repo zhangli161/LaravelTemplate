@@ -85,8 +85,8 @@ class UserCouponManager
             'note' => '优惠券id:' . $coupon_id,
             'editor' => 'user'
         ])) {
-            if ($user_coupon->expiry_date==null)
-                $user_coupon->expiry_date=Carbon::now()->addCenturies(1);
+            if ($user_coupon->expiry_date == null)
+                $user_coupon->expiry_date = Carbon::now()->addCenturies(1);
             $user_coupon->save();
             return true;
         }
@@ -99,8 +99,8 @@ class UserCouponManager
         if ($user_coupon) {//优惠券存在
             $expiry_date = strtotime($user_coupon->expiry_date . " +1 day");
             $today = time();
-            if (!$user_coupon->coupon){
-                return['result'=>false,'reason'=>'优惠券丢失'];
+            if (!$user_coupon->coupon) {
+                return ['result' => false, 'reason' => '优惠券丢失'];
             }
             if (strtotime($user_coupon->expiry_date) > $today) {//未失效
                 if ($payment >= $user_coupon->coupon->min_cost) {//到达门槛价格
@@ -116,7 +116,7 @@ class UserCouponManager
     }
 
     //返回打折后金额
-    public static function useCoupon(User $user, $coupon_id, $payment, $order_id = null)
+    public static function useCoupon(User $user, $coupon_id, $payment, $order_id = null, $save = true)
     {
         $user_coupon = $user->coupons()->find($coupon_id);
         $now = now();
@@ -130,8 +130,10 @@ class UserCouponManager
                     $user_coupon->note = "【 $now 】:使用打折券进行折扣，比例 $p ,实际折扣金额 $value 。";
                     $user_coupon->payment = $value;
                     if ($order_id) $user_coupon->note .= "订单号：$order_id";
-                    $user_coupon->save();
-                    $user_coupon->delete();
+                    if ($save) {
+                        $user_coupon->save();
+                        $user_coupon->delete();
+                    }
                     break;
                 case '2'://2代金
                     $value = $user_coupon->coupon->value;
@@ -139,15 +141,17 @@ class UserCouponManager
                     $user_coupon->note = "【 $now 】:使用代金券进行折扣，金额 $value 。";
                     $user_coupon->payment = $value;
                     if ($order_id) $user_coupon->note .= "订单号：$order_id";
-                    $user_coupon->save();
-                    $user_coupon->delete();
+                    if ($save) {
+                        $user_coupon->save();
+                        $user_coupon->delete();
+                    }
                     break;
             }
         }
         return $payment;
     }
 
-    public static function paymentAfterUsingCoupon($coupon_id,$payment)
+    public static function paymentAfterUsingCoupon($coupon_id, $payment)
     {
 //		$coupon = Coupon::find($coupon_id);
 //        $now = now();
@@ -214,8 +218,8 @@ class UserCouponManager
             "get_way" => "1",
             "get_way_id" => $coupon_benefit->id
         ]);
-        if ($user_coupon->expiry_date==null)
-            $user_coupon->expiry_date=Carbon::now()->addCenturies(1);
+        if ($user_coupon->expiry_date == null)
+            $user_coupon->expiry_date = Carbon::now()->addCenturies(1);
         $user_coupon->save();
 
         return true;
