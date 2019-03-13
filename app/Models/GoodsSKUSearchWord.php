@@ -11,6 +11,10 @@ class GoodsSKUSearchWord extends Model
     protected $primaryKey = 'sku_id';
     protected $appends = ['search_words_array'];
 
+    public function sku()
+    {
+        return $this->belongsTo(GoodsSKU::class, 'sku_id');
+    }
     public function getSearchWordsArrayAttribute()
     {
         return explode(',', $this->search_words);
