@@ -179,8 +179,8 @@ class CouponController extends Controller
 				$form->decimal('price', '价格');
 				$form->switch('send_message', '发送系统消息');
 				$form->number('stock', '库存限制')->help('-1为无限');
-				$form->number('limit_per_user', '用户个人领取数量上限')->help('-1为无限');
-				$form->number('cooldown', '用户个人领取间隔')->help('单位小时。0不限制');
+//				$form->number('limit_per_user', '用户个人领取数量上限')->help('-1为无限');
+//				$form->number('cooldown', '用户个人领取间隔')->help('单位小时。0不限制');
 			});
 		});
 		

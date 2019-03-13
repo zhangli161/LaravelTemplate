@@ -120,19 +120,20 @@ class OrderManager extends Manager
         //以上为结算邮费
 
 
-        if ($coupon_id & $canuseCoupon) {
+        if ($coupon_id && $canuseCoupon) {
             if (UserCouponManager::canUseCoupon($user, $coupon_id, $order->payment)["result"]) {
                 //不保存的情况下结算优惠券，将不消耗优惠券
                 if (!$save)
-                    $payment = UserCouponManager::useCoupon($user, $coupon_id, $payment = $order->payment, $order->id,false);
+                    $payment = UserCouponManager::useCoupon($user, $coupon_id, $payment, $order->id,false);
                 else
-                    $payment = UserCouponManager::useCoupon($user, $coupon_id, $payment = $order->payment, $order->id);
+                    $payment = UserCouponManager::useCoupon($user, $coupon_id,  $payment, $order->id);
 
+                // dd(1,$payment,$coupon_id,$canuseCoupon);
                 if ($payment) {
-                    $order->coupon()->associate(new OrderCoupon([
-                        "user_coupon_id" => $coupon_id,
-                        "pirce" => $order->payment - $payment
-                    ]));
+                    //$order->coupon()->associate(new OrderCoupon([
+                    //  "user_coupon_id" => $coupon_id,
+                    //"pirce" => $order->payment - $payment
+                    //]));
                     $t = $payment / $order->payment;
                     $order->payment = $payment >= 0 ? $payment : 0;
                     foreach ($order->skus as $order_sku) {

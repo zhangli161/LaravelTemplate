@@ -37,7 +37,7 @@ class GoodsController extends Controller
             $query->where('cate_id', $request->get('cate_id'));
         }
         if ($request->filled('sence_cate_id')) {
-            $spu_ids=GoodsSPUSence::where("sence_cate_id",$request->get("sence_cate_id"))
+            $spu_ids = GoodsSPUSence::where("sence_cate_id", $request->get("sence_cate_id"))
                 ->pluck("spu_id");
 
             $query->whereIn('id', $spu_ids->toArray());
@@ -55,18 +55,18 @@ class GoodsController extends Controller
             $orderby = $request->get('orderby');
             for ($i = 0; $i < (count($orderby) - 1); $i += 2) {
                 if ($orderby[$i + 1] != "desc")
-                    $goods=$goods->sortBy(function ($item, $key) use ($orderby, $i) {
+                    $goods = $goods->sortBy(function ($item, $key) use ($orderby, $i) {
                         Log::info("正排序："
-                            .$item->main_sku."
-                            ".$orderby[$i].
+                            . $item->main_sku . "
+                            " . $orderby[$i] .
                             $item->main_sku->getAttributeValue("$orderby[$i]"));
                         return (int)$item->main_sku->getAttributeValue($orderby[$i]);
                     });
                 else
-                    $goods=$goods->sortByDesc(function ($item, $key) use ($orderby, $i) {
+                    $goods = $goods->sortByDesc(function ($item, $key) use ($orderby, $i) {
                         Log::info("倒叙排序："
-                            .$item->main_sku."
-                            ".$orderby[$i].
+                            . $item->main_sku . "
+                            " . $orderby[$i] .
                             $item->main_sku->getAttributeValue("$orderby[$i]"));
                         return (int)$item->main_sku->getAttributeValue($orderby[$i]);
                     });
@@ -128,22 +128,22 @@ class GoodsController extends Controller
                 $query->whereIn('sku_id', $sku_ids);
             }
             if ($request->filled('sence_cate_id')) {
-                $spu_ids=GoodsSPUSence::whereIn("sence_cate_id",$request->get("sence_cate_id"))->pluck("spu_id")->toArray();
+                $spu_ids = GoodsSPUSence::whereIn("sence_cate_id", $request->get("sence_cate_id"))->pluck("spu_id")->toArray();
                 $query->where('id', $spu_ids->toArray());
                 $spus = GoodsSPU::query()
-                ->where('id', $spu_ids->toArray())
+                    ->where('id', $spu_ids->toArray())
 //                    ->where('status', 1)
 //                    ->with("skus")
                     ->get();
                 $spu_ids =
-                $spus->pluck("id")->toArray();
-                $sku_ids=GoodsSKU::whereIn("spu_id",$spu_ids)->pluck("id")->toArray();
+                    $spus->pluck("id")->toArray();
+                $sku_ids = GoodsSKU::whereIn("spu_id", $spu_ids)->pluck("id")->toArray();
 
                 $query->whereIn('sku_id', $sku_ids);
 //                dd($query->get());
             }
 
-            $goods=new Collection();
+            $goods = new Collection();
             $results = $query->with("sku")->get();
             foreach ($results as $result) {
                 $spu = GoodsSPUManager::getDetailsForApp($result->sku->spu, $result->sku_id);
@@ -156,18 +156,18 @@ class GoodsController extends Controller
                 $orderby = $request->get('orderby');
                 for ($i = 0; $i < (count($orderby) - 1); $i += 2) {
                     if ($orderby[$i + 1] != "desc")
-                        $goods=$goods->sortBy(function ($item, $key) use ($orderby, $i) {
+                        $goods = $goods->sortBy(function ($item, $key) use ($orderby, $i) {
                             Log::info("正排序："
-                                .$item->main_sku."
-                            ".$orderby[$i].
+                                . $item->main_sku . "
+                            " . $orderby[$i] .
                                 $item->main_sku->getAttributeValue("$orderby[$i]"));
                             return (int)$item->main_sku->getAttributeValue($orderby[$i]);
                         });
                     else
-                        $goods=$goods->sortByDesc(function ($item, $key) use ($orderby, $i) {
+                        $goods = $goods->sortByDesc(function ($item, $key) use ($orderby, $i) {
                             Log::info("倒叙排序："
-                                .$item->main_sku."
-                            ".$orderby[$i].
+                                . $item->main_sku . "
+                            " . $orderby[$i] .
                                 $item->main_sku->getAttributeValue("$orderby[$i]"));
                             return (int)$item->main_sku->getAttributeValue($orderby[$i]);
                         });
@@ -187,14 +187,13 @@ class GoodsController extends Controller
         if ($request->filled('sku_id')) {
             $sku = GoodsSKU::findOrFail($request->get('sku_id'));
             $spu = $sku->spu;
-            $cart = Cart::query()->updateOrCreate([
+            $cart = Cart::query()->findOrCreate([
                 'user_id' => Auth::user()->id,
                 'spu_id' => $spu->id,
                 'sku_id' => $sku->id,
-            ], [
-                'amount' => $request->filled('amount') ?
-                    $request->get('amount') : 1
             ]);
+            $cart->amount = $cart->amount ? $cart->amount : 0;
+            $cart->amount += $request->filled('amount') ? $request->get('amount') : 1;
 
             if ($request->has('remove'))
                 $cart->delete();
