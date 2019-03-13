@@ -147,19 +147,45 @@ class UserCouponManager
         return $payment;
     }
 
-    public static function paymentAfterUsingCoupon(Coupon $coupon, $payment)
+    public static function paymentAfterUsingCoupon($coupon_id,$payment)
     {
 //		$coupon = Coupon::find($coupon_id);
+//        $now = now();
+//        if ($coupon) {//优惠券存在
+//            switch ($coupon->type) {
+//                case '1'://打折
+//                    $p = $coupon->value;
+//                    $payment *= $p;
+//                    break;
+//                case '2'://2代金
+//                    $value = $coupon->value;
+//                    $payment -= $value;
+//                    break;
+//            }
+//        }
+        $user_coupon = UserCoupon::find($coupon_id);
         $now = now();
-        if ($coupon) {//优惠券存在
-            switch ($coupon->type) {
+        if ($user_coupon) {//优惠券存在
+            switch ($user_coupon->coupon->type) {
                 case '1'://打折
-                    $p = $coupon->value;
+                    $p = $user_coupon->coupon->value;
+                    $payment_o = $payment;
                     $payment *= $p;
+                    $value = $payment_o - $payment;
+//                    $user_coupon->note = "【 $now 】:使用打折券进行折扣，比例 $p ,实际折扣金额 $value 。";
+//                    $user_coupon->payment = $value;
+//                    if ($order_id) $user_coupon->note .= "订单号：$order_id";
+//                    $user_coupon->save();
+//                    $user_coupon->delete();
                     break;
                 case '2'://2代金
-                    $value = $coupon->value;
+                    $value = $user_coupon->coupon->value;
                     $payment -= $value;
+//                    $user_coupon->note = "【 $now 】:使用代金券进行折扣，金额 $value 。";
+//                    $user_coupon->payment = $value;
+//                    if ($order_id) $user_coupon->note .= "订单号：$order_id";
+//                    $user_coupon->save();
+//                    $user_coupon->delete();
                     break;
             }
         }
