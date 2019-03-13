@@ -187,11 +187,11 @@ class GoodsController extends Controller
         if ($request->filled('sku_id')) {
             $sku = GoodsSKU::findOrFail($request->get('sku_id'));
             $spu = $sku->spu;
-            $cart = Cart::query()->findOrCreate([
+            $cart = Cart::query()->updateOrCreate([
                 'user_id' => Auth::user()->id,
                 'spu_id' => $spu->id,
                 'sku_id' => $sku->id,
-            ]);
+            ])->save();
             $cart->amount = $cart->amount ? $cart->amount : 0;
             $cart->amount += $request->filled('amount') ? $request->get('amount') : 1;
 
