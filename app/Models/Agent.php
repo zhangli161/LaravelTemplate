@@ -74,4 +74,6 @@ class Agent extends Authenticatable
     public function cashes(){
         return $this->hasMany(AgentCash::class,"agent_id")->orderby('created_at','desc');
     }
+
+    //累计销售金额
 }

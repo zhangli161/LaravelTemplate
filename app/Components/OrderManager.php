@@ -377,7 +377,7 @@ class OrderManager extends Manager
         if ($result) {
             $order = self::complete($order);
         };
-        Log::info("查询物流,{$order->id}:".json_encode($postage));
+        Log::info("查询物流,{$order->id}:" . json_encode($postage));
 
         return $result;
     }
@@ -414,8 +414,11 @@ class OrderManager extends Manager
             $order->order_agent()->update(['status' => 1, 'payment' => $payment]);//可提现
             $a_f = AgentManager::makeFinance(
                 $order_agent->agent,
-                $order->order_agent->payment, 0,
+                (float)$order->order_agent->payment, 0,
                 "订单完成获得佣金");
+
+            $order_agent->agent->history_balance = (float)$order_agent->agent->balance + (float)$order->order_agent->payment;
+            $order_agent->agent->save();
             Log::info("【 $a_f 】订单完成获得佣金:order_id $order->id |order_angent_id $order_agent->id");
         }
 

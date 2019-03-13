@@ -41,7 +41,7 @@ return [
     */
 
     'debug' => env('APP_DEBUG', false),
-
+    'log' => env('APP_LOG', 'daily'),
     /*
     |--------------------------------------------------------------------------
     | Application URL
