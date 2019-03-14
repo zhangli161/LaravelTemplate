@@ -371,7 +371,7 @@ class OrderController extends Controller
         return ApiResponse::makeResponse(true, $return, ApiResponse::SUCCESS_CODE);
     }
 
-    public static function pre_fund(Request $request){
+    public static function pre_refund(Request $request){
         $order = Order::with("skus")->findOrFail($request->get("order_id"));
         $order_sku=$order->with('sku')->findOrFail($request->get("id"));
         return ApiResponse::makeResponse(true,$order_sku);
