@@ -373,7 +373,7 @@ class OrderController extends Controller
 
     public static function pre_refund(Request $request){
         $order = Order::with("skus")->findOrFail($request->get("order_id"));
-        $order_sku=$order->with('sku')->findOrFail($request->get("id"));
+        $order_sku=$order->skus()->with('sku')->findOrFail($request->get("id"));
         return ApiResponse::makeResponse(true,$order_sku);
     }
 }
