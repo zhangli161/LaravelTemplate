@@ -127,7 +127,7 @@ class AgentController extends Controller
             ["name" => "累计销售额", "value" => $orders->sum("payment")],
 //            ["name" => "返利", "value" => $agent->order_agent()->sum("payment")],
             ["name" => "返利余额", "value" => $agent->balance],
-            ["name" => "累计返利", "value" => $agent->history_balance],
+            ["name" => "已提现返利", "value" => $agent->cashed],
             ["name" => "本日新增粉丝数量", "value" => $agent->users()->whereDate('bind_agent_time', Carbon::today())->count()],
             ["name" => "本周新增粉丝数量", "value" => $agent->users()->whereDate('bind_agent_time', '>=', date('Y-m-d', strtotime('last Monday')))->count()],
             ["name" => "本月新增粉丝数量", "value" => $agent->users()->whereDate('bind_agent_time', date('Y-m-d', strtotime('this month')))->count()],
