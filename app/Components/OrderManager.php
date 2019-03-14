@@ -277,11 +277,14 @@ class OrderManager extends Manager
                         "user_coupon_id" => $coupon_id,
                         "pirce" => $order->payment - $payment
                     ]);
+
+                    //
                     $t = $payment / $order->payment;
                     $order->payment = $payment >= 0 ? $payment : 0;
                     foreach ($order->skus as $order_sku) {
                         $order_sku->total_price *= $t;
                         $order_sku->average_price = $order_sku->total_price / $order_sku->amount;
+                        $order_sku->save();
                     }
                 }
             }
