@@ -68,7 +68,9 @@ class PostageMananger
     public static function query(OrderPostage $order_postage)
     {
         $wuliu = new WuliuManager();
-        $result = $wuliu->query($order_sn = $order_postage->order_id, $shipper_code = $order_postage->postage_name, $logistic_code = $order_postage->postage_code);
+        $result = $wuliu->query($order_postage->order_id,
+           $order_postage->postage_name,
+            $order_postage->postage_code);
 //            dd($result);
         if ($result->Success == "true")
             $order_postage->update([
