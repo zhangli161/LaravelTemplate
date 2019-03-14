@@ -80,6 +80,6 @@ class Agent extends Authenticatable
     //已提现金额
     public function getCashedAttribute()
     {
-        return $this->finances()->sum('expenditure');
+        return $this->cashes()->where('status',1)->sum('expenditure');
     }
 }
