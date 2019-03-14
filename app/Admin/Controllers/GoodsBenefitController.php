@@ -160,16 +160,25 @@ class GoodsBenefitController extends Controller
 	protected function form()
 	{
 		$form = new Form(new GoodsBenefit);
+
+        $skus = GoodsSKU::all();
+        $options = array_combine($skus->pluck('id')->toArray()
+            , $skus->map(function ($item){
+                return "【".$item->sku_name."】  ".$item->sku_no;
+            })->toArray());
 		
-		$form->select('sku_id', '子商品id')
-			->options(function ($id) {
-				$sku = GoodsSKU::find($id);
-				
-				if ($sku) {
-					return [$sku->id => $sku->sku_name];
-				}
-			})->ajax('/api/admin/sku/search')->default(request('sku_id'))
+		$form->select('sku_id', '子商品名称')
+//			->options(function ($id) {
+//				$sku = GoodsSKU::find($id);
+//
+//				if ($sku) {
+//					return [$sku->id => $sku->sku_name];
+//				}
+//			})->ajax('/api/admin/sku/search')
+            ->options($options)
+            ->default(request('sku_id'))
             ;
+
 //		$form->display('sku', '子商品id');
 		$form->text('title', '活动标题')->rules('required');
 		$form->text('desc', '活动描述')->rules('required');

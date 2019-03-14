@@ -440,10 +440,14 @@ class GoodsSKUController extends Controller
 
         $form = new Form(new GoodsBenefit());
         $form->setAction('/admin/goods_skus/make_benifit');
+        $skus = GoodsSKU::all();
+        $options = array_combine($skus->pluck('id')->toArray()
+            , $skus->map(function ($item){
+                return "【".$item->sku_name."】  ".$item->sku_no;
+            })->toArray());
 
-
-        $form->multipleSelect('sku_ids', '子商品id')
-            ->options(GoodsSKU::all()->pluck('sku_name', 'id'))
+        $form->multipleSelect('sku_ids', '子商品名称')
+            ->options($options)
             ->default($ids);
 //		$form->display('sku', '子商品id');
         $form->text('title', '活动标题');
