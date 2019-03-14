@@ -186,7 +186,7 @@ class GoodsBenefitController extends Controller
 		$form->decimal('origin_price', '原价')->help("活动结束后会恢复到这个价格")->rules('required');
 		$form->decimal('show_origin_price', '显示原价')->rules('required');
 		$form->datetimeRange('time_form', 'time_to', '活动时间')
-            ->rules('required|after:now');
+            ->rules('required');
 
 //		$form->switch('reset', '结束时恢复原价')->default(1);
 		
