@@ -124,9 +124,9 @@ class OrderManager extends Manager
             if (UserCouponManager::canUseCoupon($user, $coupon_id, $order->payment)["result"]) {
                 //不保存的情况下结算优惠券，将不消耗优惠券
                 if (!$save)
-                    $payment = UserCouponManager::useCoupon($user, $coupon_id, $payment, $order->id,false);
+                    $payment = UserCouponManager::useCoupon($user, $coupon_id, $payment, $order->id, false);
                 else
-                    $payment = UserCouponManager::useCoupon($user, $coupon_id,  $payment, $order->id);
+                    $payment = UserCouponManager::useCoupon($user, $coupon_id, $payment, $order->id);
 
                 // dd(1,$payment,$coupon_id,$canuseCoupon);
                 if ($payment) {
@@ -167,7 +167,7 @@ class OrderManager extends Manager
         $user_address = $user->addresses()->findOrFail($user_address_id);
         $payment = 0.0;
         $post_fee = PostageMananger::getPostageFee($user_address->region_id);
-        if ($post_fee==false){
+        if ($post_fee == false) {
             return null;
         }
         $postage = 0;
@@ -198,7 +198,7 @@ class OrderManager extends Manager
             $amount = $sku_opt['amount'] or 1;
             $total_price = $amount * $sku->price;
             $payment += $total_price;
-            $price=$sku->price;
+            $price = $sku->price;
 
             array_push($order_skus, [
                 'sku_id' => $sku->id,
@@ -214,7 +214,7 @@ class OrderManager extends Manager
                 ->where('status', '>', 0)->exists()) {
                 $canuseCoupon = false;//有特惠商品则不能用优惠券
                 //存在特惠商品则以显示原价为原价
-                $price=$sku->benefit = $sku->benefits
+                $price = $sku->benefit = $sku->benefits
                     ->where('status', '>', 0)->first()->show_origin_price;
             };
             //不包邮时计算邮费
@@ -305,7 +305,7 @@ class OrderManager extends Manager
 
     public static function afterPaid(Order $order)
     {
-        if ($order->status ==2)
+        if ($order->status == 2)
             return [];
         Log::info("$order->id 支付完成，进行后续流程");
         foreach ($order->skus as $order_sku) {
@@ -401,8 +401,8 @@ class OrderManager extends Manager
         if ($result) {
             $order = self::complete($order);
         };
-        Log::info("查询物流,{$order->id}:" . json_encode($postage)."
-        ".$order->wuliu);
+        Log::info("查询物流,{$order->id}:" . json_encode($postage) . "
+        " . $order->wuliu);
 
         return $result;
     }
@@ -569,5 +569,25 @@ class OrderManager extends Manager
 
         $refund->update(['result' => json_encode($result)]);
         Log::info("退款结果" . json_encode($result));
+    }
+
+    public static function checkOrderAllRefunded()
+    {
+        $orders = Order::whereIn("status", [2, 3, 4])->get();
+        foreach ($orders as $order) {
+            $result = false;//已经全部退掉
+            foreach ($order->skus as $item) {
+                $result = $result ||
+                    ($item->refund_amount < $item->amount);
+                //只要有1个没有退掉，则result=true
+            }
+            if ($result){
+
+            }
+            else{//全部退货
+                $order->status="6";
+                $order->save();
+            }
+        }
     }
 }

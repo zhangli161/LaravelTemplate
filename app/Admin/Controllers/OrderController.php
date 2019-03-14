@@ -247,7 +247,7 @@ function copyText(item) {
             $sku->thumb("商品图片")->lightbox(["width" => 200]);
             $sku->amount("数量");
             $sku->price("商品价格");
-            $sku->total_price("支付金额");
+            $sku->total_price("支付总金额");
             $sku->average_price("支付单价");
         });
         $show->wuliu('物流信息', function ($show) {
@@ -299,6 +299,8 @@ function copyText(item) {
         $form = new Form(new Order);
 
         $form->decimal('payment', '实际支付金额');
+        $form->decimal('post_fee',"快递费用");
+
 //        $form->switch('payment_type', '支付方式')->default(1);
 //        $form->decimal('post_fee', '邮费');
         $form->select('status', '订单状态')->default(4)->

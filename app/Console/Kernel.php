@@ -38,7 +38,7 @@ class Kernel extends ConsoleKernel
             //订单支付状态检测
             OrderManager::check_pay_all();
             AgentManager::doCash_all();
-
+            OrderManager::checkOrderAllRefunded();
         })->everyMinute();
 
         //每小时执行
