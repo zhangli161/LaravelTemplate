@@ -11,6 +11,7 @@ namespace App\Components;
 
 
 use Encore\Admin\Auth\Database\Administrator;
+use Illuminate\Support\Facades\Log;
 
 class WuliuManager
 {
@@ -21,8 +22,8 @@ class WuliuManager
         //电商加密私钥，快递鸟提供，注意保管，不要泄漏。请到快递鸟官网申请http://kdniao.com/reg
         $this->AppKey = 'd2b509d5-f570-4825-aed2-88d824a48e69';
         //请求url
-//        $this->ReqURL ='http://api.kdniao.com/Ebusiness/EbusinessOrderHandle.aspx';
-        $this->ReqURL = "http://sandboxapi.kdniao.com:8080/kdniaosandbox/gateway/exterfaceInvoke.json";
+        $this->ReqURL ='http://api.kdniao.com/Ebusiness/EbusinessOrderHandle.aspx';
+//        $this->ReqURL = "http://sandboxapi.kdniao.com:8080/kdniaosandbox/gateway/exterfaceInvoke.json";
     }
 
     /**
@@ -54,6 +55,7 @@ class WuliuManager
             'DataType' => '2',
         );
         $datas['DataSign'] = $this->encrypt($requestData, $this->AppKey);
+        Log::info("查询物流".$datas);
         $result = $this->sendPost($this->ReqURL, $datas);
 
         //根据公司业务处理返回的信息......

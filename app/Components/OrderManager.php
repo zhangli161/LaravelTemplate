@@ -305,6 +305,8 @@ class OrderManager extends Manager
 
     public static function afterPaid(Order $order)
     {
+        if ($order->status ==2)
+            return [];
         Log::info("$order->id 支付完成，进行后续流程");
         foreach ($order->skus as $order_sku) {
             $sku = GoodsSKU::find($order_sku->sku_id);
