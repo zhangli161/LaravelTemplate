@@ -198,6 +198,7 @@ class OrderManager extends Manager
             $amount = $sku_opt['amount'] or 1;
             $total_price = $amount * $sku->price;
             $payment += $total_price;
+            $price=$sku->price;
 
             array_push($order_skus, [
                 'sku_id' => $sku->id,
@@ -208,9 +209,13 @@ class OrderManager extends Manager
                 'total_price' => $total_price,
             ]);
 
+
             if ($sku->benefits()
                 ->where('status', '>', 0)->exists()) {
                 $canuseCoupon = false;//有特惠商品则不能用优惠券
+                //存在特惠商品则以显示原价为原价
+                $price=$sku->benefit = $sku->benefits
+                    ->where('status', '>', 0)->first()->show_origin_price;
             };
             //不包邮时计算邮费
             if (!$sku->postage) {
@@ -226,7 +231,7 @@ class OrderManager extends Manager
                 'sku_name' => $sku->sku_name,
                 'thumb' => getRealImageUrl($sku->spu->thumb),
                 'amount' => $amount,
-                'price' => $sku->price,
+                'price' => $price,
                 'total_price' => $amount * $sku->price,
                 'average_price' => $sku->price
             ]);

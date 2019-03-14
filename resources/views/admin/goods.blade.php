@@ -209,7 +209,7 @@
                         <textarea id="detail_content" name="detail[content]" v-model="spu.detail.content">@{{ spu.detail.content }}</textarea>
                     </div>
                 </div>
-                <input type="" class="status" name="status" id="status" v-model="spu.status"/>
+                {{--<input type="" class="status" name="status" id="status" v-model="spu.status"/>--}}
 
                 <div class="form-group">
                     <div class="col-xs-8 col-xs-offset-2">
@@ -316,6 +316,7 @@
                         <div class="form-group">
                             <div class="control-label col-sm-2 ">商品规格</div>
                             <div class="formControls col-sm-8 ">
+                                {{--@{{ JSON.stringify(editingSKU.spec_value_ids) }}--}}
                                 @foreach($specs as $spec)
                                     {{--@{{spu.spec_ids.indexOf('1')>=0}}--}}
                                     <div class="form-group" v-if="array_in(spu.spec_ids,{{$spec->id}})">
@@ -465,7 +466,7 @@
         spu_id: '',
         stock: "0",
         stock_type: "0",
-        spec_value_ids: [],
+        spec_value_ids: {},
         search_word: {
             search_words: []
         },
@@ -483,9 +484,17 @@
 
     function putSKUToModal(sku) {
         data.editingSKU = sku;
+        console.log("编辑", sku,data.spu);
+
         if (!data.editingSKU.spec_value_ids)
             data.editingSKU.spec_value_ids = {};
-        console.log("编辑", sku);
+        console.log("规格",data.spu.spec_ids,data.editingSKU.spec_value_ids)
+        for(var i in data.spu.spec_ids){
+            var key =data.spu.spec_ids[i];
+            if(!data.editingSKU.spec_value_ids.hasOwnProperty(key))
+                data.editingSKU.spec_value_ids[key]="1";
+            console.log("规格,"+key,data.editingSKU.spec_value_ids[key])
+        }
         $("#searchwords-select").empty()
         for (var i in sku.search_word.search_words_array) {
             $("#searchwords-select").append("<option value=\"" + sku.search_word.search_words_array[i]
