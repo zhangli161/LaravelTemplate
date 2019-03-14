@@ -37,11 +37,12 @@ class Kernel extends ConsoleKernel
             GoodsBenefitManager::checkStatus();
             //订单支付状态检测
             OrderManager::check_pay_all();
+            AgentManager::doCash_all();
+
         })->everyMinute();
 
         //每小时执行
         $schedule->call(function () {
-            AgentManager::doCash_all();
             UserCouponManager::checkCoupons();
         })->hourly();
 

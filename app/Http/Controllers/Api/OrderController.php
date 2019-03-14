@@ -167,7 +167,7 @@ class OrderController extends Controller
                     "nonce_str" => $ret["nonce_str"],
                     "sign" => $ret["sign"],
                     "out_trade_no" => "XCX_" . $order->id,
-                    "total_fee" => $order->payment,
+                    "total_fee" => $order->pay_value*100,
                     "prepay_id" => $ret["prepay_id"]
                 ]);
 

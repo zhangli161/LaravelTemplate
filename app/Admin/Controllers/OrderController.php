@@ -95,6 +95,7 @@ class OrderController extends Controller
         $grid->payment('商品实付金额');
         $grid->payment_type('支付方式')->using([1 => '在线支付', 2 => '货到付款']);
         $grid->post_fee('快递费用');
+        $grid->pay_value("订单实付金额");
         $grid->status('订单状态')->display(function ($status) {
 
             return [
@@ -267,7 +268,7 @@ function copyText(item) {
                     $tools->disableDelete();
                 });
         });
-        $show->xcx_pay('支付信息', function ($show) {
+        $show->xcx_pay('微信支付信息', function ($show) {
             $show->total_fee("支付金额")->as(function ($fee) {
                 return "￥ " . ($fee / 100);
             });
