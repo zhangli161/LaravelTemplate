@@ -91,6 +91,7 @@ Route::group(['middleware' => 'auth:api', 'namespace' => 'Api'], function () {
     Route::any('/order/checkPay', 'OrderController@checkPayment');//确认付款情况
     Route::post('/order/confirm', 'OrderController@confirm');//确认收货
 
+    Route::get('/order/refund', 'OrderController@pre_refund');//申请退款
     Route::post('/order/refund', 'OrderController@refund');//申请退款
     Route::post('/order/refund/cancle', 'OrderController@cancleRefund');//取消申请退款
     Route::get('/order/refund/my', 'OrderController@myRefund');//我的申请退款
