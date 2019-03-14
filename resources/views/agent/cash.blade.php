@@ -143,7 +143,11 @@
                                                type="text" name="" id="" placeholder="输入关联手机号"></div>
             <div class="tx">￥<input style="width:60%;" type="number" name="payment" id="money" required="required"
                                     placeholder="输入提现金额"></div>
-            <div class="hint">提示 : 提现金额不能小于1.00元</div>
+            <div class="hint">提示 :<br/>
+                1.小程序用户ID与关联手机号请到小程序-【我的】-【个人设置】中查看。<br/>
+                2.提现金额不能小于1.00元。<br/>
+                3.提交提现申请后，相应金额将于下个整点进入小程序绑定的微信零钱内。<br/>
+            4.提现失败则返还提现金额。</div>
         </form>
     </div>
 

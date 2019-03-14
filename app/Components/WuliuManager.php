@@ -46,7 +46,11 @@ class WuliuManager
      */
     public function getOrderTracesByJson($order_sn, $shipper_code, $logistic_code)
     {
-        $requestData = "{'OrderCode':'" . $order_sn . "','ShipperCode':'" . $shipper_code . "','LogisticCode':'" . $logistic_code . "'}";
+        $requestData = json_encode(["OrderCode"=>$order_sn,
+            "ShipperCode"=>$shipper_code,
+            "LogisticCode"=>$logistic_code]);
+
+//            "{'OrderCode':'" . $order_sn . "','ShipperCode':'" . $shipper_code . "','LogisticCode':'" . $logistic_code . "'}";
 
         $datas = array(
             'EBusinessID' => $this->EBusinessID,
