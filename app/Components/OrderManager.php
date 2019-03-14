@@ -272,10 +272,6 @@ class OrderManager extends Manager
                 $payment = UserCouponManager::useCoupon($user, $coupon_id, $payment = $order->payment, $order->id);
                 $order->used_user_coupon_id = $coupon_id;
 
-//                if ($payment) {
-//                    $order->payment = $payment >= 0 ? $payment : 0;
-//                }
-
                 if ($payment) {
                     $order->coupon()->associate(new OrderCoupon([
                         "user_coupon_id" => $coupon_id,
