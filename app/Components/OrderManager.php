@@ -273,7 +273,7 @@ class OrderManager extends Manager
                 $order->used_user_coupon_id = $coupon_id;
 
                 if ($payment) {
-                    $order->coupon()->associate(new OrderCoupon([
+                    $order->coupon()->create(new OrderCoupon([
                         "user_coupon_id" => $coupon_id,
                         "pirce" => $order->payment - $payment
                     ]));
