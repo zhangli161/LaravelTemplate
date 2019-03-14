@@ -273,10 +273,10 @@ class OrderManager extends Manager
                 $order->used_user_coupon_id = $coupon_id;
 
                 if ($payment) {
-                    $order->coupon()->create(new OrderCoupon([
+                    $order->coupon()->create([
                         "user_coupon_id" => $coupon_id,
                         "pirce" => $order->payment - $payment
-                    ]));
+                    ]);
                     $t = $payment / $order->payment;
                     $order->payment = $payment >= 0 ? $payment : 0;
                     foreach ($order->skus as $order_sku) {
