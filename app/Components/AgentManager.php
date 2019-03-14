@@ -34,7 +34,7 @@ class AgentManager
     }
 
 
-    public static function makeFinance(Agent $agent, $income = 0, $expenditure = 0, $note = null)
+    public static function makeFinance(Agent $agent, $income = 0.0, $expenditure = 0.0, $note = null)
     {
         $agent->balance = (float)$agent->balance + $income - $expenditure;
         $data = [

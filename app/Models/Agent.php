@@ -29,7 +29,8 @@ class Agent extends Authenticatable
         "store",
         "status",
         "name",
-        "password"
+        "password",
+        "balance"
     ];
     protected $hidden = [
         'remember_token',

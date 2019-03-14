@@ -49,14 +49,12 @@ class DemoController extends Controller
 //	static $worker=SnowFlakeIDWorker(1);
     public static function test(Request $request)
     {
-        $agents = Agent::get();
-        foreach ($agents as $agent) {
-            $agent->history_balance = $agent->order_agent()->where('status',1)->sum("payment");
-            $agent->save();
-        }
+        $agent = Agent::find(6);
+        $oldData=$agent->toJson();
+        AgentManager::makeFinance($agent,1,0,"测试");
+        $agent = Agent::find(6);
 
-
-        dd($agents);
+        dd($agent,$oldData);
     }
 
     //Manager的用法
