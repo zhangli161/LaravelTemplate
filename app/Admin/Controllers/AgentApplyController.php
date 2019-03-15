@@ -86,7 +86,7 @@ class AgentApplyController extends Controller
     protected function grid()
     {
         $grid = new Grid(new AgentApply);
-        $grid->model()->orderBy("created_at","desc");
+        $grid->model()->orderBy("created_at", "desc");
         $grid->filter(function ($filter) {
             $regions = NativePlaceRegion::query()->whereDoesntHave('children_regions')->get();
 //        $arr=$regions->keyBy('region_id');
@@ -229,9 +229,7 @@ class AgentApplyController extends Controller
                     $url = env("APP_URL") . "/agent";
                     $message = MessageManager::sendToUser($user, "代理商申请结果",
                         "尊敬的用户:
-您的代理商申请已经通过，请通过下方按钮设置代理商登录信息。
-该链接仅一次有效，请设置后牢记您的登录名和密码。
-后台登录地址:$url 。", ["type" => "agent", "token" => "$token","agent_apply_id"=>$form->model()->id]
+                        您的代理商申请已经通过，请扫码关注CALEX公众号，或输入：“荷兰Calex品牌照明”搜索关注公众号。进入公众号，点击右下角【联系合作】-【我是代理商】，输入用户名和密码进入代理商页面，即可查看粉丝数量和返利金额等信息。请务必记住您的用户名，如忘记密码，请联系客服。", ["type" => "agent", "token" => "$token", "agent_apply_id" => $form->model()->id]
                     );
                     $success = new MessageBag([
                         'title' => '审核通过成功',
@@ -243,7 +241,7 @@ class AgentApplyController extends Controller
 
             } elseif ($form->model()->status == 2) {
                 $user = User::find($form->model()->user_id);
-                $reason=($form->model()->note ? "原因：" . $form->model()->note : "");
+                $reason = ($form->model()->note ? "原因：" . $form->model()->note : "");
                 $message = MessageManager::sendToUser($user, "代理商申请结果",
                     "尊敬的用户:
                     您的代理商申请已被驳回。

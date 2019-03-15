@@ -585,7 +585,7 @@ class OrderManager extends Manager
 
             }
             else{//全部退货
-                $order->status="6";
+                $order->status="7";
                 $order->save();
             }
         }
