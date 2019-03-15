@@ -44,7 +44,7 @@ class StatisticFinanceController extends Controller
             ->description('财务流水')
             ->row($this->chartform("/admin/statistic/finance"))
             ->row($this->grid($request))
-            ->row($this->income_chart($content,$request))
+            ->row($this->income_chart($content, $request))
             ->row("<script>disablePjax=true</script>");
 
     }
@@ -59,7 +59,7 @@ class StatisticFinanceController extends Controller
     {
         $models = self::getModel($request);
 
-        if (count($models[0]) < 1&&count($models[1]) < 1) {
+        if (count($models[0]) < 1 && count($models[1]) < 1) {
             return "未找到数据";
         }
 
@@ -74,16 +74,19 @@ class StatisticFinanceController extends Controller
             $model_group1 = $models[1]->groupBy(function ($item) {
                 return date("Y-m-d", strtotime($item->created_at));
             });
+            $model_group2 = $models[2]->groupBy(function ($item) {
+                return date("Y-m-d", strtotime($item->created_at));
+            });
             $dates = getDatesBetween(
-                min($models[0]->min('created_at'), $models[1]->min('created_at')),
-                max($models[0]->max('created_at'), $models[1]->max('created_at'))
+                min($models[0]->min('created_at'), $models[1]->min('created_at'), $models[2]->min('created_at')),
+                max($models[0]->max('created_at'), $models[1]->max('created_at'), $models[2]->max('created_at'))
             );
             foreach ($dates as $key => $lable) {
                 array_push($rows, [
                     $lable,
                     $model_group0->get($lable, new Collection())->sum("payment"),
                     $model_group1->get($lable, new Collection())->sum("payment"),
-                    0,
+                    $model_group2->get($lable, new Collection())->sum("amount")/100,
                     $model_group0->get($lable, new Collection())->sum("payment") - $model_group1->get($lable, new Collection())->sum("payment"),
                 ]);
             }
@@ -95,9 +98,12 @@ class StatisticFinanceController extends Controller
             $model_group1 = $models[1]->groupBy(function ($item) {
                 return date("Y-m", strtotime($item->created_at));
             });
+            $model_group2 = $models[2]->groupBy(function ($item) {
+                return date("Y-m", strtotime($item->created_at));
+            });
             $dates = getDatesBetween(
-                min($models[0]->min('created_at'), $models[1]->min('created_at')),
-                max($models[0]->max('created_at'), $models[1]->max('created_at')),
+                min($models[0]->min('created_at'), $models[1]->min('created_at'),$models[2]->min('created_at')),
+                max($models[0]->max('created_at'), $models[1]->max('created_at'),$models[2]->max('created_at')),
                 2
             );
             foreach ($dates as $key => $lable) {
@@ -105,7 +111,7 @@ class StatisticFinanceController extends Controller
                     $lable,
                     $model_group0->get($lable, new Collection())->sum("payment"),
                     $model_group1->get($lable, new Collection())->sum("payment"),
-                    0,
+                    $model_group2->get($lable, new Collection())->sum("amount")/100,
                     $model_group0->get($lable, new Collection())->sum("payment") - $model_group1->get($lable, new Collection())->sum("payment"),
                 ]);
             }
@@ -116,9 +122,12 @@ class StatisticFinanceController extends Controller
             $model_group1 = $models[1]->groupBy(function ($item) {
                 return date("Y", strtotime($item->created_at));
             });
+            $model_group2 = $models[2]->groupBy(function ($item) {
+                return date("Y", strtotime($item->created_at));
+            });
             $dates = getDatesBetween(
-                min($models[0]->min('created_at'), $models[1]->min('created_at')),
-                max($models[0]->max('created_at'), $models[1]->max('created_at')),
+                min($models[0]->min('created_at'), $models[1]->min('created_at'),$models[2]->min('created_at')),
+                max($models[0]->max('created_at'), $models[1]->max('created_at'),$models[2]->max('created_at')),
                 4
             );
             foreach ($dates as $key => $lable) {
@@ -126,7 +135,7 @@ class StatisticFinanceController extends Controller
                     $lable,
                     $model_group0->get($lable, new Collection())->sum("payment"),
                     $model_group1->get($lable, new Collection())->sum("payment"),
-                    0,
+                    $model_group2->get($lable, new Collection())->sum("amount")/100,
                     $model_group0->get($lable, new Collection())->sum("payment") - $model_group1->get($lable, new Collection())->sum("payment"),
                 ]);
             }
@@ -138,9 +147,9 @@ class StatisticFinanceController extends Controller
 
     private static function getModel(Request $request)
     {
-        $query1 = Order::query()->whereIn("status",["5"]);
+        $query1 = Order::query()->whereIn("status", ["5"]);
         $query2 = OrderRefund::query();
-        $query3 = AgentCash::query()->where('status','1');
+        $query3 = AgentCash::query()->where('status', '1');
 
         if ($request->filled("date_from")) {
             $query1->whereDate("created_at", ">=", $request->get("date_from"));
@@ -159,7 +168,7 @@ class StatisticFinanceController extends Controller
         $model2 = $query2->orderBy('created_at', 'asc')->get();
         $model3 = $query3->orderBy('created_at', 'asc')->get();
 
-        return [$model1, $model2,$model3];
+        return [$model1, $model2, $model3];
     }
 
     public function income_chart(Content $content, Request $request)
@@ -257,7 +266,7 @@ class StatisticFinanceController extends Controller
 //        dd($models,$model_group0,$model_group1,$dates,$datas);
         $lables = $dates;
 
-        return new Box("商城净收入统计图",ChartManager::line($lables, '商城收入', $datas));
+        return new Box("商城净收入统计图", ChartManager::line($lables, '商城收入', $datas));
 
 //        return $content
 //            ->header('商城净收入统计图')
