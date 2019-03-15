@@ -150,8 +150,13 @@ class OrderController extends Controller
                 4 => "已发货 ",
                 5 => "交易成功 ",
                 6 => "交易关闭	",
-                7=>"交易锁定",
+                7 => "交易锁定",
             ]);
+            $users = User::query()->whereNotNull('name')->get();
+            $opts = $users->mapWithKeys(function ($user) {
+                return [$user->id => "$user->name ({$user->id})"];
+            });
+            $filter->equal('user_id', "用户")->select($opts);
             // 关联关系查询
             $filter->scope('is_posted', "付款未发货订单")->where('status', 2)->doesntHave('wuliu');
         });
@@ -302,7 +307,7 @@ function copyText(item) {
         $form = new Form(new Order);
 
         $form->decimal('payment', '实际支付金额');
-        $form->decimal('post_fee',"快递费用");
+        $form->decimal('post_fee', "快递费用");
 
 //        $form->switch('payment_type', '支付方式')->default(1);
 //        $form->decimal('post_fee', '邮费');
@@ -314,7 +319,7 @@ function copyText(item) {
             4 => "已发货 ",
             5 => "交易成功 ",
             6 => "交易关闭	",
-            7=>"交易锁定"
+            7 => "交易锁定"
         ]);
 //        $form->datetime('paid_at', '支付时间')->default(date('Y-m-d H:i:s'));
         $form->datetime('consigned_at', '发货时间')->default(date('Y-m-d H:i:s'));
