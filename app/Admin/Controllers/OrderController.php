@@ -105,6 +105,8 @@ class OrderController extends Controller
                 4 => "<lable class='label label-primary'>已发货</lable>",
                 5 => "<lable class='label label-success'>交易成功</lable>",
                 6 => "<lable class='label label-danger'>交易关闭</lable>",
+                7 => "<lable class='label label-danger'>交易锁定</lable>",
+
             ][$status];
         })->sortable();
 //        $grid->paid_at('支付时间');
@@ -148,6 +150,7 @@ class OrderController extends Controller
                 4 => "已发货 ",
                 5 => "交易成功 ",
                 6 => "交易关闭	",
+                7=>"交易锁定",
             ]);
             // 关联关系查询
             $filter->scope('is_posted', "付款未发货订单")->where('status', 2)->doesntHave('wuliu');
@@ -311,6 +314,7 @@ function copyText(item) {
             4 => "已发货 ",
             5 => "交易成功 ",
             6 => "交易关闭	",
+            7=>"交易锁定"
         ]);
 //        $form->datetime('paid_at', '支付时间')->default(date('Y-m-d H:i:s'));
         $form->datetime('consigned_at', '发货时间')->default(date('Y-m-d H:i:s'));
