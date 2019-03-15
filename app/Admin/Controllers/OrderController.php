@@ -163,7 +163,7 @@ class OrderController extends Controller
 
 //		$grid->disableFilter();//筛选
         $grid->disableCreateButton();//新增
-        $grid->disableExport();//导出
+//        $grid->disableExport();//导出
 
 //			$grid->disableActions();//行操作
         $grid->disableRowSelector();//CheckBox
