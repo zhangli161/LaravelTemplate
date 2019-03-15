@@ -305,25 +305,11 @@ class OrderManager extends Manager
 
     public static function afterPaid(Order $order)
     {
-        if ($order->status == 2)
+        //确保不会被调用多次
+        if ($order->order_agent()->exists())
             return [];
         Log::info("$order->id 支付完成，进行后续流程");
-        foreach ($order->skus as $order_sku) {
-            $sku = GoodsSKU::find($order_sku->sku_id);
-            if ($sku->stock_type == 0) {//付款减库存
-                if ($sku->stock > 0) {
-                    $sku->stock--;
-                    $sku->save();
-                    $order->status = 2;
-                    $order->save();
-                } else {
-                    //库存不足
-                    self::cancle($order);
-                    //执行退款流程
-                    self::refund($order, $order_sku, $order_sku->amount, "付款后库存不足");
-                }
-            }
-        }
+
 
         //有代理商则进行分销程序
         if ($order->user()->has("agent")->exists()) {
@@ -339,6 +325,24 @@ class OrderManager extends Manager
             $order_agent->payment = $order->payment * $percent / 100.0;
 
             $order_agent->save();
+        }
+
+        //减少订单库存
+        foreach ($order->skus as $order_sku) {
+            $sku = GoodsSKU::find($order_sku->sku_id);
+            if ($sku->stock_type == 0) {//付款减库存
+                if ($sku->stock > 0) {
+                    $sku->stock--;
+                    $sku->save();
+                    $order->status = 2;
+                    $order->save();
+                } else {
+                    //库存不足
+                    self::cancle($order);
+                    //执行退款流程
+                    self::refund($order, $order_sku, $order_sku->amount, "付款后库存不足");
+                }
+            }
         }
         return [];
     }
