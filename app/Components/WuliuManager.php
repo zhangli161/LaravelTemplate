@@ -20,7 +20,7 @@ class WuliuManager
         //电商ID。请到快递鸟官网申请http://kdniao.com/reg
         $this->EBusinessID = "1426376";
         //电商加密私钥，快递鸟提供，注意保管，不要泄漏。请到快递鸟官网申请http://kdniao.com/reg
-        $this->AppKey = 'd2b509d5-f570-4825-aed2-88d824a48e69';
+        $this->AppKey = 'de229e98-6f61-4d54-bef3-0822b16d0bcf';
         //请求url
         $this->ReqURL = 'http://api.kdniao.com/Ebusiness/EbusinessOrderHandle.aspx';
 //        $this->ReqURL = "http://sandboxapi.kdniao.com:8080/kdniaosandbox/gateway/exterfaceInvoke.json";
