@@ -73,7 +73,7 @@ class StatisticOrderController extends Controller
         if ($model->count() < 1) {
             return "未找到数据";
         }
-        $titles = ['时间', '地区', "订单总数", "订单总金额"];
+        $titles = ['时间', '地区', "订单总数", "订单总金额","合计邮费"];
 
         $region_id = $request->get("region_id", '0');
 //            $request->filled("region_id") ? (
@@ -94,7 +94,11 @@ class StatisticOrderController extends Controller
                 array_push($rows, new Collection([$lable,
                     $region ? NativePalceReagionManager::getFullAddress($region->region_id) : "全国",
                     $model_group->get($lable, new Collection())->count(),
-                    round($model_group->get($lable, new Collection())->sum('payment'), 2)]));
+                    round($model_group->get($lable, new Collection())->sum('payment'), 2),
+                    round($model_group->get($lable, new Collection())->sum('post_fee'), 2),
+
+                ]));
+
             }
 
         } elseif ($type == "2") {
@@ -107,7 +111,9 @@ class StatisticOrderController extends Controller
                 array_push($rows, new Collection([$lable,
                     $region ? NativePalceReagionManager::getFullAddress($region->region_id) : "全国",
                     $model_group->get($lable, new Collection())->count(),
-                    round($model_group->get($lable, new Collection())->sum('payment'), 2)]));
+                    round($model_group->get($lable, new Collection())->sum('payment'), 2),
+                    round($model_group->get($lable, new Collection())->sum('post_fee'), 2)
+                ]));
             }
         } elseif ($type == "4") {
             $model_group = $model->groupBy(function ($item) {
@@ -118,7 +124,9 @@ class StatisticOrderController extends Controller
                 array_push($rows, new Collection([$lable,
                     $region ? NativePalceReagionManager::getFullAddress($region->region_id) : "全国",
                     $model_group->get($lable, new Collection())->count(),
-                    round($model_group->get($lable, new Collection())->sum('payment'), 2)
+                    round($model_group->get($lable, new Collection())->sum('payment'), 2),
+                    round($model_group->get($lable, new Collection())->sum('post_fee'), 2)
+
                 ]));
             }
         }
