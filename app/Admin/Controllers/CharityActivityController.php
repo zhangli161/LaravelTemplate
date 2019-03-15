@@ -107,10 +107,10 @@ class CharityActivityController extends Controller
 
         $show->id('Id');
         $show->title('活动标题');
-        $show->content('活动内容');
+        $show->content('活动内容')->unescspe();
         $show->goal('目标金额');
         $show->now('当前金额');
-        $show->reciver('善款接收机构');
+        $show->reciver('善款接收机构')->unescspe();
         $show->date_to('结束时间');
         $show->status('活动状态')->using(['1'=>"进行中","2"=>"已完成",3=>"未完成"]);
         $show->created_at('创建时间');

@@ -133,7 +133,9 @@
 
 <div id="main" style="width: 100%;height:250px;background: #fff"></div>
 
-
+<div class="row">
+    <a class="btn btn-primary" href="{{url('agent/fans')}}">我的粉丝</a>
+</div>
 <script src="/js/echarts.simple.min.js"></script>
 <script src="/js/jquery-3.3.1.min.js"></script>
 <script type="text/javascript">

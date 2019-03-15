@@ -66,7 +66,7 @@ class AgentController extends Controller
     {
         $agent = Auth::guard("agent")->user();
 
-        $qr = QRManager::getAgentXCXQR($agent->id,"pages/start/start");
+        $qr = QRManager::getAgentXCXQR($agent->id, "pages/start/start");
         $agent->xcx_qr = $qr;
         $agent->save();
         return redirect()->back();
@@ -156,5 +156,13 @@ class AgentController extends Controller
         $agent->finances;
 
         return view("agent.finance", ['agent' => $agent]);
+    }
+
+    public function fans()
+    {
+        $agent = Auth::guard("agent")->user();
+        $data=$agent->users()->paginate(30);
+
+        return view("agent.fans", ['data' => $data]);
     }
 }

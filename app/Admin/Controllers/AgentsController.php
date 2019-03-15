@@ -317,7 +317,7 @@ function Download(imgdata){
 
             $grid->id('用户id');//->sortable()表示可排序列
             $grid->name('名称');
-            $grid->column('id');
+//            $grid->column('id');
             $grid->avatar("头像")->lightbox();
             // 设置text、color、和存储值
             $states = [

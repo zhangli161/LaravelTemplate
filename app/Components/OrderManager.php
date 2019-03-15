@@ -90,7 +90,7 @@ class OrderManager extends Manager
             $order_sku = new OrderSKU([
                 'sku_id' => $sku->id,
                 'sku_name' => $sku->sku_name,
-                'thumb' => getRealImageUrl($sku->spu->thumb),
+                'thumb' => count($sku->thumbs) > 0 ? getRealImageUrl($sku->thumbs[0]) : "/",
                 'amount' => $amount,
                 'price' => $sku->price,
                 'total_price' => $total_price,
@@ -203,7 +203,7 @@ class OrderManager extends Manager
             array_push($order_skus, [
                 'sku_id' => $sku->id,
                 'sku_name' => $sku->name,
-                'thumb' => getRealImageUrl($sku->spu->thumb),
+                'thumb' => count($sku->thumbs) > 0 ? getRealImageUrl($sku->thumbs[0]) : "/",
                 'amount' => $amount,
                 'price' => $sku->price,
                 'total_price' => $total_price,
@@ -229,7 +229,7 @@ class OrderManager extends Manager
             $order->skus()->create([
                 'sku_id' => $sku->id,
                 'sku_name' => $sku->sku_name,
-                'thumb' => getRealImageUrl($sku->spu->thumb),
+                'thumb' => count($sku->thumbs) > 0 ? getRealImageUrl($sku->thumbs[0]) : "/",
                 'amount' => $amount,
                 'price' => $price,
                 'total_price' => $amount * $sku->price,
@@ -508,7 +508,7 @@ class OrderManager extends Manager
         $order->closed_at = now();
         $order->status = 6;
         $order->save();
-        $order->delete();
+//        $order->delete();
 
         return;
     }
@@ -585,11 +585,10 @@ class OrderManager extends Manager
                     ($item->refund_amount < $item->amount);
                 //只要有1个没有退掉，则result=true
             }
-            if ($result){
+            if ($result) {
 
-            }
-            else{//全部退货
-                $order->status="7";
+            } else {//全部退货
+                $order->status = "7";
                 $order->save();
             }
         }

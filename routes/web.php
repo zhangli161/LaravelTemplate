@@ -64,4 +64,6 @@ Route::group(['prefix' => 'agent','namespace' => 'agent'],function ($router)
 
     $router->get('finance', 'AgentController@finance');
 
+    $router->get('fans', 'AgentController@fans');
+
 });

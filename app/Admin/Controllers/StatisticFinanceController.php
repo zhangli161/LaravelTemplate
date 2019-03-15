@@ -4,6 +4,7 @@ namespace App\Admin\Controllers;
 
 use App\Components\ChartManager;
 use App\Components\NativePalceReagionManager;
+use App\Models\AgentCash;
 use App\Models\NativePlaceRegion;
 use App\Models\Order;
 use App\Models\OrderRefund;
@@ -139,25 +140,26 @@ class StatisticFinanceController extends Controller
     {
         $query1 = Order::query()->whereIn("status",["5"]);
         $query2 = OrderRefund::query();
-//        $query3 = Order::query();
+        $query3 = AgentCash::query()->where('status','1');
 
         if ($request->filled("date_from")) {
             $query1->whereDate("created_at", ">=", $request->get("date_from"));
             $query2->whereDate("created_at", ">=", $request->get("date_from"));
-//            $query3->whereDate("created_at", ">=", $request->get("date_from"));
+            $query3->whereDate("created_at", ">=", $request->get("date_from"));
 //            $query3->whereDate("created_at", '<=', $request->get("date_to"));
         }
         if ($request->filled("date_to")) {
             $query1->whereDate("created_at", '<=', $request->get("date_to"));
             $query2->whereDate("created_at", '<=', $request->get("date_to"));
-//            $query3->whereDate("created_at", ">=", $request->get("date_from"));
+            $query3->whereDate("created_at", ">=", $request->get("date_to"));
 //            $query3->whereDate("created_at", '<=', $request->get("date_to"));
         }
 
         $model1 = $query1->orderBy('created_at', 'asc')->get();
         $model2 = $query2->orderBy('created_at', 'asc')->get();
+        $model3 = $query3->orderBy('created_at', 'asc')->get();
 
-        return [$model1, $model2];
+        return [$model1, $model2,$model3];
     }
 
     public function income_chart(Content $content, Request $request)
