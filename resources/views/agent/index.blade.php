@@ -177,8 +177,8 @@
 <div id="main" style="width: 100%;height:250px;background: #fff"></div>
 
 <div class="row">
-    <div class="col-5"></div>
-    <div class="col-2">
+    <div class="col-4"></div>
+    <div class="col-4">
         <a class="btn btn-primary" style="width: 100%" href="{{url('agent/fans')}}">我的粉丝</a>
     </div>
 </div>
