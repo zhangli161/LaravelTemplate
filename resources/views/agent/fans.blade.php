@@ -27,7 +27,7 @@
 
 
 <div class="row">
-    @for($i=0;$i<6;$i++)
+{{--    @for($i=0;$i<6;$i++)--}}
         @foreach($data as $fans)
             {{--        {!! json_encode($fans) !!}--}}
             <div class="col-2">
@@ -47,7 +47,7 @@
             </div>
 
         @endforeach
-    @endfor
+    {{--@endfor--}}
 </div>
 <div class="pull-right">
     {!! $data->links() !!}
