@@ -38,7 +38,7 @@
                         <img src="{{$fans->avatar}}" style="width: 100%">
                     @endif
                 </div>
-                <div style="font-size:10px;text-align: center">
+                <div style="font-size:10px;text-align: center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
                     {{$fans->name}}
                 </div>
                 {{--<div style="text-align: center">--}}

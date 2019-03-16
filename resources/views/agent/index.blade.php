@@ -5,6 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>凯莱克斯代理商管理后台</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
     <style>
         body {
             background: #fff;
@@ -78,6 +81,46 @@
             color: #00c0ef;
             border-bottom: 1.4px solid #00c0ef;
         }
+
+        /*!*按钮*!*/
+        /*.btn {*/
+            /*display: inline-block;*/
+            /*cursor: pointer;*/
+            /*text-align: center;*/
+            /*font-weight: 400;*/
+            /*white-space: nowrap;*/
+            /*vertical-align: middle;*/
+            /**zoom: 1;*/
+            /*-webkit-transition: background-color .1s linear;*/
+            /*-moz-transition: background-color .1s linear;*/
+            /*-o-transition: background-color .1s linear;*/
+            /*transition: background-color .1s linear*/
+        /*}*/
+
+        /*a.btn:hover, a.btn:focus, a.btn:active, a.btn.active, a.btn.disabled, a.btn[disabled] {*/
+            /*text-decoration: none*/
+        /*}*/
+
+        /*.btn:active, .btn.active {*/
+            /*background-color: #ccc*/
+        /*}*/
+
+        /*.btn:first-child {*/
+            /**margin-left: 0*/
+        /*}*/
+
+        /*.btn.active, .btn:active {*/
+            /*-moz-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.125) inset;*/
+            /*-webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.125) inset;*/
+            /*box-shadow: 0 1px 8px rgba(0, 0, 0, 0.125) inset*/
+        /*}*/
+
+        /*!*主要——主色 通常用于确定、提交、购买、支付等*!*/
+        /*.btn-primary{color:#fff;background-color:#5a98de; border-color:#5a98de}*/
+        /*.btn-primary:hover,*/
+        /*.btn-primary:focus,*/
+        /*.btn-primary:active,*/
+        /*.btn-primary.active{color:#fff;background-color:#6aa2e0;border-color:#6aa2e0}*/
     </style>
 </head>
 <body>
@@ -92,7 +135,7 @@
         <div class="col-xs-5">已提现佣金</div>
         <div class="col-xs-5" style=" font-size: 20px;">￥{{$agent->cashed}}</div>
     </div>
-    <div >
+    <div>
         <input class="but" type="button" value="提现" id="cash_withdrawal">
     </div>
 </div>
@@ -134,7 +177,10 @@
 <div id="main" style="width: 100%;height:250px;background: #fff"></div>
 
 <div class="row">
-    <a class="btn btn-primary" href="{{url('agent/fans')}}">我的粉丝</a>
+    <div class="col-5"></div>
+    <div class="col-2">
+        <a class="btn btn-primary" style="width: 100%" href="{{url('agent/fans')}}">我的粉丝</a>
+    </div>
 </div>
 <script src="/js/echarts.simple.min.js"></script>
 <script src="/js/jquery-3.3.1.min.js"></script>
