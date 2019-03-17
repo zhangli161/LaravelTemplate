@@ -83,9 +83,9 @@ class PostageMananger
             or isset($order_postage->data->Traces)) {
             $t = new \Illuminate\Support\Collection($result->Traces);
             $t = $t->sortByDesc('AcceptTime')->values()->toArray();
-            $data = array($result);
+            $data = new Collection($result);
             $data['Traces'] = $t;
-            $order_postage->data = $data;
+            $order_postage->data = $data->values()->toJson();
             $order_postage->save();
         }
 
