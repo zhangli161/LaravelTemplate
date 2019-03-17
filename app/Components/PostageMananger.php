@@ -78,12 +78,12 @@ class PostageMananger
                 "status" => $result->State,
                 "data" => $result
             ]);
-        if (isset($order_postage->data['Traces'])) {
-            $t = new Collection($order_postage->data['Traces']);
-            $t->sortByDesc('AcceptTime');
-            $order_postage->data['Traces']=$t;
-            $order_postage->save();
-        }
+//        if (isset($order_postage->data['Traces'])) {
+//            $t = new Collection($order_postage->data['Traces']);
+//            $t->sortByDesc('AcceptTime');
+//            $order_postage->data['Traces']=$t;
+//            $order_postage->save();
+//        }
 
         return $order_postage;
     }
