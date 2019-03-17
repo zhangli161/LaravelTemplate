@@ -85,7 +85,7 @@ class PostageMananger
             $t = $t->sortByDesc('AcceptTime')->values()->toArray();
             $data = new Collection($result);
             $data['Traces'] = $t;
-            $order_postage->data = $data->values()->toJson();
+            $order_postage->data = $data->toJson();
             $order_postage->save();
         }
 
