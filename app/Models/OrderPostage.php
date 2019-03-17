@@ -8,7 +8,7 @@ class OrderPostage extends Model
 {
 	protected $primaryKey='order_id';
 	protected $fillable=["data","status"];
-	protected $casts=["data"=>"json"];
+	protected $casts=["data"=>"array"];
     public function order(){
     	return $this->belongsTo(Order::class,'order_id');
     }
