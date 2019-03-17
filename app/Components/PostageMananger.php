@@ -82,7 +82,7 @@ class PostageMananger
         if (isset($result->Traces)
             or isset($order_postage->data->Traces)) {
             $t = new \Illuminate\Support\Collection($result->Traces);
-            $t = $t->sortByDesc('AcceptTime')->values();
+            $t = $t->sortByDesc('AcceptTime')->values()->toArray();
             $data = array($result);
             $data['Traces'] = $t;
             $order_postage->data = $data;
