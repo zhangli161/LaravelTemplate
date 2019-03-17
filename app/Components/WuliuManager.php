@@ -11,6 +11,7 @@ namespace App\Components;
 
 
 use Encore\Admin\Auth\Database\Administrator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
 class WuliuManager
@@ -38,7 +39,14 @@ class WuliuManager
     public function query($order_sn, $shipper_code, $logistic_code)
     {
         $logisticResult = $this->getOrderTracesByJson($order_sn, $shipper_code, $logistic_code);
-        return json_decode($logisticResult);
+
+        $logisticResult = json_decode($logisticResult);
+        if (isset($logisticResult->Traces)) {
+            $t = new Collection($logisticResult->Traces);
+            $t->sortByDesc('AcceptTime');
+            $logisticResult->Traces=$t;
+        }
+        return $logisticResult;
     }
 
     /**
@@ -64,6 +72,7 @@ class WuliuManager
         $result = $this->sendPost($this->ReqURL, $datas);
 
         //根据公司业务处理返回的信息......
+
 
         return $result;
     }
