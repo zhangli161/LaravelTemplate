@@ -49,7 +49,8 @@ class StatisticAgentController extends Controller
             ->row($this->grid($request))
             ->row($this->gridForm("/admin/statistic/agent"))
             ->row("<script>disablePjax=true</script>")
-            ->row(json_encode($request->all()));
+//            ->row(json_encode($request->all()))
+            ;
     }
 
 
@@ -76,7 +77,7 @@ class StatisticAgentController extends Controller
                 $agent->id,
                 $agent->users->count(),
                 $agent->increase_users->count(),
-                $agent->order_agent->sum("order_payment"),
+                $agent->order_agent()->sum("order_payment"),
                 $agent->balance,
                 $agent->user_refunds->count(),
                 $agent->user_refunds->sum('payment'),

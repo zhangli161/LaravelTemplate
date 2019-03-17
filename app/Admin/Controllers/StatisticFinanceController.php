@@ -141,10 +141,7 @@ class StatisticFinanceController extends Controller
             }
 
         }
-        dd($type, $dates,
 
-            $model_group0, $model_group1, $model_group2,
-            ['titles' => $titles, "rows" => $rows]);
         return view('admin.table.index', ['titles' => $titles, "rows" => $rows]);
     }
 
