@@ -54,7 +54,7 @@ class DemoController extends Controller
             PostageMananger::query($wuliu);
             if (isset($wuliu->data['Traces'])) {
                 $t = new \Illuminate\Support\Collection($wuliu->data['Traces']);
-                $t=$t->sortByDesc('AcceptTime');
+                $t=$t->sortByDesc('AcceptTime')->values();
                 $data=$wuliu->data;
                 $data['Traces']=$t;
                 $wuliu->data=$data;
@@ -62,7 +62,7 @@ class DemoController extends Controller
             }
         }
 
-        dd( OrderPostage::query()->whereNotNull('data')->get());
+//        dd( OrderPostage::query()->whereNotNull('data')->get());
     }
 
     //Manager的用法

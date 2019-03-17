@@ -70,7 +70,7 @@ class PostageMananger
     {
         $wuliu = new WuliuManager();
         $result = $wuliu->query($order_postage->order_id,
-           $order_postage->postage_name,
+            $order_postage->postage_name,
             $order_postage->postage_code);
 //            dd($result);
         if ($result->Success == "true")
@@ -79,12 +79,13 @@ class PostageMananger
                 "data" => $result
             ]);
 
-        if (isset($order_postage->data['Traces'])) {
-            $t = new \Illuminate\Support\Collection($order_postage->data['Traces']);
-            $t=$t->sortByDesc('AcceptTime');
-            $data=$order_postage->data;
-            $data['Traces']=$t;
-            $order_postage->data=$data;
+        if (isset($result->Traces)
+            or isset($order_postage->data->Traces)) {
+            $t = new \Illuminate\Support\Collection($result->Traces);
+            $t = $t->sortByDesc('AcceptTime')->values();
+            $data = array($result);
+            $data['Traces'] = $t;
+            $order_postage->data = $data;
             $order_postage->save();
         }
 
