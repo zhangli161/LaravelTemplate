@@ -13,6 +13,7 @@ use App\Admin\Controllers\NativePlaceRegionController;
 use App\Models\OrderPostage;
 use App\Models\PostageRegions;
 use Cblink\Region\RegionServiceProvider;
+use Illuminate\Support\Collection;
 
 class PostageMananger
 {
@@ -77,6 +78,13 @@ class PostageMananger
                 "status" => $result->State,
                 "data" => $result
             ]);
+        if (isset($order_postage->data['Traces'])) {
+            $t = new Collection($order_postage->data['Traces']);
+            $t->sortByDesc('AcceptTime');
+            $order_postage->data['Traces']=$t;
+            $order_postage->save();
+        }
+
         return $order_postage;
     }
 }
