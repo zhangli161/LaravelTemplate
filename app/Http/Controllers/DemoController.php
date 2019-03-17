@@ -54,8 +54,10 @@ class DemoController extends Controller
             PostageMananger::query($wuliu);
             if (isset($wuliu->data['Traces'])) {
                 $t = new \Illuminate\Support\Collection($wuliu->data['Traces']);
-                $t->sortByDesc('AcceptTime');
-                $wuliu->data['Traces']=$t;
+                $t=$t->sortByDesc('AcceptTime');
+                $data=$wuliu->data;
+                $data['Traces']=$t;
+                $wuliu->data=$data;
                 $wuliu->save();
             }
         }
