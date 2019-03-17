@@ -29,10 +29,12 @@ class StatisticAgentController extends Controller
     use HasResourceActions;
 
     private $request;
+
     public function __construct(Request $request)
     {
-        $this->request=$request;
+        $this->request = $request;
     }
+
     /**
      * Index interface.
      *
@@ -46,7 +48,8 @@ class StatisticAgentController extends Controller
             ->description('代理商统计')
             ->row($this->grid($request))
             ->row($this->gridForm("/admin/statistic/agent"))
-            ->row("<script>disablePjax=true</script>");
+            ->row("<script>disablePjax=true</script>")
+            ->row(json_encode($request->all()));
     }
 
 
@@ -63,9 +66,9 @@ class StatisticAgentController extends Controller
             return "未找到数据";
         }
 
-        $titles = ['代理商id', '粉丝总数', "粉丝增长数量", "粉丝消费额", "待返利金额","粉丝退款次数","粉丝退款金额",
+        $titles = ['代理商id', '粉丝总数', "粉丝增长数量", "粉丝消费额", "待返利金额", "粉丝退款次数", "粉丝退款金额",
 //            "粉丝已退货单数","粉丝已退货金额",
-            "查看粉丝增长图表", "查看粉丝消费图表","查看代理商"];
+            "查看粉丝增长图表", "查看粉丝消费图表", "查看代理商"];
 
         $rows = array();
         foreach ($model as $agent) {
@@ -189,27 +192,31 @@ class StatisticAgentController extends Controller
             ->header('粉丝增长量折线图')
             ->description($description)
             ->row(ChartManager::line($labels, '粉丝增长量', $datas))
-            ->row($this->chartform("/admin/chart/agent/fans"));
+            ->row($this->chartform("/admin/chart/agent/fans"))
+            ->row("<script>disablePjax=true</script>")
+            ;
     }
 
     public function fans_cost(Content $content, Request $request)
     {
+//        dd($request->all(),Agent::with("order_agent")
+//            ->find($request->get("agent_id")));
         $agent = Agent::with("order_agent")
             ->findOrFail($request->get("agent_id"));
         if ($request->filled("date_from") && $request->filled("date_to")) {
-            $model = $agent->order_agent()->where("status","1")
+            $model = $agent->order_agent()->where("status", "1")
                 ->whereDate("created_at", ">=", $request->get("date_from"))
                 ->whereDate("created_at", "<=", $request->get("date_to"))
                 ->get();
 
         } else {
-            $model = $agent->order_agent()->where("status","1")->get();
+            $model = $agent->order_agent()->where("status", "1")->get();
         }
 //        dd($agent->toArray());
         //如果未获取的数据
         if ($model->count() < 1)
             return $content
-                ->header('分销订单金额折线图')
+                ->header('粉丝消费额折线图')
 //			->description('折线图')
                 ->row("未找到对应数据！")
                 ->row($this->chartform("/admin/chart/agent/fans_cost"));
@@ -250,11 +257,15 @@ class StatisticAgentController extends Controller
 
             $description = "年统计";
         }
+//                dd($request->all(),$agent);
+
         return $content
-            ->header('分销订单金额折线图')
+            ->header('粉丝消费额折线图')
             ->description($description)
-            ->row(ChartManager::line($labels, '订单金额', $datas))
-            ->row($this->chartform("/admin/chart/agent/fans_cost"));
+            ->row(ChartManager::line($labels, '粉丝消费额折线图', $datas))
+            ->row($this->chartform("/admin/chart/agent/fans_cost"))
+            ->row("<script>disablePjax=true</script>");
+
     }
 
     protected function gridForm($action)

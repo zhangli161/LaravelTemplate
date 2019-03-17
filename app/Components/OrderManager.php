@@ -444,7 +444,7 @@ class OrderManager extends Manager
             $a_f = AgentManager::makeFinance(
                 $order_agent->agent,
                 (float)$order->order_agent->payment, 0,
-                "订单完成获得佣金");
+                "订单完成获得佣金(订单号{$order->id})");
 
             $order_agent->agent->history_balance = (float)$order_agent->agent->balance + (float)$order->order_agent->payment;
             $order_agent->agent->save();
