@@ -196,7 +196,14 @@ class OrderController extends Controller
         });
         $show->payment_type('支付方式');
         $show->post_fee('邮费');
-        $show->status('状态');
+        $show->status('状态')->using([
+            1 => "未付款 ",
+            2 => "已付款 ",
+//				3 => "未发货 ",
+            4 => "已发货 ",
+            5 => "交易成功 ",
+            6 => "交易关闭	",
+            7 => "交易锁定",]);
         $show->paid_at('支付时间');
         $show->consigned_at('发货时间');
         $show->completed_at('确认收货时间');
