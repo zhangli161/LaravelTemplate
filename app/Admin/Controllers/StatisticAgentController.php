@@ -77,7 +77,7 @@ class StatisticAgentController extends Controller
                 $agent->id,
                 $agent->users->count(),
                 $agent->increase_users->count(),
-                $agent->order_agent()->sum("order_payment"),
+                $agent->order_agent->sum("order_payment"),
                 $agent->balance,
                 $agent->user_refunds->count(),
                 $agent->user_refunds->sum('payment'),
@@ -109,6 +109,7 @@ class StatisticAgentController extends Controller
                 $agent->order_agent = $agent->order_agent()
                     ->where("status", "1")
                     ->whereDate("created_at", ">=", $request->get("date_from"))
+                    ->whereDate("created_at", "<=", $request->get("date_to"))
                     ->get();
 
                 $order_ids = $agent->order_agent->pluck("order_id")->toArray();
