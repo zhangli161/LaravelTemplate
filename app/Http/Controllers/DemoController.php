@@ -49,12 +49,15 @@ class DemoController extends Controller
 //	static $worker=SnowFlakeIDWorker(1);
     public static function test(Request $request)
     {
-        $agent = Agent::find(6);
-        $oldData=$agent->toJson();
-        AgentManager::makeFinance($agent,1,0,"测试");
-        $agent = Agent::find(6);
-
-        dd($agent,$oldData);
+        $wulius = OrderPostage::query()->whereNotNull('data')->get();
+        foreach ($wulius as $wuliu) {
+            if (isset($wuliu->data->Traces)) {
+                $t = new Collection($wuliu->data->Traces);
+                $t->sortByDesc('AcceptTime');
+                $wuliu->data->Traces = $t;
+            }
+        }
+        dd($wulius);
     }
 
     //Manager的用法
