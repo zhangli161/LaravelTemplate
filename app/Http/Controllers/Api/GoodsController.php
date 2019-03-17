@@ -56,18 +56,18 @@ class GoodsController extends Controller
             for ($i = 0; $i < (count($orderby) - 1); $i += 2) {
                 if ($orderby[$i + 1] != "desc")
                     $goods = $goods->sortBy(function ($item, $key) use ($orderby, $i) {
-                        Log::info("正排序："
-                            . $item->main_sku . "
-                            " . $orderby[$i] .
-                            $item->main_sku->getAttributeValue("$orderby[$i]"));
+//                        Log::info("正排序："
+//                            . $item->main_sku . "
+//                            " . $orderby[$i] .
+//                        Log::    $item->main_sku->getAttributeValue("$orderby[$i]"));
                         return (int)$item->main_sku->getAttributeValue($orderby[$i]);
                     });
                 else
                     $goods = $goods->sortByDesc(function ($item, $key) use ($orderby, $i) {
-                        Log::info("倒叙排序："
-                            . $item->main_sku . "
-                            " . $orderby[$i] .
-                            $item->main_sku->getAttributeValue("$orderby[$i]"));
+//                        Log::info("倒叙排序："
+//                            . $item->main_sku . "
+//                            " . $orderby[$i] .
+//                            $item->main_sku->getAttributeValue("$orderby[$i]"));
                         return (int)$item->main_sku->getAttributeValue($orderby[$i]);
                     });
             }
@@ -157,18 +157,18 @@ class GoodsController extends Controller
                 for ($i = 0; $i < (count($orderby) - 1); $i += 2) {
                     if ($orderby[$i + 1] != "desc")
                         $goods = $goods->sortBy(function ($item, $key) use ($orderby, $i) {
-                            Log::info("正排序："
-                                . $item->main_sku . "
-                            " . $orderby[$i] .
-                                $item->main_sku->getAttributeValue("$orderby[$i]"));
+//                            Log::info("正排序："
+//                                . $item->main_sku . "
+//                            " . $orderby[$i] .
+//                                $item->main_sku->getAttributeValue("$orderby[$i]"));
                             return (int)$item->main_sku->getAttributeValue($orderby[$i]);
                         });
                     else
                         $goods = $goods->sortByDesc(function ($item, $key) use ($orderby, $i) {
-                            Log::info("倒叙排序："
-                                . $item->main_sku . "
-                            " . $orderby[$i] .
-                                $item->main_sku->getAttributeValue("$orderby[$i]"));
+//                            Log::info("倒叙排序："
+//                                . $item->main_sku . "
+//                            " . $orderby[$i] .
+//                                $item->main_sku->getAttributeValue("$orderby[$i]"));
                             return (int)$item->main_sku->getAttributeValue($orderby[$i]);
                         });
                 }

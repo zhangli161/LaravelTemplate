@@ -54,7 +54,7 @@ class UserController extends Controller
 
             if (array_key_exists('rawData', $data)) {
                 $wx_userinfo = XCXLoginManager::decryptData($request, $sessionkey);
-                Log::info('用户信息：' . json_encode($wx_userinfo));
+//                Log::info('用户信息：' . json_encode($wx_userinfo));
                 if (array_get($wx_userinfo, 'ret')) {
                     $userinfo = json_decode($wx_userinfo['ret'], true);
                     $userinfo['user_id'] = $user->id;

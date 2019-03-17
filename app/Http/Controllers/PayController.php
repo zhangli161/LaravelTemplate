@@ -126,7 +126,7 @@ class PayController
 		if (!empty($result['result_code']) && !empty($result['err_code'])) {
 			$result['err_msg'] = $this->error_code($result['err_code']);
 		}
-		\Illuminate\Support\Facades\Log::info("查询订单[$out_trade_no ]结果:".json_encode($result));
+//		\Illuminate\Support\Facades\Log::info("查询订单[$out_trade_no ]结果:".json_encode($result));
 		return $result;
 	}
 	

@@ -60,7 +60,7 @@ class WuliuManager
             'DataType' => '2',
         );
         $datas['DataSign'] = $this->encrypt($requestData, $this->AppKey);
-        Log::info("查询物流发送：" . json_encode($datas));
+//        Log::info("查询物流发送：" . json_encode($datas));
         $result = $this->sendPost($this->ReqURL, $datas);
 
         //根据公司业务处理返回的信息......

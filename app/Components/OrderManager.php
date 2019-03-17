@@ -405,8 +405,8 @@ class OrderManager extends Manager
         if ($result) {
             $order = self::complete($order);
         };
-        Log::info("查询物流,{$order->id}:" . json_encode($postage) . "
-        " . $order->wuliu);
+//        Log::info("查询物流,{$order->id}:" . json_encode($postage) . "
+//        " . $order->wuliu);
 
         return $result;
     }
