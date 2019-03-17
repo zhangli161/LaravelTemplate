@@ -100,3 +100,23 @@ function get_server_ip()
         return isset($server_ip) ? $server_ip : env('SERVER_IP');
     }
 }
+
+function minDate(){
+    $args=func_get_args();//获取输入参数的每个值
+    $col=new \Illuminate\Support\Collection();
+    foreach ($args as $arg){
+        if ($arg!=null)
+            $col->push($arg);
+    }
+    return $col->min();
+}
+
+function maxDate(){
+    $args=func_get_args();//获取输入参数的每个值
+    $col=new \Illuminate\Support\Collection();
+    foreach ($args as $arg){
+        if ($arg!=null)
+            $col->push($arg);
+    }
+    return $col->min();
+}

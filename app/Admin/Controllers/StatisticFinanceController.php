@@ -78,15 +78,15 @@ class StatisticFinanceController extends Controller
                 return date("Y-m-d", strtotime($item->created_at));
             });
             $dates = getDatesBetween(
-                min($models[0]->min('created_at'), $models[1]->min('created_at'), $models[2]->min('created_at')),
-                max($models[0]->max('created_at'), $models[1]->max('created_at'), $models[2]->max('created_at'))
+                minDate($models[0]->min('created_at'), $models[1]->min('created_at'), $models[2]->min('created_at')),
+                maxDate($models[0]->max('created_at'), $models[1]->max('created_at'), $models[2]->max('created_at'))
             );
             foreach ($dates as $key => $lable) {
                 array_push($rows, [
                     $lable,
                     $model_group0->get($lable, new Collection())->sum("payment"),
                     $model_group1->get($lable, new Collection())->sum("payment"),
-                    $model_group2->get($lable, new Collection())->sum("amount")/100,
+                    $model_group2->get($lable, new Collection())->sum("amount") / 100,
                     $model_group0->get($lable, new Collection())->sum("payment") - $model_group1->get($lable, new Collection())->sum("payment"),
                 ]);
             }
@@ -102,8 +102,8 @@ class StatisticFinanceController extends Controller
                 return date("Y-m", strtotime($item->created_at));
             });
             $dates = getDatesBetween(
-                min($models[0]->min('created_at'), $models[1]->min('created_at'),$models[2]->min('created_at')),
-                max($models[0]->max('created_at'), $models[1]->max('created_at'),$models[2]->max('created_at')),
+                minDate($models[0]->min('created_at'), $models[1]->min('created_at'), $models[2]->min('created_at')),
+                maxDate($models[0]->max('created_at'), $models[1]->max('created_at'), $models[2]->max('created_at')),
                 2
             );
             foreach ($dates as $key => $lable) {
@@ -111,7 +111,7 @@ class StatisticFinanceController extends Controller
                     $lable,
                     $model_group0->get($lable, new Collection())->sum("payment"),
                     $model_group1->get($lable, new Collection())->sum("payment"),
-                    $model_group2->get($lable, new Collection())->sum("amount")/100,
+                    $model_group2->get($lable, new Collection())->sum("amount") / 100,
                     $model_group0->get($lable, new Collection())->sum("payment") - $model_group1->get($lable, new Collection())->sum("payment"),
                 ]);
             }
@@ -126,8 +126,8 @@ class StatisticFinanceController extends Controller
                 return date("Y", strtotime($item->created_at));
             });
             $dates = getDatesBetween(
-                min($models[0]->min('created_at'), $models[1]->min('created_at'),$models[2]->min('created_at')),
-                max($models[0]->max('created_at'), $models[1]->max('created_at'),$models[2]->max('created_at')),
+                minDate($models[0]->min('created_at'), $models[1]->min('created_at'), $models[2]->min('created_at')),
+                maxDate($models[0]->max('created_at'), $models[1]->max('created_at'), $models[2]->max('created_at')),
                 4
             );
             foreach ($dates as $key => $lable) {
@@ -135,13 +135,16 @@ class StatisticFinanceController extends Controller
                     $lable,
                     $model_group0->get($lable, new Collection())->sum("payment"),
                     $model_group1->get($lable, new Collection())->sum("payment"),
-                    $model_group2->get($lable, new Collection())->sum("amount")/100,
+                    $model_group2->get($lable, new Collection())->sum("amount") / 100,
                     $model_group0->get($lable, new Collection())->sum("payment") - $model_group1->get($lable, new Collection())->sum("payment"),
                 ]);
             }
 
         }
+        dd($type, $dates,
 
+            $model_group0, $model_group1, $model_group2,
+            ['titles' => $titles, "rows" => $rows]);
         return view('admin.table.index', ['titles' => $titles, "rows" => $rows]);
     }
 
@@ -196,8 +199,8 @@ class StatisticFinanceController extends Controller
                 return date("Y-m-d", strtotime($item->created_at));
             });
             $dates = getDatesBetween(
-                min($models[0]->min('created_at'), $models[1]->min('created_at')),
-                max($models[0]->max('created_at'), $models[1]->max('created_at'))
+                minDate($models[0]->min('created_at'), $models[1]->min('created_at')),
+                maxDate($models[0]->max('created_at'), $models[1]->max('created_at'))
             );
             foreach ($dates as $key => $lable) {
                 $income = $model_group0->get($lable, new Collection())->sum("payment")
@@ -219,8 +222,8 @@ class StatisticFinanceController extends Controller
                 return date("Y-m", strtotime($item->created_at));
             });
             $dates = getDatesBetween(
-                min($models[0]->min('created_at'), $models[1]->min('created_at')),
-                max($models[0]->max('created_at'), $models[1]->max('created_at')),
+                minDate($models[0]->min('created_at'), $models[1]->min('created_at')),
+                maxDate($models[0]->max('created_at'), $models[1]->max('created_at')),
                 2
             );
             foreach ($dates as $key => $lable) {
