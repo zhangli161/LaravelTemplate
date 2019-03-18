@@ -60,7 +60,7 @@ class GoodsController extends Controller
 //                            . $item->main_sku . "
 //                            " . $orderby[$i] .
 //                        Log::    $item->main_sku->getAttributeValue("$orderby[$i]"));
-                        return (int)$item->main_sku->getAttributeValue($orderby[$i]);
+                        return $item->main_sku?(int)$item->main_sku->getAttributeValue($orderby[$i]):0;
                     });
                 else
                     $goods = $goods->sortByDesc(function ($item, $key) use ($orderby, $i) {
@@ -68,7 +68,7 @@ class GoodsController extends Controller
 //                            . $item->main_sku . "
 //                            " . $orderby[$i] .
 //                            $item->main_sku->getAttributeValue("$orderby[$i]"));
-                        return (int)$item->main_sku->getAttributeValue($orderby[$i]);
+                        return $item->main_sku?(int)$item->main_sku->getAttributeValue($orderby[$i]):0;
                     });
             }
 //            dd($goods->pluck("main_sku.price"),$orderby,$goods->values()->all());
