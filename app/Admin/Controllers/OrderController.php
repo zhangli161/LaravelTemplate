@@ -203,7 +203,7 @@ class OrderController extends Controller
             4 => "已发货 ",
             5 => "交易成功 ",
             6 => "交易关闭	",
-            7 => "交易锁定",]);
+            7 => "交易锁定"]);
         $show->paid_at('支付时间');
         $show->consigned_at('发货时间');
         $show->completed_at('确认收货时间');

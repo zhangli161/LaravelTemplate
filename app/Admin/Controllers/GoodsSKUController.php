@@ -112,7 +112,7 @@ class GoodsSKUController extends Controller
         $grid->sku_no('Sku编号')->sortable();
         $grid->sku_name('子商品名称')->editable();
         $grid->price('价格（元）')->editable('text');
-        $grid->stock('库存量')->sortable();
+        $grid->stock('库存量')->editable();
 //        $grid->shop_id('Shop id');
 //        $grid->spu_id('Spu id');
 //        $grid->stock_type('减库存时间');
