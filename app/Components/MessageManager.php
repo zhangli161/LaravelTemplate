@@ -40,7 +40,7 @@ class MessageManager extends Manager
 		$richtext = new RichText(["content" => $content]);
 		$message = new Message([
 			"attr" => $attr,
-			"status" => 1,
+			"status" => 0,
 			"to_user_id" => $user->id,
 			"from_user_id" => $from_user_id,
 		]);

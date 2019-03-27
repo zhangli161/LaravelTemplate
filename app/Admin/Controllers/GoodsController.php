@@ -17,6 +17,8 @@ use Encore\Admin\Layout\Content;
 use Encore\Admin\Show;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\MessageBag;
 
 class GoodsController extends Controller
@@ -308,7 +310,7 @@ class GoodsController extends Controller
 
         });
 
-        $form->saving(function (Form $form) {
+        /*$form->saving(function (Form $form) {
             $exist = GoodsSPU::where("spu_no", $form->spu_no)->first();
 
             if ($exist)
@@ -321,7 +323,7 @@ class GoodsController extends Controller
 
                     return back()->with(compact('error'));
                 }
-        });
+        });*/
 
         return $form;
     }
@@ -365,13 +367,13 @@ class GoodsController extends Controller
                 }
 
                 //skus.search_word
-                $search_words= array_get($sku_data, 'search_word.search_words_array');
-                if (gettype($search_words)!="array" or count($search_words)==0)
-                    $search_words=[array_get($sku_data, 'sku_name')];
-                $search_words=implode(',',$search_words);
+                $search_words = array_get($sku_data, 'search_word.search_words_array');
+                if (gettype($search_words) != "array" or count($search_words) == 0)
+                    $search_words = [array_get($sku_data, 'sku_name')];
+                $search_words = implode(',', $search_words);
 //                return $search_words;
                 $sku->search_word()->updateOrCreate(["sku_id" => $sku->id],
-                    ['search_words' =>$search_words]);
+                    ['search_words' => $search_words]);
 
                 //skus.albums
 //            $album_ids = [];
@@ -383,7 +385,7 @@ class GoodsController extends Controller
 //            $sku->albums()->whereNotIn('id', $album_ids)->delete();
 
 //            $sku = new GoodsSKU();
-                $sku->thumbs= array_get($sku_data, 'thumbs',[]);
+                $sku->thumbs = array_get($sku_data, 'thumbs', []);
                 $sku->save();
 //                return array($sku->thumbs,array_get($sku_data, 'thumbs',[]),$sku->albums()->get());
 
@@ -396,16 +398,23 @@ class GoodsController extends Controller
                 $sku->similar_skus()->sync($similar_sku_ids);
 //            $sku->similar_skus()->whereNotIn('id'$similar_sku_ids)->delete();
 
-                $spec_value_ids = array_get($sku_data, "spec_value_ids",[]);
+                $spec_value_ids = array_get($sku_data, "spec_value_ids", []);
 //            dd($spec_value_ids, array_values($spec_value_ids));
 //                if ()
                 $spec_value_sync = [];
                 foreach ($spec_value_ids as $key => $id) {
-                    $spec_value_sync[$id] = ['spec_id' => $key];
+                    if ($id != null and $key != null)
+                        $spec_value_sync[$id] = ['spec_id' => $key];
                 }
                 $sku->spec_values()->sync($spec_value_sync);
             }
 
         return ApiResponse::makeResponse(true, $spu);
+    }
+
+    public function update($id)
+    {
+        Log::info(Input::all());
+        return $this->form()->update($id);
     }
 }
